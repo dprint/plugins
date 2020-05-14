@@ -1,0 +1,11 @@
+{
+    "plugins": [{
+        "name": "dprint-plugin-typescript",
+        "version": "0.17.2",
+        "url": "https://plugins.dprint.dev/typescript-0.17.2.wasm"
+    }, {
+        "name": "dprint-plugin-jsonc",
+        "version": "0.2.3",
+        "url": "https://plugins.dprint.dev/json-0.2.3.wasm"
+    }]
+}
