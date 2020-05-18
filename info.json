@@ -1,11 +1,15 @@
 {
-    "plugins": [{
+    "schemaVersion": 1,
+    "pluginSystemSchemaVersion": 1,
+    "latest": [{
         "name": "dprint-plugin-typescript",
         "version": "0.17.2",
-        "url": "https://plugins.dprint.dev/typescript-0.17.2.wasm"
+        "url": "https://plugins.dprint.dev/typescript-0.17.2.wasm",
+        "configKey": "typescript"
     }, {
         "name": "dprint-plugin-jsonc",
         "version": "0.2.3",
-        "url": "https://plugins.dprint.dev/json-0.2.3.wasm"
+        "url": "https://plugins.dprint.dev/json-0.2.3.wasm",
+        "configKey": "json"
     }]
 }
