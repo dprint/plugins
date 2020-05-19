@@ -5,11 +5,13 @@
         "name": "dprint-plugin-typescript",
         "version": "0.17.2",
         "url": "https://plugins.dprint.dev/typescript-0.17.2.wasm",
-        "configKey": "typescript"
+        "configKey": "typescript",
+        "fileExtensions": ["ts", "tsx", "js", "jsx"]
     }, {
         "name": "dprint-plugin-jsonc",
         "version": "0.2.3",
         "url": "https://plugins.dprint.dev/json-0.2.3.wasm",
-        "configKey": "json"
+        "configKey": "json",
+        "fileExtensions": ["json"]
     }]
 }
