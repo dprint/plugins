@@ -3,14 +3,14 @@
     "pluginSystemSchemaVersion": 1,
     "latest": [{
         "name": "dprint-plugin-typescript",
-        "version": "0.18.5",
-        "url": "https://plugins.dprint.dev/typescript-0.18.5.wasm",
+        "version": "0.19.0",
+        "url": "https://plugins.dprint.dev/typescript-0.19.0.wasm",
         "configKey": "typescript",
         "fileExtensions": ["ts", "tsx", "js", "jsx"]
     }, {
         "name": "dprint-plugin-jsonc",
-        "version": "0.2.3",
-        "url": "https://plugins.dprint.dev/json-0.2.3.wasm",
+        "version": "0.3.0",
+        "url": "https://plugins.dprint.dev/json-0.3.0.wasm",
         "configKey": "json",
         "fileExtensions": ["json"]
     }]
