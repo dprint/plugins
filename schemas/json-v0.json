@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://plugins.dprint.dev/schemas/json-v0.json",
+  "type": "object",
+  "definitions": {
+    "useTabs": {
+      "description": "Whether to use tabs (true) or spaces (false).",
+      "type": "boolean",
+      "oneOf": [{
+        "const": true,
+        "description": ""
+      }, {
+        "const": false,
+        "description": ""
+      }]
+    },
+    "newLineKind": {
+      "description": "The kind of newline to use.",
+      "type": "string",
+      "oneOf": [{
+        "const": "auto",
+        "description": "For each file, uses the newline kind found at the end of the last line."
+      }, {
+        "const": "crlf",
+        "description": "Uses carriage return, line feed."
+      }, {
+        "const": "lf",
+        "description": "Uses line feed."
+      }, {
+        "const": "system",
+        "description": "Uses the system standard (ex. crlf on Windows)."
+      }]
+    },
+    "commentLine.forceSpaceAfterSlashes": {
+      "description": "Forces a space after slashes.  For example: `// comment` instead of `//comment`",
+      "type": "boolean",
+      "oneOf": [{
+        "const": true,
+        "description": ""
+      }, {
+        "const": false,
+        "description": ""
+      }]
+    }
+  },
+  "properties": {
+    "$schema": {
+      "description": "The JSON schema reference.",
+      "type": "string"
+    },
+    "lineWidth": {
+      "description": "The width of a line the printer will try to stay under. Note that the printer may exceed this width in certain cases.",
+      "type": "number"
+    },
+    "indentWidth": {
+      "description": "The number of spaces for an indent. This option is ignored when using tabs.",
+      "type": "number"
+    },
+    "useTabs": {
+      "$ref": "#/definitions/useTabs"
+    },
+    "newLineKind": {
+      "$ref": "#/definitions/newLineKind"
+    },
+    "commentLine.forceSpaceAfterSlashes": {
+      "$ref": "#/definitions/commentLine.forceSpaceAfterSlashes"
+    }
+  }
+}
