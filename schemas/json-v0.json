@@ -53,7 +53,7 @@
       "type": "number"
     },
     "indentWidth": {
-      "description": "The number of spaces for an indent. This option is ignored when using tabs.",
+      "description": "The number of characters for an indent.",
       "type": "number"
     },
     "useTabs": {
