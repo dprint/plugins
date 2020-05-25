@@ -10,8 +10,8 @@
         "configSchemaUrl": ""
     }, {
         "name": "dprint-plugin-jsonc",
-        "version": "0.3.0",
-        "url": "https://plugins.dprint.dev/json-0.3.0.wasm",
+        "version": "0.4.0",
+        "url": "https://plugins.dprint.dev/json-0.4.0.wasm",
         "configKey": "json",
         "fileExtensions": ["json"],
         "configSchemaUrl": ""
