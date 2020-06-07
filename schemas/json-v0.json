@@ -6,6 +6,7 @@
     "useTabs": {
       "description": "Whether to use tabs (true) or spaces (false).",
       "type": "boolean",
+      "default": false,
       "oneOf": [{
         "const": true,
         "description": ""
@@ -17,6 +18,7 @@
     "newLineKind": {
       "description": "The kind of newline to use.",
       "type": "string",
+      "default": "lf",
       "oneOf": [{
         "const": "auto",
         "description": "For each file, uses the newline kind found at the end of the last line."
@@ -34,6 +36,7 @@
     "commentLine.forceSpaceAfterSlashes": {
       "description": "Forces a space after slashes.  For example: `// comment` instead of `//comment`",
       "type": "boolean",
+      "default": true,
       "oneOf": [{
         "const": true,
         "description": ""
@@ -50,10 +53,12 @@
     },
     "lineWidth": {
       "description": "The width of a line the printer will try to stay under. Note that the printer may exceed this width in certain cases.",
+      "default": 120,
       "type": "number"
     },
     "indentWidth": {
       "description": "The number of characters for an indent.",
+      "default": 4,
       "type": "number"
     },
     "useTabs": {
