@@ -9,7 +9,7 @@
         "fileExtensions": ["ts", "tsx", "js", "jsx"],
         "configSchemaUrl": ""
     }, {
-        "name": "dprint-plugin-jsonc",
+        "name": "dprint-plugin-json",
         "version": "0.4.0",
         "url": "https://plugins.dprint.dev/json-0.4.0.wasm",
         "configKey": "json",
