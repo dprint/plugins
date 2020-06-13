@@ -9,14 +9,14 @@
       "default": false,
       "oneOf": [{
         "const": true,
-        "description": ""
+        "description": "Uses tabs for indentation."
       }, {
         "const": false,
-        "description": ""
+        "description": "Uses spaces for indentation."
       }]
     },
     "semiColons": {
-      "description": "Whether semi-colons should be used.",
+      "description": "How semi-colons should be used.",
       "type": "string",
       "default": "prefer",
       "oneOf": [{
@@ -24,28 +24,28 @@
         "description": "Always uses semi-colons where applicable."
       }, {
         "const": "prefer",
-        "description": "Prefers to use semi-colons, but doesn't add one in certain scenarios such as for the last member of a single-line type literal."
+        "description": "Prefers semi-colons, but doesn't add one in certain scenarios such as for the last member of a single-line type literal."
       }, {
         "const": "asi",
-        "description": "Uses automatic semi-colon insertion. Only adds a semi-colon at the start of some expression statements when necessary."
+        "description": "Uses automatic semi-colon insertion. Only adds a semi-colon at the start of some expression statements when necessary. Read more: https://standardjs.com/rules.html#semicolons"
       }]
     },
     "quoteStyle": {
-      "description": "How to decide to use single or double quotes.",
+      "description": "How to use single or double quotes.",
       "type": "string",
       "default": "alwaysDouble",
       "oneOf": [{
         "const": "alwaysDouble",
-        "description": "Always use double quotes."
+        "description": "Always uses double quotes."
       }, {
         "const": "alwaysSingle",
-        "description": "Always use single quotes."
+        "description": "Always uses single quotes."
       }, {
         "const": "preferDouble",
-        "description": "Prefer using double quotes except in scenarios where the string contains more double quotes than single quotes."
+        "description": "Prefers using double quotes except in scenarios where the string contains more double quotes than single quotes."
       }, {
         "const": "preferSingle",
-        "description": "Prefer using single quotes except in scenarios where the string contains more single quotes than double quotes."
+        "description": "Prefers using single quotes except in scenarios where the string contains more single quotes than double quotes."
       }]
     },
     "newLineKind": {
@@ -163,7 +163,7 @@
       }]
     },
     "preferHanging": {
-      "description": "Set to prefer hanging indentation when exceeding the line width.",
+      "description": "Set to prefer hanging indentation when exceeding the line width instead of making code split up on multiple lines.",
       "type": "boolean",
       "default": false,
       "oneOf": [{
