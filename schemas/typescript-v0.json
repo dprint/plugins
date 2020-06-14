@@ -546,6 +546,10 @@
       "description": "The JSON schema reference.",
       "type": "string"
     },
+    "locked": {
+      "description": "Whether the configuration is allowed to be overriden or extended.",
+      "type": "boolean"
+    },
     "lineWidth": {
       "description": "The width of a line the printer will try to stay under. Note that the printer may exceed this width in certain cases.",
       "default": 120,
