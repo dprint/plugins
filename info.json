@@ -3,7 +3,7 @@
     "pluginSystemSchemaVersion": 1,
     "latest": [{
         "name": "dprint-plugin-typescript",
-        "version": "0.19.0",
+        "version": "0.19.2",
         "url": "https://plugins.dprint.dev/typescript-0.19.0.wasm",
         "configKey": "typescript",
         "fileExtensions": ["ts", "tsx", "js", "jsx"],
@@ -11,7 +11,7 @@
         "configExcludes": ["**/node_modules"]
     }, {
         "name": "dprint-plugin-json",
-        "version": "0.4.0",
+        "version": "0.4.1",
         "url": "https://plugins.dprint.dev/json-0.4.0.wasm",
         "configKey": "json",
         "fileExtensions": ["json"],
