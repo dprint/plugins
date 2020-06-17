@@ -17,5 +17,13 @@
         "fileExtensions": ["json"],
         "configSchemaUrl": "",
         "configExcludes": ["**/*-lock.json"]
+    }, {
+        "name": "dprint-plugin-rustfmt",
+        "version": "0.1.0",
+        "url": "https://plugins.dprint.dev/rustfmt-0.1.0.wasm",
+        "configKey": "rustfmt",
+        "fileExtensions": ["rs"],
+        "configSchemaUrl": "",
+        "configExcludes": ["**/target"]
     }]
 }
