@@ -3,8 +3,8 @@
     "pluginSystemSchemaVersion": 1,
     "latest": [{
         "name": "dprint-plugin-typescript",
-        "version": "0.19.2",
-        "url": "https://plugins.dprint.dev/typescript-0.19.2.wasm",
+        "version": "0.19.3",
+        "url": "https://plugins.dprint.dev/typescript-0.19.3.wasm",
         "configKey": "typescript",
         "fileExtensions": ["ts", "tsx", "js", "jsx"],
         "configSchemaUrl": "",
