@@ -32,6 +32,17 @@
       ]
     },
     {
+      "name": "dprint-plugin-markdown",
+      "version": "0.1.0",
+      "url": "https://plugins.dprint.dev/markdown-0.1.0.wasm",
+      "configKey": "markdown",
+      "fileExtensions": [
+        "md"
+      ],
+      "configSchemaUrl": "",
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-rustfmt",
       "version": "0.1.0",
       "url": "https://plugins.dprint.dev/rustfmt-0.1.0.wasm",
