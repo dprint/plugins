@@ -4,8 +4,8 @@
   "latest": [
     {
       "name": "dprint-plugin-typescript",
-      "version": "0.19.5",
-      "url": "https://plugins.dprint.dev/typescript-0.19.5.wasm",
+      "version": "0.19.9",
+      "url": "https://plugins.dprint.dev/typescript-0.19.9.wasm",
       "configKey": "typescript",
       "fileExtensions": [
         "ts",
@@ -33,8 +33,8 @@
     },
     {
       "name": "dprint-plugin-markdown",
-      "version": "0.1.1",
-      "url": "https://plugins.dprint.dev/markdown-0.1.1.wasm",
+      "version": "0.2.3",
+      "url": "https://plugins.dprint.dev/markdown-0.2.3.wasm",
       "configKey": "markdown",
       "fileExtensions": [
         "md"
