@@ -242,10 +242,10 @@
       "type": "string",
       "default": "maintain",
       "oneOf": [{
-        "const": "newline",
+        "const": "newLine",
         "description": "Forces a new line between members."
       }, {
-        "const": "blankline",
+        "const": "blankLine",
         "description": "Forces a blank line between members."
       }, {
         "const": "maintain",
