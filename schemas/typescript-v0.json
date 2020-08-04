@@ -87,7 +87,7 @@
     "bracePosition": {
       "description": "Where to place the opening brace.",
       "type": "string",
-      "default": "nextLineIfHanging",
+      "default": "sameLineUnlessHanging",
       "oneOf": [{
         "const": "maintain",
         "description": "Maintains the brace being on the next line or the same line."
@@ -98,8 +98,8 @@
         "const": "nextLine",
         "description": "Forces the brace to be on the next line."
       }, {
-        "const": "nextLineIfHanging",
-        "description": "Forces the brace to be on the next line if the same line is hanging, but otherwise uses the next."
+        "const": "sameLineUnlessHanging",
+        "description": "Forces the brace to be on the next line if the same line is hanging, but otherwise uses the same line."
       }]
     },
     "singleBodyPosition": {
