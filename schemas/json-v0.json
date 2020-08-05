@@ -62,7 +62,7 @@
     },
     "indentWidth": {
       "description": "The number of characters for an indent.",
-      "default": 4,
+      "default": 2,
       "type": "number"
     },
     "useTabs": {
