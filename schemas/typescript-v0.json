@@ -48,6 +48,18 @@
         "description": "Prefers using single quotes except in scenarios where the string contains more single quotes than double quotes."
       }]
     },
+    "separatorKind": {
+      "description": "The kind of separator to use.",
+      "type": "string",
+      "default": "semiColons",
+      "oneOf": [{
+        "const": "semiColons",
+        "description": "Use semi-colons."
+      }, {
+        "const": "commas",
+        "description": "Use commas."
+      }]
+    },
     "newLineKind": {
       "description": "The kind of newline to use.",
       "type": "string",
@@ -608,6 +620,15 @@
     "memberExpression.linePerExpression": {
       "$ref": "#/definitions/memberExpression.linePerExpression"
     },
+    "typeLiteral.separatorKind": {
+      "$ref": "#/definitions/separatorKind"
+    },
+    "typeLiteral.separatorKind.singleLine": {
+      "$ref": "#/definitions/separatorKind"
+    },
+    "typeLiteral.separatorKind.multiLine": {
+      "$ref": "#/definitions/separatorKind"
+    },
     "enumDeclaration.memberSpacing": {
       "$ref": "#/definitions/enumDeclaration.memberSpacing"
     },
@@ -820,6 +841,9 @@
       "$ref": "#/definitions/trailingCommas"
     },
     "tupleType.trailingCommas": {
+      "$ref": "#/definitions/trailingCommas"
+    },
+    "typeLiteral.trailingCommas": {
       "$ref": "#/definitions/trailingCommas"
     },
     "typeParameters.trailingCommas": {
