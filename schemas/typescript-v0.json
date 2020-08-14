@@ -48,18 +48,6 @@
         "description": "Prefers using single quotes except in scenarios where the string contains more single quotes than double quotes."
       }]
     },
-    "separatorKind": {
-      "description": "The kind of separator to use.",
-      "type": "string",
-      "default": "semiColons",
-      "oneOf": [{
-        "const": "semiColons",
-        "description": "Use semi-colons."
-      }, {
-        "const": "commas",
-        "description": "Use commas."
-      }]
-    },
     "newLineKind": {
       "description": "The kind of newline to use.",
       "type": "string",
@@ -262,6 +250,18 @@
       }, {
         "const": "maintain",
         "description": "Maintains whether a newline or blankline is used."
+      }]
+    },
+    "typeLiteral.separatorKind": {
+      "description": "The kind of separator to use in type literals.",
+      "type": "string",
+      "default": "semiColon",
+      "oneOf": [{
+        "const": "semiColon",
+        "description": "Use semi-colons."
+      }, {
+        "const": "comma",
+        "description": "Use commas."
       }]
     },
     "binaryExpression.spaceSurroundingBitwiseAndArithmeticOperator": {
@@ -621,13 +621,13 @@
       "$ref": "#/definitions/memberExpression.linePerExpression"
     },
     "typeLiteral.separatorKind": {
-      "$ref": "#/definitions/separatorKind"
+      "$ref": "#/definitions/typeLiteral.separatorKind"
     },
     "typeLiteral.separatorKind.singleLine": {
-      "$ref": "#/definitions/separatorKind"
+      "$ref": "#/definitions/typeLiteral.separatorKind"
     },
     "typeLiteral.separatorKind.multiLine": {
-      "$ref": "#/definitions/separatorKind"
+      "$ref": "#/definitions/typeLiteral.separatorKind"
     },
     "enumDeclaration.memberSpacing": {
       "$ref": "#/definitions/enumDeclaration.memberSpacing"
