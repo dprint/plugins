@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "name": "dprint-plugin-yapf",
+  "version": "0.1.1",
+  "mac-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.1.1/dprint-plugin-yapf-x86_64-apple-darwin.zip",
+    "checksum": "f6a1b1772b4e66cb7955d3ca333f4daa94ac04db329912564149e519418c0abd"
+  },
+  "linux-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.1.1/dprint-plugin-yapf-x86_64-unknown-linux-gnu.zip",
+    "checksum": "54eb442a3b65758cfa73ea0444b9155484320e56e443f3c504cbabfd1e359bbc"
+  },
+  "windows-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.1.1/dprint-plugin-yapf-x86_64-pc-windows-msvc.zip",
+    "checksum": "46b7286a3624838049d3a4c09b6d5d5ee3c58d52151c7c9000ed038847ca2147"
+  }
+}
