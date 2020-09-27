@@ -186,6 +186,21 @@
         "description": ""
       }]
     },
+    "sortOrder": {
+      "description": "The kind of sort ordering to use.",
+      "type": "string",
+      "default": "caseInsensitive",
+      "oneOf": [{
+        "const": "maintain",
+        "description": "Maintains the current ordering."
+      }, {
+        "const": "caseSensitive",
+        "description": "Alphabetically and case sensitive."
+      }, {
+        "const": "caseInsensitive",
+        "description": "Alphabetically and case insensitive."
+      }]
+    },
     "deno": {
       "description": "Top level configuration that sets the configuration to what is used in Deno.",
       "type": "boolean",
@@ -703,6 +718,12 @@
     },
     "whileStatement.spaceAfterWhileKeyword": {
       "$ref": "#/definitions/whileStatement.spaceAfterWhileKeyword"
+    },
+    "exportDeclaration.sortNamedExports": {
+      "$ref": "#/definitions/sortOrder"
+    },
+    "importDeclaration.sortNamedImports": {
+      "$ref": "#/definitions/sortOrder"
     },
     "ignoreNodeCommentText": {
       "description": "The text to use for an ignore comment (ex. `// dprint-ignore`).",
