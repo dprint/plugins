@@ -20,8 +20,8 @@
     },
     {
       "name": "dprint-plugin-json",
-      "version": "0.7.0",
-      "url": "https://plugins.dprint.dev/json-0.7.0.wasm",
+      "version": "0.7.1",
+      "url": "https://plugins.dprint.dev/json-0.7.1.wasm",
       "configKey": "json",
       "fileExtensions": [
         "json"
