@@ -719,6 +719,12 @@
     "whileStatement.spaceAfterWhileKeyword": {
       "$ref": "#/definitions/whileStatement.spaceAfterWhileKeyword"
     },
+    "statements.sortImportDeclarations": {
+      "$ref": "#/definitions/sortOrder"
+    },
+    "statements.sortExportDeclarations": {
+      "$ref": "#/definitions/sortOrder"
+    },
     "exportDeclaration.sortNamedExports": {
       "$ref": "#/definitions/sortOrder"
     },
