@@ -86,6 +86,21 @@
     },
     "strongKind": {
       "$ref": "#/definitions/strongKind"
+    },
+    "ignoreDirective": {
+      "description": "The text to use for an ignore directive (ex. `<!-- dprint-ignore -->`).",
+      "default": "dprint-ignore",
+      "type": "string"
+    },
+    "ignoreStartDirective": {
+      "description": "The text to use for an ignore start directive (ex. `<!-- dprint-ignore-start -->`).",
+      "default": "dprint-ignore-start",
+      "type": "string"
+    },
+    "ignoreEndDirective": {
+      "description": "The text to use for an ignore end directive (ex. `<!-- dprint-ignore-end -->`).",
+      "default": "dprint-ignore-end",
+      "type": "string"
     }
   }
 }
