@@ -73,6 +73,11 @@
     },
     "commentLine.forceSpaceAfterSlashes": {
       "$ref": "#/definitions/commentLine.forceSpaceAfterSlashes"
+    },
+    "ignoreNodeCommentText": {
+      "description": "The text to use for an ignore comment (ex. `// dprint-ignore`).",
+      "default": "dprint-ignore",
+      "type": "string"
     }
   }
 }
