@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "name": "dprint-plugin-roslyn",
+  "version": "0.3.0",
+  "mac-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.3.0/dprint-plugin-roslyn-x86_64-apple-darwin.zip",
+    "checksum": "a0ef10256ec44124f9cd596eb89c1e4d3f54be1c45074a61950a007d94bead12"
+  },
+  "linux-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.3.0/dprint-plugin-roslyn-x86_64-unknown-linux-gnu.zip",
+    "checksum": "b0191c97079dbb664cd3b732a8c692900a7b135bc5a2c6aec45ca3927e36e259"
+  },
+  "windows-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.3.0/dprint-plugin-roslyn-x86_64-pc-windows-msvc.zip",
+    "checksum": "fcb5e66d4f6e274d1561961a5910094205fb5e519e4921ed1d74acc64e3bcc09"
+  }
+}
