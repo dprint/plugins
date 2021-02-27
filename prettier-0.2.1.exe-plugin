@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "name": "dprint-plugin-prettier",
+  "version": "0.2.1",
+  "mac-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.2.1/dprint-plugin-prettier-x86_64-apple-darwin.zip",
+    "checksum": "e1eccdddd9f91dccf2919f252a5c4e738eeb78f884c645b16003b3ff605a057d"
+  },
+  "linux-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.2.1/dprint-plugin-prettier-x86_64-unknown-linux-gnu.zip",
+    "checksum": "c5c65fac48963564450ec4883f8a544981f64d11d3f0f034c10cfd7a9e34b25b"
+  },
+  "windows-x86_64": {
+    "reference": "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.2.1/dprint-plugin-prettier-x86_64-pc-windows-msvc.zip",
+    "checksum": "ea8eaa389693bd8592c5f342cb52c1ce2fa4858bf78f2972bcbd568157eb5a4d"
+  }
+}
