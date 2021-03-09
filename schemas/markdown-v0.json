@@ -59,6 +59,18 @@
         "const": "underscores",
         "description": "Uses underscores (__) for strong emphasis."
       }]
+    },
+    "deno": {
+      "description": "Top level configuration that sets the configuration to what is used in Deno.",
+      "type": "boolean",
+      "default": false,
+      "oneOf": [{
+        "const": true,
+        "description": ""
+      }, {
+        "const": false,
+        "description": ""
+      }]
     }
   },
   "properties": {
@@ -86,6 +98,9 @@
     },
     "strongKind": {
       "$ref": "#/definitions/strongKind"
+    },
+    "deno": {
+      "$ref": "#/definitions/deno"
     },
     "ignoreDirective": {
       "description": "The text to use for an ignore directive (ex. `<!-- dprint-ignore -->`).",

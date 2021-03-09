@@ -279,6 +279,54 @@
         "description": "Use commas."
       }]
     },
+    "spaceSurroundingProperties": {
+      "description": "Whether to add a space surrounding the properties of single line object-like nodes.",
+      "type": "boolean",
+      "default": true,
+      "oneOf": [{
+        "const": true,
+        "description": "Ex. `{ key: value }`"
+      }, {
+        "const": false,
+        "description": "Ex. `{key: value}`"
+      }]
+    },
+    "objectExpression.spaceSurroundingProperties": {
+      "description": "Whether to add a space surrounding the properties of a single line object expression.",
+      "type": "boolean",
+      "default": true,
+      "oneOf": [{
+        "const": true,
+        "description": "Ex. `{ key: value }`"
+      }, {
+        "const": false,
+        "description": "Ex. `{key: value}`"
+      }]
+    },
+    "objectPattern.spaceSurroundingProperties": {
+      "description": "Whether to add a space surrounding the properties of a single line object pattern.",
+      "type": "boolean",
+      "default": true,
+      "oneOf": [{
+        "const": true,
+        "description": "Ex. `{ key: value } = obj`"
+      }, {
+        "const": false,
+        "description": "Ex. `{key: value} = obj`"
+      }]
+    },
+    "typeLiteral.spaceSurroundingProperties": {
+      "description": "Whether to add a space surrounding the properties of a single line type literal.",
+      "type": "boolean",
+      "default": true,
+      "oneOf": [{
+        "const": true,
+        "description": "Ex. `type Test = { key: string }`"
+      }, {
+        "const": false,
+        "description": "Ex. `type Test = {key: string}`"
+      }]
+    },
     "binaryExpression.spaceSurroundingBitwiseAndArithmeticOperator": {
       "description": "Whether to surround the operator in a binary expression with spaces.",
       "type": "boolean",

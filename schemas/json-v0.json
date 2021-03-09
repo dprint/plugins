@@ -44,6 +44,18 @@
         "const": false,
         "description": ""
       }]
+    },
+    "deno": {
+      "description": "Top level configuration that sets the configuration to what is used in Deno.",
+      "type": "boolean",
+      "default": false,
+      "oneOf": [{
+        "const": true,
+        "description": ""
+      }, {
+        "const": false,
+        "description": ""
+      }]
     }
   },
   "properties": {
@@ -73,6 +85,9 @@
     },
     "commentLine.forceSpaceAfterSlashes": {
       "$ref": "#/definitions/commentLine.forceSpaceAfterSlashes"
+    },
+    "deno": {
+      "$ref": "#/definitions/deno"
     },
     "ignoreNodeCommentText": {
       "description": "The text to use for an ignore comment (ex. `// dprint-ignore`).",
