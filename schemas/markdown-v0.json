@@ -107,6 +107,11 @@
       "default": "dprint-ignore",
       "type": "string"
     },
+    "ignoreFileDirective": {
+      "description": "The text to use for an ignore file directive (ex. `<!-- dprint-ignore-file -->`).",
+      "default": "dprint-ignore-file",
+      "type": "string"
+    },
     "ignoreStartDirective": {
       "description": "The text to use for an ignore start directive (ex. `<!-- dprint-ignore-start -->`).",
       "default": "dprint-ignore-start",
