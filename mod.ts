@@ -22,7 +22,7 @@ const pluginResolvers: PluginResolver[] = [{
         return /^\/json-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
     },
     getRedirectUrl(version) {
-        if (parseVersion(version).lessThanEqual(parseVersion("0.9.0"))) {
+        if (parseVersion(version).lessThanEqual(parseVersion("0.10.1"))) {
             return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json-${version}.wasm`;
         } else {
             return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json.wasm`;
