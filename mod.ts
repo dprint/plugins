@@ -95,7 +95,10 @@ function handleRequest(request: Request) {
         return createRedirectResponse("https://github.com/dprint/plugins/");
     }
 
-    return new Response(null, { status: 404 });
+    return new Response(null, {
+        status: 404,
+        statusText: "Not Found",
+    });
 }
 
 function createRedirectResponse(location: string) {
