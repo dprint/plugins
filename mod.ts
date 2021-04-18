@@ -91,7 +91,7 @@ function handleRequest(request: Request) {
         return fetch(new URL("info.json", import.meta.url));
     }
 
-    if (url.pathname.startsWith("/")) {
+    if (url.pathname === "/") {
         return createRedirectResponse("https://github.com/dprint/plugins/");
     }
 
