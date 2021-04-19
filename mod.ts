@@ -20,7 +20,10 @@ function handleRequest(request: Request) {
     }
 
     if (url.pathname === "/") {
-        return fetch(new URL("index.html", import.meta.url));
+        return fetch(new URL("index.html", import.meta.url)).then(response => {
+            response.headers.set("content-type", "text/html; charset=utf-8");
+            return response;
+        });
     }
 
     return new Response(null, {
