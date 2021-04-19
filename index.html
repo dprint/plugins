@@ -1,6 +1,132 @@
 <!DOCTYPE html>
-<html>
-<script>
-    window.location.replace("https://github.com/dprint/plugins/");
-</script>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="Latest plugin versions for dprint." />
+    <title>Latest Plugins - dprint</title>
+    <script>
+      setTimeout(() => {
+        // ensure content is shown (prevents flashing of loading screen)
+        showContent();
+      }, 1000);
+
+      fetch("/info.json")
+        .then((a) => a.json())
+        .then((data) => {
+          const pluginElements = data.latest.map((plugin) => {
+            const pluginElement = document.createElement("div");
+            pluginElement.className = "plugin";
+            pluginElement.appendChild(createChild(plugin.name));
+            pluginElement.appendChild(createChild(plugin.url));
+            pluginElement.appendChild(createCopyButton());
+            return pluginElement;
+
+            function createCopyButton() {
+              const button = document.createElement("button");
+              button.textContent = "Copy";
+              button.title = "Copy to clipboard";
+              button.addEventListener("click", () => {
+                // hack to copy to clipboard
+                const textArea = document.createElement("textarea");
+                textArea.value = plugin.url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+              });
+              return button;
+            }
+          });
+
+          const pluginsElement = document.getElementById("plugins");
+          pluginsElement.textContent = "";
+          pluginsElement.appendChild(createHeader());
+          pluginsElement.append(...pluginElements);
+          showContent();
+
+          function createHeader() {
+            const headerElement = document.createElement("div");
+            headerElement.id = "plugins-header";
+            headerElement.appendChild(createChild("Name"));
+            headerElement.appendChild(createChild("URL"));
+            headerElement.appendChild(createChild(""));
+            return headerElement;
+          }
+
+          function createChild(textContent) {
+            const childElement = document.createElement("div");
+            childElement.textContent = textContent;
+            return childElement;
+          }
+        });
+
+      function showContent() {
+        document.getElementById("content").style.display = "block";
+      }
+    </script>
+    <style>
+      html {
+        background-color: #1e1e1e;
+        color: #fff;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+          "Droid Sans", "Helvetica Neue", sans-serif;
+      }
+
+      h1 {
+        padding: 0;
+        margin: 0;
+        margin-bottom: 10px;
+      }
+
+      #content {
+        background-color: #4d5564;
+        align-self: center;
+        padding: 20px;
+        margin-top: 20px;
+        display: none;
+        border: 1px solid #000;
+      }
+
+      #plugins {
+        display: table;
+        border-spacing: 10px;
+      }
+
+      #plugins-header {
+        display: table-row;
+      }
+
+      #plugins-header div {
+        display: table-cell;
+        font-weight: bold;
+      }
+
+      .plugin {
+        display: table-row;
+      }
+
+      .plugin div {
+        display: table-cell;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="content">
+      <h1>Latest Plugins</h1>
+      <div id="plugins">Loading...</div>
+    </section>
+  </body>
 </html>
