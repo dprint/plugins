@@ -22,6 +22,7 @@ function handleRequest(request: Request) {
     if (url.pathname === "/") {
         return fetch(new URL("index.html", import.meta.url)).then(response => {
             response.headers.set("content-type", "text/html; charset=utf-8");
+            response.headers.delete("content-security-policy");
             return response;
         });
     }
