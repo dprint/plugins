@@ -54,6 +54,7 @@ function createRedirectResponse(location: string) {
     return new Response(null, {
         headers: {
             location,
+            "Access-Control-Allow-Origin": "*",
         },
         status: 302,
     });
