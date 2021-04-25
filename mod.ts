@@ -55,6 +55,7 @@ function createRedirectResponse(location: string) {
         headers: {
             location,
             "Access-Control-Allow-Origin": "*",
+            "Referrer-Policy": "no-referrer",
         },
         status: 302,
     });
