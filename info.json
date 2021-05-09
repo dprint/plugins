@@ -4,8 +4,8 @@
   "latest": [
     {
       "name": "dprint-plugin-typescript",
-      "version": "0.44.2",
-      "url": "https://plugins.dprint.dev/typescript-0.44.2.wasm",
+      "version": "0.45.0",
+      "url": "https://plugins.dprint.dev/typescript-0.45.0.wasm",
       "configKey": "typescript",
       "fileExtensions": [
         "ts",
