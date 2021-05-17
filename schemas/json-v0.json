@@ -45,6 +45,18 @@
         "description": ""
       }]
     },
+    "preferSingleLine": {
+      "description": "If arrays and objects should collapse to a single line if it would be below the line width.",
+      "type": "boolean",
+      "default": false,
+      "oneOf": [{
+        "const": true,
+        "description": ""
+      }, {
+        "const": false,
+        "description": ""
+      }]
+    },
     "deno": {
       "description": "Top level configuration that sets the configuration to what is used in Deno.",
       "type": "boolean",
@@ -85,6 +97,15 @@
     },
     "commentLine.forceSpaceAfterSlashes": {
       "$ref": "#/definitions/commentLine.forceSpaceAfterSlashes"
+    },
+    "preferSingleLine": {
+      "$ref": "#/definitions/preferSingleLine"
+    },
+    "array.preferSingleLine": {
+      "$ref": "#/definitions/preferSingleLine"
+    },
+    "object.preferSingleLine": {
+      "$ref": "#/definitions/preferSingleLine"
     },
     "deno": {
       "$ref": "#/definitions/deno"
