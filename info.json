@@ -43,19 +43,6 @@
       ],
       "configSchemaUrl": "",
       "configExcludes": []
-    },
-    {
-      "name": "dprint-plugin-rustfmt",
-      "version": "0.3.0",
-      "url": "https://plugins.dprint.dev/rustfmt-0.3.0.wasm",
-      "configKey": "rustfmt",
-      "fileExtensions": [
-        "rs"
-      ],
-      "configSchemaUrl": "",
-      "configExcludes": [
-        "**/target"
-      ]
     }
   ]
 }
