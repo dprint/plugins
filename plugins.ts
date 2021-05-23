@@ -51,6 +51,13 @@ export const pluginResolvers: PluginResolver[] = [{
     },
 }, {
     tryGetVersion(url) {
+        return /^\/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin$/.exec(url.pathname)?.[1];
+    },
+    getRedirectUrl(version) {
+        return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.exe-plugin`;
+    },
+}, {
+    tryGetVersion(url) {
         return /^\/prettier-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin$/.exec(url.pathname)?.[1];
     },
     getRedirectUrl(version) {
