@@ -48,6 +48,18 @@
         "description": "Prefers using single quotes except in scenarios where the string contains more single quotes than double quotes."
       }]
     },
+    "jsx.quoteStyle": {
+      "description": "How to use single or double quotes in JSX attributes.",
+      "type": "string",
+      "default": "preferDouble",
+      "oneOf": [{
+        "const": "preferDouble",
+        "description": "Prefers using double quotes except in scenarios where the string contains more double quotes than single quotes."
+      }, {
+        "const": "preferSingle",
+        "description": "Prefers using single quotes except in scenarios where the string contains more single quotes than double quotes."
+      }]
+    },
     "newLineKind": {
       "description": "The kind of newline to use.",
       "type": "string",
@@ -679,6 +691,9 @@
     },
     "binaryExpression.linePerExpression": {
       "$ref": "#/definitions/binaryExpression.linePerExpression"
+    },
+    "jsx.quoteStyle": {
+      "$ref": "#/definitions/jsx.quoteStyle"
     },
     "memberExpression.linePerExpression": {
       "$ref": "#/definitions/memberExpression.linePerExpression"
