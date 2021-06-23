@@ -710,6 +710,18 @@
     "enumDeclaration.memberSpacing": {
       "$ref": "#/definitions/enumDeclaration.memberSpacing"
     },
+    "spaceSurroundingProperties": {
+      "$ref": "#/definitions/spaceSurroundingProperties"
+    },
+    "objectExpression.spaceSurroundingProperties": {
+      "$ref": "#/definitions/objectExpression.spaceSurroundingProperties"
+    },
+    "objectPattern.spaceSurroundingProperties": {
+      "$ref": "#/definitions/objectPattern.spaceSurroundingProperties"
+    },
+    "typeLiteral.spaceSurroundingProperties": {
+      "$ref": "#/definitions/typeLiteral.spaceSurroundingProperties"
+    },
     "binaryExpression.spaceSurroundingBitwiseAndArithmeticOperator": {
       "$ref": "#/definitions/binaryExpression.spaceSurroundingBitwiseAndArithmeticOperator"
     },
