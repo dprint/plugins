@@ -40,6 +40,13 @@ export const pluginResolvers: PluginResolver[] = [{
     },
 }, {
     tryGetVersion(url) {
+        return /^\/toml-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
+    },
+    getRedirectUrl(version) {
+        return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/toml.wasm`;
+    },
+}, {
+    tryGetVersion(url) {
         return /^\/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
     },
     getRedirectUrl(version) {
