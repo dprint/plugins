@@ -43,6 +43,17 @@
       ],
       "configSchemaUrl": "",
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-toml",
+      "version": "0.4.0",
+      "url": "https://plugins.dprint.dev/toml-0.4.0.wasm",
+      "configKey": "toml",
+      "fileExtensions": [
+        "toml"
+      ],
+      "configSchemaUrl": "",
+      "configExcludes": []
     }
   ]
 }
