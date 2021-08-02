@@ -15,7 +15,7 @@ function handleRequest(request: Request) {
 
     // match route starting with /downloads/plugin-x.x.x.wasm which will serve the response from this server
     if (url.pathname.startsWith("/download/") && url.pathname.endsWith(".wasm")) {
-        return resolveRedirectDownloadResponse(new URL(request.url.replace(/\/download\//, "/")));
+        return resolveRedirectDownloadResponse(request);
     }
 
     if (url.pathname.startsWith("/info.json")) {
@@ -54,7 +54,8 @@ function handleRequest(request: Request) {
 }
 
 // needed this to get the playground working due to CORs on GitHub
-function resolveRedirectDownloadResponse(requestUrl: URL) {
+function resolveRedirectDownloadResponse(originalRequest: Request) {
+    const requestUrl = new URL(originalRequest.url.replace(/\/download\//, "/"));
     const pluginUrl = tryResolvePluginUrl(requestUrl);
     return pluginUrl == null ? create404Response() : createWasmDownloadRedirectResponse(pluginUrl);
 
@@ -69,7 +70,7 @@ function resolveRedirectDownloadResponse(requestUrl: URL) {
                     headers: {
                         "content-type": "application/wasm",
                         // allow the playground to download this
-                        "Access-Control-Allow-Origin": "https://dprint.dev",
+                        "Access-Control-Allow-Origin": getAccessControlAllowOrigin(originalRequest),
                     },
                     status: 200,
                 });
@@ -85,6 +86,11 @@ function tryResolvePluginUrl(url: URL) {
         }
     }
     return undefined;
+}
+
+function getAccessControlAllowOrigin(request: Request) {
+    const origin = request.headers.get("origin");
+    return origin != null && new URL(origin).hostname === "localhost" ? origin : "https://dprint.dev";
 }
 
 function createRedirectResponse(location: string) {
