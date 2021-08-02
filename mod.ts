@@ -34,6 +34,10 @@ function handleRequest(request: Request) {
         return fetch(new URL("schemas/typescript-v0.json", import.meta.url));
     }
 
+    if (url.pathname.startsWith("/schemas/toml-v0.json")) {
+        return fetch(new URL("schemas/toml-v0.json", import.meta.url));
+    }
+
     if (url.pathname === "/") {
         return fetch(new URL("index.html", import.meta.url))
             .then(response => response.text())
