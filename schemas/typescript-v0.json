@@ -60,6 +60,18 @@
         "description": "Prefers using single quotes except in scenarios where the string contains more single quotes than double quotes."
       }]
     },
+    "jsx.multiLineParens": {
+      "description": "Surrounds the top-most JSX element or fragment in parentheses when it spans multiple lines.",
+      "type": "boolean",
+      "default": true,
+      "oneOf": [{
+        "const": true,
+        "description": ""
+      }, {
+        "const": false,
+        "description": ""
+      }]
+    },
     "newLineKind": {
       "description": "The kind of newline to use.",
       "type": "string",
@@ -694,6 +706,9 @@
     },
     "jsx.quoteStyle": {
       "$ref": "#/definitions/jsx.quoteStyle"
+    },
+    "jsx.multiLineParens": {
+      "$ref": "#/definitions/jsx.multiLineParens"
     },
     "memberExpression.linePerExpression": {
       "$ref": "#/definitions/memberExpression.linePerExpression"
