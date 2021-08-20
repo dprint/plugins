@@ -36,7 +36,7 @@
   },
   "properties": {
     "$schema": {
-      "description": "The TOML schema reference.",
+      "description": "The JSON schema reference.",
       "type": "string"
     },
     "locked": {
