@@ -6,7 +6,7 @@ const info = JSON.parse(infoText);
 
 const plugin = info.latest.find(plugin => plugin.name === pluginName);
 if (plugin == null) {
-    throw new Error(`Could not find plugin: ${pluginName}`);
+  throw new Error(`Could not find plugin: ${pluginName}`);
 }
 
 plugin.version = version;
