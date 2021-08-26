@@ -85,3 +85,16 @@ export const pluginResolvers: PluginResolver[] = [{
     return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/yapf.exe-plugin`;
   },
 }];
+
+export async function getPluginsInfoData() {
+  return JSON.parse(await Deno.readTextFile("./info.json")) as PluginsData;
+}
+
+export interface PluginsData {
+  latest: PluginData[];
+}
+
+export interface PluginData {
+  name: string;
+  url: string;
+}

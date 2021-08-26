@@ -1,7 +1,8 @@
-/// <reference path="./deploy.d.ts" />
+import { renderHome } from "./home.tsx";
 import { pluginResolvers } from "./plugins.ts";
 
 addEventListener("fetch", event => {
+  // @ts-ignore: temp ignore
   event.respondWith(handleRequest(event.request));
 });
 
@@ -36,6 +37,28 @@ function handleRequest(request: Request) {
 
   if (url.pathname.startsWith("/schemas/toml-v0.json")) {
     return fetch(new URL("schemas/toml-v0.json", import.meta.url));
+  }
+
+  if (url.pathname === "/style.css") {
+    return Deno.readTextFile("./style.css").then(text => {
+      return new Response(text, {
+        headers: {
+          "content-type": "text/css; charset=utf-8",
+        },
+        status: 200,
+      });
+    });
+  }
+
+  if (url.pathname === "/new-test") {
+    return renderHome().then(home => {
+      return new Response(home, {
+        headers: {
+          "content-type": "text/html; charset=utf-8",
+        },
+        status: 200,
+      });
+    });
   }
 
   if (url.pathname === "/") {

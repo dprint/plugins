@@ -1,0 +1,54 @@
+html {
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-family: "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+h1 {
+  padding: 0;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+#content {
+  background-color: #4d5564;
+  align-self: center;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #000;
+}
+
+#plugins {
+  display: table;
+  border-spacing: 10px;
+}
+
+#plugins-header {
+  display: table-row;
+}
+
+#plugins-header div {
+  display: table-cell;
+  font-weight: bold;
+}
+
+.plugin {
+  display: table-row;
+}
+
+.plugin div {
+  display: table-cell;
+}
