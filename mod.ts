@@ -40,38 +40,25 @@ function handleRequest(request: Request) {
   }
 
   if (url.pathname === "/style.css") {
-    return Deno.readTextFile("./style.css").then(text => {
-      return new Response(text, {
+    return Deno.readTextFile("./style.css").then(text =>
+      new Response(text, {
         headers: {
           "content-type": "text/css; charset=utf-8",
         },
         status: 200,
-      });
-    });
+      })
+    );
   }
 
-  if (url.pathname === "/new-test") {
-    return renderHome().then(home => {
-      return new Response(home, {
+  if (url.pathname === "/") {
+    return renderHome().then(home =>
+      new Response(home, {
         headers: {
           "content-type": "text/html; charset=utf-8",
         },
         status: 200,
-      });
-    });
-  }
-
-  if (url.pathname === "/") {
-    return fetch(new URL("index.html", import.meta.url))
-      .then(response => response.text())
-      .then(body =>
-        new Response(body, {
-          headers: {
-            "content-type": "text/html; charset=utf-8",
-          },
-          status: 200,
-        })
-      );
+      })
+    );
   }
 
   return new Response(null, {
