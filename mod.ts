@@ -32,7 +32,9 @@ function handleRequest(request: Request) {
   }
 
   if (url.pathname.startsWith("/schemas/typescript-v0.json")) {
-    return fetch(new URL("schemas/typescript-v0.json", import.meta.url));
+    return createRedirectResponse(
+      "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
+    );
   }
 
   if (url.pathname.startsWith("/schemas/toml-v0.json")) {
@@ -112,7 +114,7 @@ function createRedirectResponse(location: string) {
     headers: {
       location,
     },
-    status: 302,
+    status: 302, // temporary redirect
   });
 }
 
