@@ -32,7 +32,8 @@ function handleRequest(request: Request) {
   }
 
   if (url.pathname.startsWith("/schemas/typescript-v0.json")) {
-    return createRedirectResponse(
+    return schemaRedirect(
+      request,
       "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
     );
   }
@@ -92,6 +93,25 @@ function resolveRedirectDownloadResponse(originalRequest: Request) {
         });
       });
   }
+}
+
+// needed this to get the playground working due to CORs on GitHub
+function schemaRedirect(originalRequest: Request, url: string) {
+  return fetch(url)
+    .then(response => {
+      if (response.status !== 200) {
+        return response;
+      }
+
+      return new Response(response.body, {
+        headers: {
+          "content-type": "application/json",
+          // allow the playground to download this
+          "Access-Control-Allow-Origin": getAccessControlAllowOrigin(originalRequest),
+        },
+        status: 200,
+      });
+    });
 }
 
 function tryResolvePluginUrl(url: URL) {
