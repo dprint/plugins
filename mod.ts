@@ -11,7 +11,11 @@ function handleRequest(request: Request) {
 
   const pluginUrl = tryResolvePluginUrl(url);
   if (pluginUrl != null) {
-    return createRedirectResponse(pluginUrl);
+    return handleConditionalRedirectRequest({
+      request,
+      url: pluginUrl,
+      contentType: "application/wasm",
+    });
   }
 
   // match route starting with /downloads/plugin-x.x.x.wasm which will serve the response from this server
@@ -32,10 +36,11 @@ function handleRequest(request: Request) {
   }
 
   if (url.pathname.startsWith("/schemas/typescript-v0.json")) {
-    return handleSchemaRequest(
+    return handleConditionalRedirectRequest({
       request,
-      "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
-    );
+      url: "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
+      contentType: "application/json",
+    });
   }
 
   if (url.pathname.startsWith("/schemas/toml-v0.json")) {
@@ -95,9 +100,10 @@ function resolveRedirectDownloadResponse(originalRequest: Request) {
   }
 }
 
-function handleSchemaRequest(originalRequest: Request, url: string) {
-  if (shouldDoCors(originalRequest)) {
-    return fetch(url)
+// This is done to allow the playground to access these files
+function handleConditionalRedirectRequest(params: { request: Request; url: string; contentType: string }) {
+  if (shouldDirectlyServeFiles(params.request)) {
+    return fetch(params.url)
       .then(response => {
         if (response.status !== 200) {
           return response;
@@ -105,15 +111,15 @@ function handleSchemaRequest(originalRequest: Request, url: string) {
 
         return new Response(response.body, {
           headers: {
-            "content-type": "application/json",
+            "content-type": params.contentType,
             // allow the playground to download this
-            "Access-Control-Allow-Origin": getAccessControlAllowOrigin(originalRequest),
+            "Access-Control-Allow-Origin": getAccessControlAllowOrigin(params.request),
           },
           status: 200,
         });
       });
   } else {
-    return createRedirectResponse(url);
+    return createRedirectResponse(params.url);
   }
 }
 
@@ -132,7 +138,7 @@ function getAccessControlAllowOrigin(request: Request) {
   return origin != null && new URL(origin).hostname === "localhost" ? origin : "https://dprint.dev";
 }
 
-function shouldDoCors(request: Request) {
+function shouldDirectlyServeFiles(request: Request) {
   const origin = request.headers.get("origin");
   if (origin == null) {
     return false;
