@@ -18,11 +18,6 @@ function handleRequest(request: Request) {
     });
   }
 
-  // match route starting with /downloads/plugin-x.x.x.wasm which will serve the response from this server
-  if (url.pathname.startsWith("/download/") && url.pathname.endsWith(".wasm")) {
-    return resolveRedirectDownloadResponse(request);
-  }
-
   if (url.pathname.startsWith("/info.json")) {
     return fetch(new URL("info.json", import.meta.url));
   }
@@ -69,40 +64,12 @@ function handleRequest(request: Request) {
     );
   }
 
-  return new Response(null, {
-    status: 404,
-    statusText: "Not Found",
-  });
-}
-
-// needed this to get the playground working due to CORs on GitHub
-function resolveRedirectDownloadResponse(originalRequest: Request) {
-  const requestUrl = new URL(originalRequest.url.replace(/\/download\//, "/"));
-  const pluginUrl = tryResolvePluginUrl(requestUrl);
-  return pluginUrl == null ? create404Response() : createWasmDownloadRedirectResponse(pluginUrl);
-
-  function createWasmDownloadRedirectResponse(location: string) {
-    return fetch(location)
-      .then(response => {
-        if (response.status !== 200) {
-          return response;
-        }
-
-        return new Response(response.body, {
-          headers: {
-            "content-type": "application/wasm",
-            // allow the playground to download this
-            "Access-Control-Allow-Origin": getAccessControlAllowOrigin(originalRequest),
-          },
-          status: 200,
-        });
-      });
-  }
+  return create404Response();
 }
 
 // This is done to allow the playground to access these files
 function handleConditionalRedirectRequest(params: { request: Request; url: string; contentType: string }) {
-  if (shouldDirectlyServeFiles(params.request)) {
+  if (shouldDirectlyServeFile(params.request)) {
     return fetch(params.url)
       .then(response => {
         if (response.status !== 200) {
@@ -138,7 +105,7 @@ function getAccessControlAllowOrigin(request: Request) {
   return origin != null && new URL(origin).hostname === "localhost" ? origin : "https://dprint.dev";
 }
 
-function shouldDirectlyServeFiles(request: Request) {
+function shouldDirectlyServeFile(request: Request) {
   const origin = request.headers.get("origin");
   if (origin == null) {
     return false;
