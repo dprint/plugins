@@ -3,6 +3,8 @@ import { parseVersion } from "./version.ts";
 export interface PluginResolver {
   tryGetVersion(url: URL): string | undefined;
   getRedirectUrl(version: string): string;
+  tryGetVersionFromSchemaUrl?(url: URL): string | undefined;
+  getSchemaUrl?(version: string): string;
 }
 
 export const pluginResolvers: PluginResolver[] = [{
@@ -16,6 +18,12 @@ export const pluginResolvers: PluginResolver[] = [{
       return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript.wasm`;
     }
   },
+  tryGetVersionFromSchemaUrl(url) {
+    return /^\/schemas\/typescript-([0-9]+\.[0-9]+\.[0-9]+).json$/.exec(url.pathname)?.[1];
+  },
+  getSchemaUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/schema.json`;
+  },
 }, {
   tryGetVersion(url) {
     return /^\/json-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
@@ -26,6 +34,12 @@ export const pluginResolvers: PluginResolver[] = [{
     } else {
       return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json.wasm`;
     }
+  },
+  tryGetVersionFromSchemaUrl(url) {
+    return /^\/schemas\/json-([0-9]+\.[0-9]+\.[0-9]+).json$/.exec(url.pathname)?.[1];
+  },
+  getSchemaUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/schema.json`;
   },
 }, {
   tryGetVersion(url) {
@@ -38,12 +52,24 @@ export const pluginResolvers: PluginResolver[] = [{
       return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown.wasm`;
     }
   },
+  tryGetVersionFromSchemaUrl(url) {
+    return /^\/schemas\/markdown-([0-9]+\.[0-9]+\.[0-9]+).json$/.exec(url.pathname)?.[1];
+  },
+  getSchemaUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/schema.json`;
+  },
 }, {
   tryGetVersion(url) {
     return /^\/toml-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
   },
   getRedirectUrl(version) {
     return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/toml.wasm`;
+  },
+  tryGetVersionFromSchemaUrl(url) {
+    return /^\/schemas\/toml-([0-9]+\.[0-9]+\.[0-9]+).json$/.exec(url.pathname)?.[1];
+  },
+  getSchemaUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/schema.json`;
   },
 }, {
   tryGetVersion(url) {

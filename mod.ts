@@ -18,6 +18,15 @@ function handleRequest(request: Request) {
     });
   }
 
+  const schemaUrl = tryResolveSchemaUrl(url);
+  if (schemaUrl != null) {
+    return handleConditionalRedirectRequest({
+      request,
+      url: schemaUrl,
+      contentType: "application/json",
+    });
+  }
+
   if (url.pathname.startsWith("/info.json")) {
     return fetch(new URL("info.json", import.meta.url));
   }
@@ -39,7 +48,11 @@ function handleRequest(request: Request) {
   }
 
   if (url.pathname.startsWith("/schemas/toml-v0.json")) {
-    return fetch(new URL("schemas/toml-v0.json", import.meta.url));
+    return handleConditionalRedirectRequest({
+      request,
+      url: "https://github.com/dprint/dprint-plugin-toml/releases/latest/download/schema.json",
+      contentType: "application/json",
+    });
   }
 
   if (url.pathname === "/style.css") {
@@ -95,6 +108,16 @@ function tryResolvePluginUrl(url: URL) {
     const version = plugin.tryGetVersion(url);
     if (version != null) {
       return plugin.getRedirectUrl(version);
+    }
+  }
+  return undefined;
+}
+
+function tryResolveSchemaUrl(url: URL) {
+  for (const plugin of pluginResolvers) {
+    const version = plugin.tryGetVersionFromSchemaUrl?.(url);
+    if (version != null) {
+      return plugin.getSchemaUrl?.(version);
     }
   }
   return undefined;
