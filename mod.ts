@@ -32,6 +32,8 @@ function handleRequest(request: Request) {
       new Response(text, {
         headers: {
           "content-type": "application/json; charset=utf-8",
+          // allow the dprint website to download this file
+          "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
         },
         status: 200,
       })
