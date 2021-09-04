@@ -28,15 +28,30 @@ function handleRequest(request: Request) {
   }
 
   if (url.pathname.startsWith("/info.json")) {
-    return fetch(new URL("info.json", import.meta.url));
+    return Deno.readTextFile("./info.json").then(text =>
+      new Response(text, {
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+        },
+        status: 200,
+      })
+    );
   }
 
   if (url.pathname.startsWith("/schemas/json-v0.json")) {
-    return fetch(new URL("schemas/json-v0.json", import.meta.url));
+    return handleConditionalRedirectRequest({
+      request,
+      url: "https://github.com/dprint/dprint-plugin-json/releases/latest/download/schema.json",
+      contentType: "application/json",
+    });
   }
 
   if (url.pathname.startsWith("/schemas/markdown-v0.json")) {
-    return fetch(new URL("schemas/markdown-v0.json", import.meta.url));
+    return handleConditionalRedirectRequest({
+      request,
+      url: "https://github.com/dprint/dprint-plugin-markdown/releases/latest/download/schema.json",
+      contentType: "application/json",
+    });
   }
 
   if (url.pathname.startsWith("/schemas/typescript-v0.json")) {
