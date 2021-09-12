@@ -23,7 +23,7 @@ function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: schemaUrl,
-      contentType: "application/json",
+      contentType: "application/json; charset=utf-8",
     });
   }
 
@@ -44,7 +44,7 @@ function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-json/releases/latest/download/schema.json",
-      contentType: "application/json",
+      contentType: "application/json; charset=utf-8",
     });
   }
 
@@ -52,7 +52,7 @@ function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-markdown/releases/latest/download/schema.json",
-      contentType: "application/json",
+      contentType: "application/json; charset=utf-8",
     });
   }
 
@@ -60,7 +60,7 @@ function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
-      contentType: "application/json",
+      contentType: "application/json; charset=utf-8",
     });
   }
 
@@ -68,7 +68,7 @@ function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-toml/releases/latest/download/schema.json",
-      contentType: "application/json",
+      contentType: "application/json; charset=utf-8",
     });
   }
 
