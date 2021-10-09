@@ -1,12 +1,8 @@
-import { assertEquals } from "https://deno.land/std@0.93.0/testing/asserts.ts";
-import { parseVersion } from "./version.ts";
+import { assertEquals } from "https://deno.land/std@0.109.0/testing/asserts.ts";
+import { parseVersion, Version } from "./version.ts";
 
 Deno.test("should parse version", () => {
-  assertEquals(parseVersion("12.34.56"), {
-    major: 12,
-    minor: 34,
-    patch: 56,
-  });
+  assertEquals(parseVersion("12.34.56"), new Version(12, 34, 56));
 });
 
 function runVersionLessThanTest(a: string, b: string, expected: boolean) {

@@ -73,6 +73,19 @@ export const pluginResolvers: PluginResolver[] = [{
   },
 }, {
   tryGetVersion(url) {
+    return /^\/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
+  },
+  getRedirectUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/dockerfile.wasm`;
+  },
+  tryGetVersionFromSchemaUrl(url) {
+    return /^\/schemas\/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).json$/.exec(url.pathname)?.[1];
+  },
+  getSchemaUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/schema.json`;
+  },
+}, {
+  tryGetVersion(url) {
     return /^\/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).wasm$/.exec(url.pathname)?.[1];
   },
   getRedirectUrl(version) {

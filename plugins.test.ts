@@ -92,6 +92,22 @@ Deno.test("should get correct info for toml resolver", () => {
   );
 });
 
+Deno.test("should get correct info for dockerfile resolver", () => {
+  const resolver = getResolverByName("dockerfile");
+  assertEquals(
+    resolver.getRedirectUrl("0.1.0"),
+    "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.1.0/dockerfile.wasm",
+  );
+  assertEquals(
+    resolver.getSchemaUrl!("0.1.0"),
+    "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.1.0/schema.json",
+  );
+  assertEquals(
+    resolver.tryGetVersionFromSchemaUrl!(new URL("https://plugins.dprint.dev/schemas/dockerfile-0.5.0.json")),
+    "0.5.0",
+  );
+});
+
 function getResolverByName(name: string) {
   const url = new URL(`https://plugins.dprint.dev/${name}-0.5.0.wasm`);
   const resolver = pluginResolvers.find(r => r.tryGetVersion(url) != null);
