@@ -40,7 +40,7 @@ function handleRequest(request: Request) {
     );
   }
 
-  if (url.pathname.startsWith("/schemas/json-v0.json")) {
+  if (url.pathname.startsWith("/schemas/json-latest.json")) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-json/releases/latest/download/schema.json",
@@ -48,7 +48,7 @@ function handleRequest(request: Request) {
     });
   }
 
-  if (url.pathname.startsWith("/schemas/markdown-v0.json")) {
+  if (url.pathname.startsWith("/schemas/markdown-latest.json")) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-markdown/releases/latest/download/schema.json",
@@ -56,7 +56,7 @@ function handleRequest(request: Request) {
     });
   }
 
-  if (url.pathname.startsWith("/schemas/typescript-v0.json")) {
+  if (url.pathname.startsWith("/schemas/typescript-latest.json")) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
@@ -64,10 +64,17 @@ function handleRequest(request: Request) {
     });
   }
 
-  if (url.pathname.startsWith("/schemas/toml-v0.json")) {
+  if (url.pathname.startsWith("/schemas/toml-latest.json")) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-toml/releases/latest/download/schema.json",
+      contentType: "application/json; charset=utf-8",
+    });
+  }
+  if (url.pathname.startsWith("/schemas/dockerfile-latest.json")) {
+    return handleConditionalRedirectRequest({
+      request,
+      url: "https://github.com/dprint/dprint-plugin-dockerfile/releases/latest/download/schema.json",
       contentType: "application/json; charset=utf-8",
     });
   }
