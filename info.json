@@ -1,10 +1,11 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "pluginSystemSchemaVersion": 3,
   "latest": [
     {
       "name": "dprint-plugin-typescript",
       "version": "0.57.0",
+      "selected": true,
       "url": "https://plugins.dprint.dev/typescript-0.57.0.wasm",
       "configKey": "typescript",
       "fileExtensions": [
@@ -15,7 +16,6 @@
         "cjs",
         "mjs"
       ],
-      "configSchemaUrl": "",
       "configExcludes": [
         "**/node_modules"
       ]
@@ -23,12 +23,12 @@
     {
       "name": "dprint-plugin-json",
       "version": "0.13.0",
+      "selected": true,
       "url": "https://plugins.dprint.dev/json-0.13.0.wasm",
       "configKey": "json",
       "fileExtensions": [
         "json"
       ],
-      "configSchemaUrl": "",
       "configExcludes": [
         "**/*-lock.json"
       ]
@@ -36,23 +36,34 @@
     {
       "name": "dprint-plugin-markdown",
       "version": "0.10.0",
+      "selected": true,
       "url": "https://plugins.dprint.dev/markdown-0.10.0.wasm",
       "configKey": "markdown",
       "fileExtensions": [
         "md"
       ],
-      "configSchemaUrl": "",
       "configExcludes": []
     },
     {
       "name": "dprint-plugin-toml",
       "version": "0.5.2",
+      "selected": true,
       "url": "https://plugins.dprint.dev/toml-0.5.2.wasm",
       "configKey": "toml",
       "fileExtensions": [
         "toml"
       ],
-      "configSchemaUrl": "",
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-dockerfile",
+      "version": "0.1.1",
+      "selected": false,
+      "url": "https://plugins.dprint.dev/dockerfile-0.1.1.wasm",
+      "configKey": "dockerfile",
+      "fileExtensions": [
+        "dockerfile"
+      ],
       "configExcludes": []
     }
   ]
