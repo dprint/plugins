@@ -1,10 +1,9 @@
+import { listenAndServe } from "https://deno.land/std@0.111.0/http/server.ts";
+import { fetchCached } from "./cache.ts";
 import { renderHome } from "./home.tsx";
 import { pluginResolvers } from "./plugins.ts";
 
-addEventListener("fetch", event => {
-  // @ts-ignore: temp ignore
-  event.respondWith(handleRequest(event.request));
-});
+await listenAndServe(":8080", (request) => handleRequest(request));
 
 function handleRequest(request: Request) {
   const url = new URL(request.url);
@@ -107,19 +106,24 @@ function handleRequest(request: Request) {
 // This is done to allow the playground to access these files
 function handleConditionalRedirectRequest(params: { request: Request; url: string; contentType: string }) {
   if (shouldDirectlyServeFile(params.request)) {
-    return fetch(params.url)
-      .then(response => {
-        if (response.status !== 200) {
-          return response;
+    return fetchCached(params.url)
+      .then(result => {
+        if (result.kind === "error") {
+          return result.response;
         }
 
-        return new Response(response.body, {
+        return new Response(result.body, {
           headers: {
             "content-type": params.contentType,
             // allow the playground to download this
             "Access-Control-Allow-Origin": getAccessControlAllowOrigin(params.request),
           },
           status: 200,
+        });
+      }).catch(err => {
+        console.error(err);
+        return new Response("Internal Server Error", {
+          status: 500,
         });
       });
   } else {
@@ -153,6 +157,11 @@ function getAccessControlAllowOrigin(request: Request) {
 }
 
 function shouldDirectlyServeFile(request: Request) {
+  // directly serve for when Deno makes a request
+  if (request.headers.get("user-agent")?.startsWith("Deno/")) {
+    return true;
+  }
+
   const origin = request.headers.get("origin");
   if (origin == null) {
     return false;
