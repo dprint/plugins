@@ -1,7 +1,7 @@
 import { listenAndServe } from "https://deno.land/std@0.111.0/http/server.ts";
 import { fetchCached } from "./cache.ts";
 import { renderHome } from "./home.tsx";
-import { pluginResolvers } from "./plugins.ts";
+import { tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 
 await listenAndServe(":8080", (request) => handleRequest(request));
 
@@ -129,26 +129,6 @@ function handleConditionalRedirectRequest(params: { request: Request; url: strin
   } else {
     return createRedirectResponse(params.url);
   }
-}
-
-function tryResolvePluginUrl(url: URL) {
-  for (const plugin of pluginResolvers) {
-    const version = plugin.tryGetVersion(url);
-    if (version != null) {
-      return plugin.getRedirectUrl(version);
-    }
-  }
-  return undefined;
-}
-
-function tryResolveSchemaUrl(url: URL) {
-  for (const plugin of pluginResolvers) {
-    const version = plugin.tryGetVersionFromSchemaUrl?.(url);
-    if (version != null) {
-      return plugin.getSchemaUrl?.(version);
-    }
-  }
-  return undefined;
 }
 
 function getAccessControlAllowOrigin(request: Request) {

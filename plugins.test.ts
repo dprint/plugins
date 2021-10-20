@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.106.0/testing/asserts.ts";
-import { pluginResolvers } from "./plugins.ts";
+import { pluginResolvers, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 
 Deno.test("should get correct info for typescript resolver", () => {
   const resolver = getResolverByName("typescript");
@@ -21,7 +21,9 @@ Deno.test("should get correct info for typescript resolver", () => {
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.1.0/schema.json",
   );
   assertEquals(
-    resolver.tryGetVersionFromSchemaUrl!(new URL("https://plugins.dprint.dev/schemas/typescript-0.5.0.json")),
+    resolver.schemaVersionUrlPattern!
+      .exec(new URL("https://plugins.dprint.dev/schemas/typescript-0.5.0.json"))
+      ?.pathname.groups[0],
     "0.5.0",
   );
 });
@@ -46,7 +48,9 @@ Deno.test("should get correct info for json resolver", () => {
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.1.0/schema.json",
   );
   assertEquals(
-    resolver.tryGetVersionFromSchemaUrl!(new URL("https://plugins.dprint.dev/schemas/json-0.5.0.json")),
+    resolver.schemaVersionUrlPattern!
+      .exec(new URL("https://plugins.dprint.dev/schemas/json-0.5.0.json"))
+      ?.pathname.groups[0],
     "0.5.0",
   );
 });
@@ -71,7 +75,9 @@ Deno.test("should get correct info for markdown resolver", () => {
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.1.0/schema.json",
   );
   assertEquals(
-    resolver.tryGetVersionFromSchemaUrl!(new URL("https://plugins.dprint.dev/schemas/markdown-0.5.0.json")),
+    resolver.schemaVersionUrlPattern!
+      .exec(new URL("https://plugins.dprint.dev/schemas/markdown-0.5.0.json"))
+      ?.pathname.groups[0],
     "0.5.0",
   );
 });
@@ -87,7 +93,9 @@ Deno.test("should get correct info for toml resolver", () => {
     "https://github.com/dprint/dprint-plugin-toml/releases/download/0.1.0/schema.json",
   );
   assertEquals(
-    resolver.tryGetVersionFromSchemaUrl!(new URL("https://plugins.dprint.dev/schemas/toml-0.5.0.json")),
+    resolver.schemaVersionUrlPattern!
+      .exec(new URL("https://plugins.dprint.dev/schemas/toml-0.5.0.json"))
+      ?.pathname.groups[0],
     "0.5.0",
   );
 });
@@ -103,14 +111,30 @@ Deno.test("should get correct info for dockerfile resolver", () => {
     "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.1.0/schema.json",
   );
   assertEquals(
-    resolver.tryGetVersionFromSchemaUrl!(new URL("https://plugins.dprint.dev/schemas/dockerfile-0.5.0.json")),
+    resolver.schemaVersionUrlPattern!
+      .exec(new URL("https://plugins.dprint.dev/schemas/dockerfile-0.5.0.json"))
+      ?.pathname.groups[0],
     "0.5.0",
+  );
+});
+
+Deno.test("tryResolvePluginUrl", () => {
+  assertEquals(
+    tryResolvePluginUrl(new URL("https://plugins.dprint.dev/typescript-1.2.3.wasm")),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/typescript.wasm",
+  );
+});
+
+Deno.test("tryResolveSchemaUrl", () => {
+  assertEquals(
+    tryResolveSchemaUrl(new URL("https://plugins.dprint.dev/schemas/typescript-1.2.3.json")),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
   );
 });
 
 function getResolverByName(name: string) {
   const url = new URL(`https://plugins.dprint.dev/${name}-0.5.0.wasm`);
-  const resolver = pluginResolvers.find(r => r.tryGetVersion(url) != null);
+  const resolver = pluginResolvers.find(r => r.versionPattern.exec(url)?.pathname.groups[0] != null);
   if (!resolver) {
     throw new Error("Not found.");
   }
