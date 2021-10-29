@@ -22,9 +22,9 @@
     },
     {
       "name": "dprint-plugin-json",
-      "version": "0.13.0",
+      "version": "0.13.1",
       "selected": true,
-      "url": "https://plugins.dprint.dev/json-0.13.0.wasm",
+      "url": "https://plugins.dprint.dev/json-0.13.1.wasm",
       "configKey": "json",
       "fileExtensions": [
         "json"
