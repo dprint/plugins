@@ -46,9 +46,9 @@
     },
     {
       "name": "dprint-plugin-toml",
-      "version": "0.5.2",
+      "version": "0.5.3",
       "selected": true,
-      "url": "https://plugins.dprint.dev/toml-0.5.2.wasm",
+      "url": "https://plugins.dprint.dev/toml-0.5.3.wasm",
       "configKey": "toml",
       "fileExtensions": [
         "toml"
