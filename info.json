@@ -35,9 +35,9 @@
     },
     {
       "name": "dprint-plugin-markdown",
-      "version": "0.11.2",
+      "version": "0.11.3",
       "selected": true,
-      "url": "https://plugins.dprint.dev/markdown-0.11.2.wasm",
+      "url": "https://plugins.dprint.dev/markdown-0.11.3.wasm",
       "configKey": "markdown",
       "fileExtensions": [
         "md"
