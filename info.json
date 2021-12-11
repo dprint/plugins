@@ -57,9 +57,9 @@
     },
     {
       "name": "dprint-plugin-dockerfile",
-      "version": "0.1.1",
+      "version": "0.2.1",
       "selected": false,
-      "url": "https://plugins.dprint.dev/dockerfile-0.1.1.wasm",
+      "url": "https://plugins.dprint.dev/dockerfile-0.2.1.wasm",
       "configKey": "dockerfile",
       "fileExtensions": [
         "dockerfile"
