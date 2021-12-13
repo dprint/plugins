@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.106.0/testing/asserts.ts";
+import { assertEquals } from "../deps.test.ts";
 import { LruCache } from "./LruCache.ts";
 
 Deno.test("keeps only most recent", () => {

@@ -65,6 +65,15 @@ export const pluginResolvers: PluginResolver[] = [{
     return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/schema.json`;
   },
 }, {
+  versionPattern: new URLPattern({ pathname: "/sql-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
+  getRedirectUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/sql.wasm`;
+  },
+  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/sql-([0-9]+\.[0-9]+\.[0-9]+).json" }),
+  getSchemaUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/schema.json`;
+  },
+}, {
   versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
     if (parseVersion(version).lessThanEqual(parseVersion("0.3.0"))) {

@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.106.0/testing/asserts.ts";
+import { assertEquals } from "./deps.test.ts";
 import { pluginResolvers, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 
 Deno.test("should get correct info for typescript resolver", () => {
@@ -113,6 +113,24 @@ Deno.test("should get correct info for dockerfile resolver", () => {
   assertEquals(
     resolver.schemaVersionUrlPattern!
       .exec(new URL("https://plugins.dprint.dev/schemas/dockerfile-0.5.0.json"))
+      ?.pathname.groups[0],
+    "0.5.0",
+  );
+});
+
+Deno.test("should get correct info for sql resolver", () => {
+  const resolver = getResolverByName("sql");
+  assertEquals(
+    resolver.getRedirectUrl("0.1.0"),
+    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.0/sql.wasm",
+  );
+  assertEquals(
+    resolver.getSchemaUrl!("0.1.0"),
+    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.0/schema.json",
+  );
+  assertEquals(
+    resolver.schemaVersionUrlPattern!
+      .exec(new URL("https://plugins.dprint.dev/schemas/sql-0.5.0.json"))
       ?.pathname.groups[0],
     "0.5.0",
   );

@@ -1,5 +1,4 @@
 /** @jsx h */
-// todo: remove this
 import { h } from "https://x.lcas.dev/preact@10.5.12/mod.js";
 import { renderToString } from "https://x.lcas.dev/preact@10.5.12/ssr.js";
 import { getPluginsInfoData, PluginData, PluginsData } from "./plugins.ts";
@@ -63,7 +62,7 @@ function renderPlugins(data: PluginsData) {
 
 function renderPlugin(plugin: PluginData) {
   return (
-    <div className="plugin">
+    <div className="plugin" key={plugin.name}>
       <div>{plugin.name}</div>
       <div>{plugin.url}</div>
       <div>
