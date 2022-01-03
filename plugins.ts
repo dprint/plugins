@@ -130,9 +130,7 @@ export async function getPluginsInfoData() {
 
 async function loadInfoFile() {
   try {
-    return await Deno.readTextFile(
-      new URL(`file://${Deno.cwd()}/info.json`),
-    );
+    return await Deno.readTextFile("./info.json");
   } catch (err) {
     throw new Error("Could not load info.json", { cause: err });
   }
