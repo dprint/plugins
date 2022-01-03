@@ -98,7 +98,7 @@ function handleRequest(request: Request) {
         status: 200,
       })
     ).catch(err =>
-      new Response(`Error: ${err.toString?.() ?? err}`, {
+      new Response(`${err.toString?.() ?? err}`, {
         headers: {
           "content-type": "text/html; charset=utf-8",
         },
