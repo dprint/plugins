@@ -125,7 +125,15 @@ export function tryResolveSchemaUrl(url: URL) {
 }
 
 export async function getPluginsInfoData() {
-  return JSON.parse(await Deno.readTextFile("./info.json")) as PluginsData;
+  return JSON.parse(await loadInfoFile()) as PluginsData;
+}
+
+async function loadInfoFile() {
+  try {
+    return await Deno.readTextFile("./info.json");
+  } catch (err) {
+    throw new Error("Could not load info.json", { cause: err });
+  }
 }
 
 export interface PluginsData {
