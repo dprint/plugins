@@ -55,6 +55,9 @@ async function renderContent() {
     <section id="content">
       <h1>Latest Plugins</h1>
       {renderPlugins(pluginsData)}
+      <p>
+        Run <code>dprint config update</code> to automatically update the plugins in a config file.
+      </p>
     </section>
   );
   return renderToString(section);
