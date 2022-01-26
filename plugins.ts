@@ -125,7 +125,7 @@ export function tryResolveSchemaUrl(url: URL) {
 }
 
 export async function getPluginsInfoData() {
-  return JSON.parse(await loadInfoFile()) as PluginsData;
+  return JSON.parse(await loadInfoFile()) as Readonly<PluginsData>;
 }
 
 async function loadInfoFile() {

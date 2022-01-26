@@ -1,9 +1,9 @@
-import { listenAndServe } from "https://deno.land/std@0.111.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.122.0/http/server.ts";
 import { fetchCached } from "./cache.ts";
 import { renderHome } from "./home.tsx";
 import { tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 
-await listenAndServe(":8080", (request) => handleRequest(request));
+await serve((request) => handleRequest(request));
 
 function handleRequest(request: Request) {
   const url = new URL(request.url);

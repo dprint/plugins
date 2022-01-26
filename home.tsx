@@ -3,7 +3,20 @@ import { h } from "https://x.lcas.dev/preact@10.5.12/mod.js";
 import { renderToString } from "https://x.lcas.dev/preact@10.5.12/ssr.js";
 import { getPluginsInfoData, PluginData, PluginsData } from "./plugins.ts";
 
-export async function renderHome() {
+let cachedRender: Promise<string> | undefined;
+
+export function renderHome() {
+  if (cachedRender == null) {
+    cachedRender = innerRender();
+    cachedRender.catch(err => {
+      console.error(`Error rendering home: ${err}`);
+      cachedRender = undefined;
+    });
+  }
+  return cachedRender;
+}
+
+async function innerRender() {
   const content = await renderContent();
   return `<!DOCTYPE html>
 <html lang="en">
