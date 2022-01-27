@@ -1,7 +1,7 @@
 import { LruCache } from "./LruCache.ts";
 import { createSynchronizedActioner } from "./synchronizedActioner.ts";
 
-const cache = new LruCache<string, boolean>(1000);
+const repoExistsCache = new LruCache<string, boolean>(1000);
 
 export async function checkGithubRepoExists(username: string, repoName: string) {
   if (!validateName(username) || !validateName(repoName)) {
@@ -9,16 +9,23 @@ export async function checkGithubRepoExists(username: string, repoName: string) 
   }
 
   const url = `https://api.github.com/repos/${username}/${repoName}`;
-  let result = cache.get(url);
+  let result = repoExistsCache.get(url);
   if (result == null) {
     try {
       const response = await makeGitHubGetRequest(url, "HEAD");
-      result = response.status !== 404;
+      if (response.status === 200) {
+        result = true;
+      } else if (response.status === 404) {
+        result = false;
+      } else {
+        // don't cache this response
+        throw new Error(`Invalid response status: ${response.status}`);
+      }
     } catch (err) {
       console.error("Error fetching cache.", err);
       return false;
     }
-    cache.set(url, result);
+    repoExistsCache.set(url, result);
   }
   return result;
 }
