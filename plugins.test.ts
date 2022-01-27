@@ -177,28 +177,28 @@ Deno.test("tryResolveSchemaUrl", async () => {
 
   assertEquals(
     await tryResolveSchemaUrl(
-      new URL("https://plugins.dprint.dev/schemas/dprint/typescript-1.2.3.json"),
+      new URL("https://plugins.dprint.dev/dprint/typescript-1.2.3/schema.json"),
     ),
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
   );
 
   assertEquals(
     await tryResolveSchemaUrl(
-      new URL("https://plugins.dprint.dev/schemas/dprint/dprint-plugin-typescript-1.2.3.json"),
+      new URL("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-1.2.3/schema.json"),
     ),
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
   );
 
   assertEquals(
     await tryResolveSchemaUrl(
-      new URL("https://plugins.dprint.dev/schemas/dprint/dprint-plugin-typescript-latest.json"),
+      new URL("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-latest/schema.json"),
     ),
     "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
   );
 
   assertEquals(
     await tryResolveSchemaUrl(
-      new URL("https://plugins.dprint.dev/schemas/dprint/non-existent-1.2.3.json"),
+      new URL("https://plugins.dprint.dev/dprint/non-existent-1.2.3/schema.json"),
     ),
     "https://github.com/dprint/non-existent/releases/download/1.2.3/schema.json",
   );

@@ -132,7 +132,7 @@ const userWasmPluginPattern = new URLPattern({
   pathname: `/${userRepoTagPattern}.wasm`,
 });
 const userSchemaPattern = new URLPattern({
-  pathname: `/schemas/${userRepoTagPattern}.json`,
+  pathname: `/${userRepoTagPattern}/schema.json`,
 });
 
 function tryResolveUserWasmPlugin(url: URL) {
