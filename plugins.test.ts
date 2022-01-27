@@ -136,17 +136,71 @@ Deno.test("should get correct info for sql resolver", () => {
   );
 });
 
-Deno.test("tryResolvePluginUrl", () => {
+Deno.test("tryResolvePluginUrl", async () => {
   assertEquals(
-    tryResolvePluginUrl(new URL("https://plugins.dprint.dev/typescript-1.2.3.wasm")),
+    await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/typescript-1.2.3.wasm")),
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/typescript.wasm",
+  );
+
+  assertEquals(
+    await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/dprint/typescript-1.2.3.wasm")),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/plugin.wasm",
+  );
+
+  assertEquals(
+    await tryResolvePluginUrl(
+      new URL("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-1.2.3.wasm"),
+    ),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/plugin.wasm",
+  );
+
+  assertEquals(
+    await tryResolvePluginUrl(
+      new URL("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-latest.wasm"),
+    ),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/plugin.wasm",
+  );
+
+  assertEquals(
+    await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/dprint/non-existent-1.2.3.wasm")),
+    "https://github.com/dprint/non-existent/releases/download/1.2.3/plugin.wasm",
   );
 });
 
-Deno.test("tryResolveSchemaUrl", () => {
+Deno.test("tryResolveSchemaUrl", async () => {
   assertEquals(
-    tryResolveSchemaUrl(new URL("https://plugins.dprint.dev/schemas/typescript-1.2.3.json")),
+    await tryResolveSchemaUrl(
+      new URL("https://plugins.dprint.dev/schemas/typescript-1.2.3.json"),
+    ),
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
+  );
+
+  assertEquals(
+    await tryResolveSchemaUrl(
+      new URL("https://plugins.dprint.dev/schemas/dprint/typescript-1.2.3.json"),
+    ),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
+  );
+
+  assertEquals(
+    await tryResolveSchemaUrl(
+      new URL("https://plugins.dprint.dev/schemas/dprint/dprint-plugin-typescript-1.2.3.json"),
+    ),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
+  );
+
+  assertEquals(
+    await tryResolveSchemaUrl(
+      new URL("https://plugins.dprint.dev/schemas/dprint/dprint-plugin-typescript-latest.json"),
+    ),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
+  );
+
+  assertEquals(
+    await tryResolveSchemaUrl(
+      new URL("https://plugins.dprint.dev/schemas/dprint/non-existent-1.2.3.json"),
+    ),
+    "https://github.com/dprint/non-existent/releases/download/1.2.3/schema.json",
   );
 });
 

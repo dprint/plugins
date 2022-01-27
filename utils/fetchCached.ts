@@ -1,4 +1,4 @@
-import { LruCache } from "./utils/LruCache.ts";
+import { LruCache } from "./LruCache.ts";
 
 const cache = new LruCache<string, ArrayBuffer>(50);
 

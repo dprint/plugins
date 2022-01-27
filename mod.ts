@@ -1,14 +1,14 @@
 import { serve } from "https://deno.land/std@0.122.0/http/server.ts";
-import { fetchCached } from "./cache.ts";
 import { renderHome } from "./home.tsx";
 import { tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
+import { fetchCached } from "./utils/mod.ts";
 
 await serve((request) => handleRequest(request));
 
-function handleRequest(request: Request) {
+async function handleRequest(request: Request) {
   const url = new URL(request.url);
 
-  const pluginUrl = tryResolvePluginUrl(url);
+  const pluginUrl = await tryResolvePluginUrl(url);
   if (pluginUrl != null) {
     return handleConditionalRedirectRequest({
       request,
@@ -17,7 +17,7 @@ function handleRequest(request: Request) {
     });
   }
 
-  const schemaUrl = tryResolveSchemaUrl(url);
+  const schemaUrl = await tryResolveSchemaUrl(url);
   if (schemaUrl != null) {
     return handleConditionalRedirectRequest({
       request,

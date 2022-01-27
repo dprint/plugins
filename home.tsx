@@ -9,7 +9,7 @@ export function renderHome() {
   if (cachedRender == null) {
     cachedRender = innerRender();
     cachedRender.catch(err => {
-      console.error(`Error rendering home: ${err}`);
+      console.error("Error rendering home.", err);
       cachedRender = undefined;
     });
   }

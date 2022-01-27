@@ -1,3 +1,4 @@
+import { checkGithubRepoExists } from "./utils/mod.ts";
 import { parseVersion } from "./version.ts";
 
 export interface PluginResolver {
@@ -104,21 +105,58 @@ export const pluginResolvers: PluginResolver[] = [{
   },
 }];
 
-export function tryResolvePluginUrl(url: URL) {
+export async function tryResolvePluginUrl(url: URL) {
   for (const plugin of pluginResolvers) {
     const version = plugin.versionPattern.exec(url)?.pathname.groups[0];
     if (version != null) {
       return plugin.getRedirectUrl(version);
     }
   }
-  return undefined;
+  return await tryResolveUserWasmPlugin(url);
 }
 
-export function tryResolveSchemaUrl(url: URL) {
+export async function tryResolveSchemaUrl(url: URL) {
   for (const plugin of pluginResolvers) {
     const version = plugin.schemaVersionUrlPattern?.exec(url)?.pathname.groups[0];
     if (version != null) {
       return plugin.getSchemaUrl?.(version);
+    }
+  }
+  return await tryResolveUserSchemaJson(url);
+}
+
+// usernames may only contain alphanumeric and hypens
+// repos may only contain alphanumeric, underscores, hyphens, and period
+const userRepoTagPattern = "([A-Za-z0-9\-]+)/([A-Za-z0-9\-\._]+)-([A-Za-z0-9\._]+)";
+const userWasmPluginPattern = new URLPattern({
+  pathname: `/${userRepoTagPattern}.wasm`,
+});
+const userSchemaPattern = new URLPattern({
+  pathname: `/schemas/${userRepoTagPattern}.json`,
+});
+
+function tryResolveUserWasmPlugin(url: URL) {
+  return userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm");
+}
+
+function tryResolveUserSchemaJson(url: URL) {
+  return userRepoTagPatternMapper(userSchemaPattern, url, "schema.json");
+}
+
+async function userRepoTagPatternMapper(
+  pattern: URLPattern,
+  url: URL,
+  fileName: string,
+) {
+  const result = pattern.exec(url);
+  if (result) {
+    const username = result.pathname.groups[0];
+    const repo = await getFullRepoName(username, result.pathname.groups[1]);
+    const tag = result.pathname.groups[2];
+    if (tag === "latest") {
+      return `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`;
+    } else {
+      return `https://github.com/${username}/${repo}/releases/download/${tag}/${fileName}`;
     }
   }
   return undefined;
@@ -143,4 +181,16 @@ export interface PluginsData {
 export interface PluginData {
   name: string;
   url: string;
+}
+
+async function getFullRepoName(username: string, repoName: string) {
+  if (repoName.startsWith("dprint-plugin-")) {
+    return repoName;
+  }
+  const fullName = `dprint-plugin-${repoName}`;
+  if (await checkGithubRepoExists(username, fullName)) {
+    return fullName;
+  } else {
+    return repoName;
+  }
 }
