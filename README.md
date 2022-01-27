@@ -30,5 +30,5 @@ If your repo name is in the format `dprint-plugin-<something>` then you can omit
 ## Run Locally
 
 ```bash
-deno run --allow-read=. --allow-net --no-check mod.ts
+deno run --allow-read=. --allow-net --allow-env --no-check mod.ts
 ```
