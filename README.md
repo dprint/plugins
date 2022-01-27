@@ -6,7 +6,7 @@ This website is hosted on [Deno Deploy](https://deno.com/deploy).
 
 ## Redirect to Any GitHub Repo (For Plugin Authors)
 
-This service provides a convenient redirect for a WASM plugin stored in any GitHub repo.
+This service provides a convenient redirect for a Wasm plugin stored in any GitHub repo.
 
 To use it, create a GitHub release in your repo with:
 
