@@ -1,4 +1,4 @@
-import { checkGithubRepoExists, getLatestReleaseTagName } from "./utils/mod.ts";
+import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.ts";
 import { parseVersion } from "./version.ts";
 
 export interface PluginResolver {
@@ -156,19 +156,22 @@ export async function tryResolveLatestJson(url: URL) {
   const username = result.pathname.groups[0];
   const shortRepoName = result.pathname.groups[1];
   const repoName = await getFullRepoName(username, shortRepoName);
-  const tagName = await getLatestReleaseTagName(username, repoName);
-  if (tagName == null) {
+  const releaseInfo = await getLatestReleaseInfo(username, repoName);
+  if (releaseInfo == null) {
     return 404;
   }
   const displayRepoName = shortRepoName.replace(/^dprint-plugin-/, "");
+  const extension = releaseInfo.kind === "wasm" ? "wasm" : "exe-plugin";
 
   // include the bare minimum in case someone else wants to implement
   // this behaviour on their server
   return {
     schemaVersion: 1,
     url: username === "dprint"
-      ? `https://plugins.dprint.dev/${displayRepoName}-${tagName}.wasm`
-      : `https://plugins.dprint.dev/${username}/${displayRepoName}-${tagName}.wasm`,
+      ? `https://plugins.dprint.dev/${displayRepoName}-${releaseInfo.tagName}.${extension}`
+      : `https://plugins.dprint.dev/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
+    version: releaseInfo.tagName.replace(/^v/, ""),
+    checksum: releaseInfo.checksum,
   };
 }
 

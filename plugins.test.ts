@@ -1,6 +1,6 @@
 import { assertEquals } from "./deps.test.ts";
 import { pluginResolvers, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
-import { getLatestReleaseTagName } from "./utils/mod.ts";
+import { getLatestReleaseInfo } from "./utils/mod.ts";
 
 Deno.test("should get correct info for typescript resolver", () => {
   const resolver = getResolverByName("typescript");
@@ -226,10 +226,12 @@ Deno.test("tryResolveUserLatestJson", async () => {
   // dprint repo
   {
     const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/typescript/latest.json");
-    const tagName = await getLatestReleaseTagName("dprint", "dprint-plugin-typescript");
+    const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-typescript");
     assertEquals(result, {
       schemaVersion: 1,
-      url: `https://plugins.dprint.dev/typescript-${tagName!}.wasm`,
+      url: `https://plugins.dprint.dev/typescript-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName,
+      checksum: undefined,
     });
   }
   // dprint repo full name
@@ -237,28 +239,46 @@ Deno.test("tryResolveUserLatestJson", async () => {
     const result = await getValidResultForUrl(
       "https://plugins.dprint.dev/dprint/dprint-plugin-typescript/latest.json",
     );
-    const tagName = await getLatestReleaseTagName("dprint", "dprint-plugin-typescript");
+    const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-typescript");
     assertEquals(result, {
       schemaVersion: 1,
-      url: `https://plugins.dprint.dev/typescript-${tagName!}.wasm`,
+      url: `https://plugins.dprint.dev/typescript-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName,
+      checksum: undefined,
     });
   }
   // non-dprint repo
   {
     const result = await getValidResultForUrl("https://plugins.dprint.dev/malobre/vue/latest.json");
-    const tagName = await getLatestReleaseTagName("malobre", "dprint-plugin-vue");
+    const releaseInfo = await getLatestReleaseInfo("malobre", "dprint-plugin-vue");
     assertEquals(result, {
       schemaVersion: 1,
-      url: `https://plugins.dprint.dev/malobre/vue-${tagName!}.wasm`,
+      url: `https://plugins.dprint.dev/malobre/vue-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName.replace(/^v/, ""),
+      checksum: undefined,
     });
   }
   // non-dprint repo full name
   {
     const result = await getValidResultForUrl("https://plugins.dprint.dev/malobre/dprint-plugin-vue/latest.json");
-    const tagName = await getLatestReleaseTagName("malobre", "dprint-plugin-vue");
+    const releaseInfo = await getLatestReleaseInfo("malobre", "dprint-plugin-vue");
     assertEquals(result, {
       schemaVersion: 1,
-      url: `https://plugins.dprint.dev/malobre/vue-${tagName!}.wasm`,
+      url: `https://plugins.dprint.dev/malobre/vue-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName.replace(/^v/, ""),
+      checksum: undefined,
+    });
+  }
+  // process plugin repo
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/prettier/latest.json");
+    const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-prettier");
+    assertEquals(releaseInfo?.checksum?.length, 64);
+    assertEquals(result, {
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/prettier-${releaseInfo!.tagName}.exe-plugin`,
+      version: releaseInfo!.tagName,
+      checksum: releaseInfo!.checksum,
     });
   }
 
