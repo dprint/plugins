@@ -1,4 +1,4 @@
-import { checkGithubRepoExists } from "./utils/mod.ts";
+import { checkGithubRepoExists, getLatestReleaseTagName } from "./utils/mod.ts";
 import { parseVersion } from "./version.ts";
 
 export interface PluginResolver {
@@ -127,7 +127,8 @@ export async function tryResolveSchemaUrl(url: URL) {
 
 // usernames may only contain alphanumeric and hypens
 // repos may only contain alphanumeric, underscores, hyphens, and period
-const userRepoTagPattern = "([A-Za-z0-9\-]+)/([A-Za-z0-9\-\._]+)-([A-Za-z0-9\._]+)";
+const userRepoPattern = "([A-Za-z0-9\-]+)/([A-Za-z0-9\-\._]+)";
+const userRepoTagPattern = `${userRepoPattern}-([A-Za-z0-9\._]+)`;
 const userWasmPluginPattern = new URLPattern({
   pathname: `/${userRepoTagPattern}.wasm`,
 });
@@ -141,6 +142,30 @@ function tryResolveUserWasmPlugin(url: URL) {
 
 function tryResolveUserSchemaJson(url: URL) {
   return userRepoTagPatternMapper(userSchemaPattern, url, "schema.json");
+}
+
+const userLatestPattern = new URLPattern({
+  pathname: `/${userRepoPattern}/latest.json`,
+});
+export async function tryResolveUserLatestJson(url: URL) {
+  const result = userLatestPattern.exec(url);
+  if (!result) {
+    return undefined;
+  }
+  const username = result.pathname.groups[0];
+  const shortRepoName = result.pathname.groups[1];
+  const repoName = await getFullRepoName(username, shortRepoName);
+  const tagName = await getLatestReleaseTagName(username, repoName);
+  if (tagName == null) {
+    return 404;
+  }
+
+  // include the bare minimum in case someone else wants to implement
+  // this behaviour on their server
+  return {
+    schemaVersion: 1,
+    url: `https://plugins.dprint.dev/${username}/${shortRepoName}-${tagName}.wasm`,
+  };
 }
 
 async function userRepoTagPatternMapper(

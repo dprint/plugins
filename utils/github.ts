@@ -1,7 +1,7 @@
-import { LruCache } from "./LruCache.ts";
+import { LruCache, LruCacheWithExpiry } from "./LruCache.ts";
 import { createSynchronizedActioner } from "./synchronizedActioner.ts";
 
-const repoExistsCache = new LruCache<string, boolean>(1000);
+const repoExistsCache = new LruCache<string, boolean>({ size: 1000 });
 
 export async function checkGithubRepoExists(username: string, repoName: string) {
   if (!validateName(username) || !validateName(repoName)) {
@@ -26,6 +26,37 @@ export async function checkGithubRepoExists(username: string, repoName: string) 
       return false;
     }
     repoExistsCache.set(url, result);
+  }
+  return result;
+}
+
+const latestReleaseTagNameCache = new LruCacheWithExpiry<string, string | undefined>({
+  size: 1000,
+  expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
+});
+
+export async function getLatestReleaseTagName(username: string, repoName: string) {
+  if (!validateName(username) || !validateName(repoName)) {
+    return undefined;
+  }
+
+  const url = `https://api.github.com/repos/${username}/${repoName}/releases/latest`;
+  let result = latestReleaseTagNameCache.get(url);
+  if (result == null) {
+    const response = await makeGitHubGetRequest(url, "GET");
+    if (response.status === 404) {
+      await response.text(); // todo: no way to mark this as used for the sanitizers?
+      return undefined;
+    } else if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
+    }
+    const data = await response.json();
+    result = data.tag_name;
+    if (typeof result !== "string") {
+      throw new Error("The tag name was not a string.");
+    }
+    latestReleaseTagNameCache.set(url, result);
   }
   return result;
 }

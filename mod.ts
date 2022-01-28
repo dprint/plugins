@@ -1,7 +1,14 @@
 import { serve } from "https://deno.land/std@0.122.0/http/server.ts";
 import { renderHome } from "./home.tsx";
-import { tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
+import { tryResolvePluginUrl, tryResolveSchemaUrl, tryResolveUserLatestJson } from "./plugins.ts";
 import { fetchCached } from "./utils/mod.ts";
+
+const contentTypes = {
+  css: "text/css; charset=utf-8",
+  json: "application/json; charset=utf-8",
+  plain: "text/plain; charset=utf-8",
+  wasm: "application/wasm",
+};
 
 await serve((request) => handleRequest(request));
 
@@ -13,7 +20,7 @@ async function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: pluginUrl,
-      contentType: "application/wasm",
+      contentType: contentTypes.wasm,
     });
   }
 
@@ -22,28 +29,31 @@ async function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: schemaUrl,
-      contentType: "application/json; charset=utf-8",
+      contentType: contentTypes.json,
     });
   }
 
+  const userLatestInfo = await tryResolveUserLatestJson(url);
+  if (userLatestInfo != null) {
+    if (userLatestInfo === 404) {
+      return new Response("Not Found", {
+        status: 404,
+      });
+    } else {
+      return createJsonResponse(JSON.stringify(userLatestInfo, undefined, 2), request);
+    }
+  }
+
   if (url.pathname.startsWith("/info.json")) {
-    return Deno.readTextFile("./info.json").then(text =>
-      new Response(text, {
-        headers: {
-          "content-type": "application/json; charset=utf-8",
-          // allow the dprint website to download this file
-          "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
-        },
-        status: 200,
-      })
-    );
+    return Deno.readTextFile("./info.json")
+      .then(text => createJsonResponse(text, request));
   }
 
   if (url.pathname.startsWith("/schemas/json-latest.json")) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-json/releases/latest/download/schema.json",
-      contentType: "application/json; charset=utf-8",
+      contentType: contentTypes.json,
     });
   }
 
@@ -51,7 +61,7 @@ async function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-markdown/releases/latest/download/schema.json",
-      contentType: "application/json; charset=utf-8",
+      contentType: contentTypes.json,
     });
   }
 
@@ -59,7 +69,7 @@ async function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
-      contentType: "application/json; charset=utf-8",
+      contentType: contentTypes.json,
     });
   }
 
@@ -67,14 +77,14 @@ async function handleRequest(request: Request) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-toml/releases/latest/download/schema.json",
-      contentType: "application/json; charset=utf-8",
+      contentType: contentTypes.json,
     });
   }
   if (url.pathname.startsWith("/schemas/dockerfile-latest.json")) {
     return handleConditionalRedirectRequest({
       request,
       url: "https://github.com/dprint/dprint-plugin-dockerfile/releases/latest/download/schema.json",
-      contentType: "application/json; charset=utf-8",
+      contentType: contentTypes.json,
     });
   }
 
@@ -93,14 +103,14 @@ async function handleRequest(request: Request) {
     return renderHome().then(home =>
       new Response(home, {
         headers: {
-          "content-type": "text/html; charset=utf-8",
+          "content-type": contentTypes.css,
         },
         status: 200,
       })
     ).catch(err =>
       new Response(`${err.toString?.() ?? err}`, {
         headers: {
-          "content-type": "text/plain; charset=utf-8",
+          "content-type": contentTypes.plain,
         },
         status: 500,
       })
@@ -164,6 +174,17 @@ function createRedirectResponse(location: string) {
       location,
     },
     status: 302, // temporary redirect
+  });
+}
+
+function createJsonResponse(text: string, request: Request) {
+  return new Response(text, {
+    headers: {
+      "content-type": contentTypes.json,
+      // allow the dprint website to download this file
+      "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+    },
+    status: 200,
   });
 }
 

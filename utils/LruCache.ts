@@ -3,8 +3,8 @@ export class LruCache<TKey, TValue> {
   #map = new Map<TKey, TValue>();
   #recent: TKey[] = [];
 
-  constructor(size: number) {
-    this.#size = size;
+  constructor(options: { size: number }) {
+    this.#size = options.size;
   }
 
   get(key: TKey) {
@@ -16,13 +16,8 @@ export class LruCache<TKey, TValue> {
   }
 
   #setMostRecentForKey(key: TKey) {
-    for (let i = this.#recent.length - 1; i >= 0; i--) {
-      if (this.#recent[i] === key) {
-        this.#recent.splice(i, 1);
-        this.#recent.push(key);
-        break;
-      }
-    }
+    this.#removeFromRecent(key);
+    this.#recent.push(key);
   }
 
   set(key: TKey, value: TValue) {
@@ -37,5 +32,56 @@ export class LruCache<TKey, TValue> {
     }
 
     this.#map.set(key, value);
+  }
+
+  remove(key: TKey) {
+    if (this.#map.delete(key)) {
+      this.#removeFromRecent(key);
+    }
+  }
+
+  #removeFromRecent(key: TKey) {
+    for (let i = this.#recent.length - 1; i >= 0; i--) {
+      if (this.#recent[i] === key) {
+        this.#recent.splice(i, 1);
+        break;
+      }
+    }
+  }
+}
+
+interface ExpirableItem<TValue> {
+  value: TValue;
+  /** Time this item expires at. */
+  expiry: number;
+}
+
+export class LruCacheWithExpiry<TKey, TValue> {
+  readonly #inner: LruCache<TKey, ExpirableItem<TValue>>;
+  readonly #expiryMs: number;
+  readonly #getTime: () => number;
+
+  constructor(options: { size: number; expiryMs: number; getTime?: () => number }) {
+    this.#inner = new LruCache({ size: options.size });
+    this.#expiryMs = options.expiryMs;
+    this.#getTime = options.getTime ?? (() => Date.now());
+  }
+
+  get(key: TKey) {
+    const expirableValue = this.#inner.get(key);
+    if (expirableValue != null) {
+      if (this.#getTime() > expirableValue.expiry) {
+        this.#inner.remove(key);
+        return undefined;
+      }
+    }
+    return expirableValue?.value;
+  }
+
+  set(key: TKey, value: TValue) {
+    this.#inner.set(key, {
+      expiry: this.#getTime() + this.#expiryMs,
+      value,
+    });
   }
 }

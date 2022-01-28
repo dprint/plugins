@@ -1,5 +1,6 @@
 import { assertEquals } from "./deps.test.ts";
-import { pluginResolvers, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
+import { pluginResolvers, tryResolvePluginUrl, tryResolveSchemaUrl, tryResolveUserLatestJson } from "./plugins.ts";
+import { getLatestReleaseTagName } from "./utils/mod.ts";
 
 Deno.test("should get correct info for typescript resolver", () => {
   const resolver = getResolverByName("typescript");
@@ -167,6 +168,8 @@ Deno.test("tryResolvePluginUrl", async () => {
   );
 });
 
+// todo: mock github api for these tests
+
 Deno.test("tryResolveSchemaUrl", async () => {
   assertEquals(
     await tryResolveSchemaUrl(
@@ -202,6 +205,35 @@ Deno.test("tryResolveSchemaUrl", async () => {
     ),
     "https://github.com/dprint/non-existent/releases/download/1.2.3/schema.json",
   );
+});
+
+Deno.test("tryResolveUserLatestJson", async () => {
+  // non-matching
+  assertEquals(
+    await tryResolveUserLatestJson(
+      new URL("https://plugins.dprint.dev/dsherret/latest.json"),
+    ),
+    undefined,
+  );
+
+  assertEquals(
+    await tryResolveUserLatestJson(
+      new URL("https://plugins.dprint.dev/dsherret/non-existent/latest.json"),
+    ),
+    404,
+  );
+
+  const result = await tryResolveUserLatestJson(
+    new URL("https://plugins.dprint.dev/dprint/typescript/latest.json"),
+  )!;
+  if (result == null || result === 404) {
+    throw new Error("Expected result.");
+  }
+  const tagName = await getLatestReleaseTagName("dprint", "dprint-plugin-typescript");
+  assertEquals(result, {
+    schemaVersion: 1,
+    url: `https://plugins.dprint.dev/dprint/typescript-${tagName!}.wasm`,
+  });
 });
 
 function getResolverByName(name: string) {
