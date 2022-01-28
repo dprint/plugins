@@ -5,6 +5,7 @@ import { fetchCached } from "./utils/mod.ts";
 
 const contentTypes = {
   css: "text/css; charset=utf-8",
+  html: "text/html; charset=utf-8",
   json: "application/json; charset=utf-8",
   plain: "text/plain; charset=utf-8",
   wasm: "application/wasm",
@@ -103,7 +104,7 @@ async function handleRequest(request: Request) {
     return renderHome().then(home =>
       new Response(home, {
         headers: {
-          "content-type": contentTypes.css,
+          "content-type": contentTypes.html,
         },
         status: 200,
       })
