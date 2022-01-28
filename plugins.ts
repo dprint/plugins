@@ -8,6 +8,7 @@ export interface PluginResolver {
   getSchemaUrl?(version: string): string;
 }
 
+// todo: this is very bad. We should deprecate this and standardize everything.
 export const pluginResolvers: PluginResolver[] = [{
   versionPattern: new URLPattern({ pathname: "/typescript-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
@@ -147,7 +148,7 @@ function tryResolveUserSchemaJson(url: URL) {
 const userLatestPattern = new URLPattern({
   pathname: `/${userRepoPattern}/latest.json`,
 });
-export async function tryResolveUserLatestJson(url: URL) {
+export async function tryResolveLatestJson(url: URL) {
   const result = userLatestPattern.exec(url);
   if (!result) {
     return undefined;
@@ -159,12 +160,15 @@ export async function tryResolveUserLatestJson(url: URL) {
   if (tagName == null) {
     return 404;
   }
+  const displayRepoName = shortRepoName.replace(/^dprint-plugin-/, "");
 
   // include the bare minimum in case someone else wants to implement
   // this behaviour on their server
   return {
     schemaVersion: 1,
-    url: `https://plugins.dprint.dev/${username}/${shortRepoName}-${tagName}.wasm`,
+    url: username === "dprint"
+      ? `https://plugins.dprint.dev/${displayRepoName}-${tagName}.wasm`
+      : `https://plugins.dprint.dev/${username}/${displayRepoName}-${tagName}.wasm`,
   };
 }
 

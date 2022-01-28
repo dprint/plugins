@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.122.0/http/server.ts";
 import { renderHome } from "./home.tsx";
-import { tryResolvePluginUrl, tryResolveSchemaUrl, tryResolveUserLatestJson } from "./plugins.ts";
+import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 import { fetchCached } from "./utils/mod.ts";
 
 const contentTypes = {
@@ -33,7 +33,7 @@ async function handleRequest(request: Request) {
     });
   }
 
-  const userLatestInfo = await tryResolveUserLatestJson(url);
+  const userLatestInfo = await tryResolveLatestJson(url);
   if (userLatestInfo != null) {
     if (userLatestInfo === 404) {
       return new Response("Not Found", {

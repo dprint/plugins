@@ -1,5 +1,5 @@
 import { assertEquals } from "./deps.test.ts";
-import { pluginResolvers, tryResolvePluginUrl, tryResolveSchemaUrl, tryResolveUserLatestJson } from "./plugins.ts";
+import { pluginResolvers, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 import { getLatestReleaseTagName } from "./utils/mod.ts";
 
 Deno.test("should get correct info for typescript resolver", () => {
@@ -210,30 +210,65 @@ Deno.test("tryResolveSchemaUrl", async () => {
 Deno.test("tryResolveUserLatestJson", async () => {
   // non-matching
   assertEquals(
-    await tryResolveUserLatestJson(
+    await tryResolveLatestJson(
       new URL("https://plugins.dprint.dev/dsherret/latest.json"),
     ),
     undefined,
   );
 
   assertEquals(
-    await tryResolveUserLatestJson(
+    await tryResolveLatestJson(
       new URL("https://plugins.dprint.dev/dsherret/non-existent/latest.json"),
     ),
     404,
   );
 
-  const result = await tryResolveUserLatestJson(
-    new URL("https://plugins.dprint.dev/dprint/typescript/latest.json"),
-  )!;
-  if (result == null || result === 404) {
-    throw new Error("Expected result.");
+  // dprint repo
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/typescript/latest.json");
+    const tagName = await getLatestReleaseTagName("dprint", "dprint-plugin-typescript");
+    assertEquals(result, {
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/typescript-${tagName!}.wasm`,
+    });
   }
-  const tagName = await getLatestReleaseTagName("dprint", "dprint-plugin-typescript");
-  assertEquals(result, {
-    schemaVersion: 1,
-    url: `https://plugins.dprint.dev/dprint/typescript-${tagName!}.wasm`,
-  });
+  // dprint repo full name
+  {
+    const result = await getValidResultForUrl(
+      "https://plugins.dprint.dev/dprint/dprint-plugin-typescript/latest.json",
+    );
+    const tagName = await getLatestReleaseTagName("dprint", "dprint-plugin-typescript");
+    assertEquals(result, {
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/typescript-${tagName!}.wasm`,
+    });
+  }
+  // non-dprint repo
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/malobre/vue/latest.json");
+    const tagName = await getLatestReleaseTagName("malobre", "dprint-plugin-vue");
+    assertEquals(result, {
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/malobre/vue-${tagName!}.wasm`,
+    });
+  }
+  // non-dprint repo full name
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/malobre/dprint-plugin-vue/latest.json");
+    const tagName = await getLatestReleaseTagName("malobre", "dprint-plugin-vue");
+    assertEquals(result, {
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/malobre/vue-${tagName!}.wasm`,
+    });
+  }
+
+  async function getValidResultForUrl(url: string) {
+    const result = await tryResolveLatestJson(new URL(url))!;
+    if (result == null || result === 404) {
+      throw new Error("Expected result.");
+    }
+    return result;
+  }
 });
 
 function getResolverByName(name: string) {
