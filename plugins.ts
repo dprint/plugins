@@ -9,13 +9,19 @@ export interface PluginResolver {
 }
 
 // todo: this is very bad. We should deprecate this and standardize everything.
+// Basically the plan would be to standardize to `plugin.wasm` in all the release assets
+// then genenerate a file that has all the old mapping to new mapping urls based on the previous
+// github releases. Then get rid of this complicated logic
 export const pluginResolvers: PluginResolver[] = [{
   versionPattern: new URLPattern({ pathname: "/typescript-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.44.0"))) {
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.44.0"))) {
       return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript-${version}.wasm`;
-    } else {
+    } else if (parsedVersion.lessThanEqual(parseVersion("0.62.1"))) {
       return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/plugin.wasm`;
     }
   },
   schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/typescript-([0-9]+\.[0-9]+\.[0-9]+).json" }),

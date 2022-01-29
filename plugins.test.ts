@@ -27,6 +27,15 @@ Deno.test("should get correct info for typescript resolver", () => {
       ?.pathname.groups[0],
     "0.5.0",
   );
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.62.1"),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.62.1/typescript.wasm",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.63.0"),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.63.0/plugin.wasm",
+  );
 });
 
 Deno.test("should get correct info for json resolver", () => {
@@ -140,7 +149,7 @@ Deno.test("should get correct info for sql resolver", () => {
 Deno.test("tryResolvePluginUrl", async () => {
   assertEquals(
     await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/typescript-1.2.3.wasm")),
-    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/typescript.wasm",
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/plugin.wasm",
   );
 
   assertEquals(
