@@ -17,7 +17,8 @@ Then your redirect urls will look like:
 
 ```
 https://plugins.dprint.dev/<username>/<repo_name>-<tag_name>.wasm
-https://plugins.dprint.dev/<username>/<repo_name>-<tag_name>/schema.json
+https://plugins.dprint.dev/<username>/<repo_name>/<tag_name>/schema.json
+https://plugins.dprint.dev/<username>/<repo_name>/latest.json
 ```
 
 Restrictions and recommendations:

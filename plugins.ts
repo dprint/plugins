@@ -129,12 +129,12 @@ export async function tryResolveSchemaUrl(url: URL) {
 // usernames may only contain alphanumeric and hypens
 // repos may only contain alphanumeric, underscores, hyphens, and period
 const userRepoPattern = "([A-Za-z0-9\-]+)/([A-Za-z0-9\-\._]+)";
-const userRepoTagPattern = `${userRepoPattern}-([A-Za-z0-9\._]+)`;
+const tagPattern = "([A-Za-z0-9\._]+)";
 const userWasmPluginPattern = new URLPattern({
-  pathname: `/${userRepoTagPattern}.wasm`,
+  pathname: `/${userRepoPattern}-${tagPattern}.wasm`,
 });
 const userSchemaPattern = new URLPattern({
-  pathname: `/${userRepoTagPattern}/schema.json`,
+  pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
 });
 
 function tryResolveUserWasmPlugin(url: URL) {
