@@ -31,10 +31,13 @@ export const pluginResolvers: PluginResolver[] = [{
 }, {
   versionPattern: new URLPattern({ pathname: "/json-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.10.1"))) {
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.10.1"))) {
       return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json-${version}.wasm`;
-    } else {
+    } else if (parsedVersion.lessThanEqual(parseVersion("0.14.0"))) {
       return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/plugin.wasm`;
     }
   },
   schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/json-([0-9]+\.[0-9]+\.[0-9]+).json" }),
