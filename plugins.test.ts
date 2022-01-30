@@ -191,6 +191,58 @@ Deno.test("should get correct info for sql resolver", () => {
   );
 });
 
+Deno.test("should get correct info for prettier resolver", () => {
+  const resolver = getResolverByName("prettier");
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.5.0"),
+    "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.5.0/prettier.exe-plugin",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.5.1"),
+    "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.5.1/plugin.exe-plugin",
+  );
+});
+
+Deno.test("should get correct info for roslyn resolver", () => {
+  const resolver = getResolverByName("roslyn");
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.4.0"),
+    "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.4.0/roslyn.exe-plugin",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.4.1"),
+    "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.4.1/plugin.exe-plugin",
+  );
+});
+
+Deno.test("should get correct info for rustfmt resolver", () => {
+  const resolver = getProcessPluginResolverByName("rustfmt");
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.4.0"),
+    "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.4.0/rustfmt.exe-plugin",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.4.1"),
+    "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.4.1/plugin.exe-plugin",
+  );
+});
+
+Deno.test("should get correct info for yapf resolver", () => {
+  const resolver = getResolverByName("yapf");
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.2.0"),
+    "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.2.0/yapf.exe-plugin",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.2.1"),
+    "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.2.1/plugin.exe-plugin",
+  );
+});
+
 Deno.test("tryResolvePluginUrl", async () => {
   assertEquals(
     await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/typescript-1.2.3.wasm")),
@@ -346,10 +398,22 @@ Deno.test("tryResolveUserLatestJson", async () => {
 });
 
 function getResolverByName(name: string) {
-  const url = new URL(`https://plugins.dprint.dev/${name}-0.5.0.wasm`);
-  const resolver = pluginResolvers.find(r => r.versionPattern.exec(url)?.pathname.groups[0] != null);
+  const resolver = getResolverByUrl(`https://plugins.dprint.dev/${name}-0.5.0.wasm`)
+    ?? getResolverByUrl(`https://plugins.dprint.dev/${name}-0.5.0.exe-plugin`);
   if (!resolver) {
     throw new Error("Not found.");
   }
   return resolver;
+}
+
+function getProcessPluginResolverByName(name: string) {
+  const resolver = getResolverByUrl(`https://plugins.dprint.dev/${name}-0.5.0.exe-plugin`);
+  if (!resolver) {
+    throw new Error("Not found.");
+  }
+  return resolver;
+}
+
+function getResolverByUrl(url: string) {
+  return pluginResolvers.find(r => r.versionPattern.exec(new URL(url))?.pathname.groups[0] != null);
 }

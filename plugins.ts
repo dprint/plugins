@@ -105,31 +105,54 @@ export const pluginResolvers: PluginResolver[] = [{
 }, {
   versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.3.0"))) {
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.3.0"))) {
       return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt-${version}.wasm`;
-    } else {
+    } else if (parsedVersion.lessThanEqual(parseVersion("0.4.0"))) {
       return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/plugin.wasm`;
     }
   },
 }, {
   versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.exe-plugin`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.4.0"))) {
+      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.exe-plugin`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/plugin.exe-plugin`;
+    }
   },
 }, {
   versionPattern: new URLPattern({ pathname: "/prettier-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-prettier/releases/download/${version}/prettier.exe-plugin`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.5.0"))) {
+      return `https://github.com/dprint/dprint-plugin-prettier/releases/download/${version}/prettier.exe-plugin`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-prettier/releases/download/${version}/plugin.exe-plugin`;
+    }
   },
 }, {
   versionPattern: new URLPattern({ pathname: "/roslyn-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-roslyn/releases/download/${version}/roslyn.exe-plugin`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.4.0"))) {
+      return `https://github.com/dprint/dprint-plugin-roslyn/releases/download/${version}/roslyn.exe-plugin`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-roslyn/releases/download/${version}/plugin.exe-plugin`;
+    }
   },
 }, {
   versionPattern: new URLPattern({ pathname: "/yapf-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/yapf.exe-plugin`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.2.0"))) {
+      return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/yapf.exe-plugin`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/plugin.exe-plugin`;
+    }
   },
 }];
 
