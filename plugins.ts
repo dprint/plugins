@@ -1,5 +1,5 @@
 import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.ts";
-import { parseVersion } from "./version.ts";
+import { parseVersion } from "./utils/mod.ts";
 
 export interface PluginResolver {
   versionPattern: URLPattern;
@@ -164,12 +164,28 @@ export async function tryResolveLatestJson(url: URL) {
   }
   const username = result.pathname.groups[0];
   const shortRepoName = result.pathname.groups[1];
-  const repoName = await getFullRepoName(username, shortRepoName);
-  const releaseInfo = await getLatestReleaseInfo(username, repoName);
-  if (releaseInfo == null) {
+  const latestInfo = await getLatestInfo(username, shortRepoName);
+  if (latestInfo == null) {
     return 404;
   }
-  const displayRepoName = shortRepoName.replace(/^dprint-plugin-/, "");
+
+  // include the bare minimum in case someone else wants to implement
+  // this behaviour on their server
+  return {
+    schemaVersion: 1,
+    url: latestInfo.url,
+    version: latestInfo.version,
+    checksum: latestInfo.checksum,
+  };
+}
+
+export async function getLatestInfo(username: string, repoName: string) {
+  repoName = await getFullRepoName(username, repoName);
+  const releaseInfo = await getLatestReleaseInfo(username, repoName);
+  if (releaseInfo == null) {
+    return undefined;
+  }
+  const displayRepoName = repoName.replace(/^dprint-plugin-/, "");
   const extension = releaseInfo.kind === "wasm" ? "wasm" : "exe-plugin";
 
   // include the bare minimum in case someone else wants to implement
@@ -201,27 +217,6 @@ async function userRepoTagPatternMapper(
     }
   }
   return undefined;
-}
-
-export async function getPluginsInfoData() {
-  return JSON.parse(await loadInfoFile()) as Readonly<PluginsData>;
-}
-
-async function loadInfoFile() {
-  try {
-    return await Deno.readTextFile("./info.json");
-  } catch (err) {
-    throw new Error("Could not load info.json", { cause: err });
-  }
-}
-
-export interface PluginsData {
-  latest: PluginData[];
-}
-
-export interface PluginData {
-  name: string;
-  url: string;
 }
 
 async function getFullRepoName(username: string, repoName: string) {

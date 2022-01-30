@@ -30,7 +30,7 @@ export async function checkGithubRepoExists(username: string, repoName: string) 
   return result;
 }
 
-interface ReleaseInfo {
+export interface ReleaseInfo {
   tagName: string;
   checksum: string | undefined;
   kind: "wasm" | "process";

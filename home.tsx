@@ -1,22 +1,9 @@
 /** @jsx h */
 import { h } from "https://x.lcas.dev/preact@10.5.12/mod.js";
 import { renderToString } from "https://x.lcas.dev/preact@10.5.12/ssr.js";
-import { getPluginsInfoData, PluginData, PluginsData } from "./plugins.ts";
+import { PluginData, PluginsData, readInfoFile } from "./readInfoFile.ts";
 
-let cachedRender: Promise<string> | undefined;
-
-export function renderHome() {
-  if (cachedRender == null) {
-    cachedRender = innerRender();
-    cachedRender.catch(err => {
-      console.error("Error rendering home.", err);
-      cachedRender = undefined;
-    });
-  }
-  return cachedRender;
-}
-
-async function innerRender() {
+export async function renderHome() {
   const content = await renderContent();
   return `<!DOCTYPE html>
 <html lang="en">
@@ -50,7 +37,7 @@ async function innerRender() {
 }
 
 async function renderContent() {
-  const pluginsData = await getPluginsInfoData();
+  const pluginsData = await readInfoFile();
   const section = (
     <section id="content">
       <h1>Latest Plugins</h1>

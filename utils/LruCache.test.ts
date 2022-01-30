@@ -63,5 +63,6 @@ Deno.test("LruCacheWithExpiry - expires values after a time", async () => {
   currentTime = 1150;
   assertEquals(await cache.getOrSet(3, () => Promise.resolve(13)), 3);
   currentTime = 1151;
+  assertEquals(await cache.getOrSet(3, () => Promise.reject(new Error())), 3);
   assertEquals(await cache.getOrSet(3, () => Promise.resolve(13)), 13);
 });
