@@ -99,6 +99,15 @@ Deno.test("should get correct info for markdown resolver", () => {
       ?.pathname.groups[0],
     "0.5.0",
   );
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.12.1"),
+    "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.12.1/markdown.wasm",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.12.2"),
+    "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.12.2/plugin.wasm",
+  );
 });
 
 Deno.test("should get correct info for toml resolver", () => {
@@ -116,6 +125,15 @@ Deno.test("should get correct info for toml resolver", () => {
       .exec(new URL("https://plugins.dprint.dev/schemas/toml-0.5.0.json"))
       ?.pathname.groups[0],
     "0.5.0",
+  );
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.5.3"),
+    "https://github.com/dprint/dprint-plugin-toml/releases/download/0.5.3/toml.wasm",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.5.4"),
+    "https://github.com/dprint/dprint-plugin-toml/releases/download/0.5.4/plugin.wasm",
   );
 });
 
@@ -135,6 +153,15 @@ Deno.test("should get correct info for dockerfile resolver", () => {
       ?.pathname.groups[0],
     "0.5.0",
   );
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.2.1"),
+    "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.2.1/dockerfile.wasm",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.2.2"),
+    "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.2.2/plugin.wasm",
+  );
 });
 
 Deno.test("should get correct info for sql resolver", () => {
@@ -149,9 +176,18 @@ Deno.test("should get correct info for sql resolver", () => {
   );
   assertEquals(
     resolver.schemaVersionUrlPattern!
-      .exec(new URL("https://plugins.dprint.dev/schemas/sql-0.5.0.json"))
+      .exec(new URL("https://plugins.dprint.dev/schemas/sql-0.1.0.json"))
       ?.pathname.groups[0],
-    "0.5.0",
+    "0.1.0",
+  );
+  // file name changed after this
+  assertEquals(
+    resolver.getRedirectUrl("0.1.1"),
+    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.1/sql.wasm",
+  );
+  assertEquals(
+    resolver.getRedirectUrl("0.1.2"),
+    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.2/plugin.wasm",
   );
 });
 

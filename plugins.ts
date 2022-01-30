@@ -47,10 +47,13 @@ export const pluginResolvers: PluginResolver[] = [{
 }, {
   versionPattern: new URLPattern({ pathname: "/markdown-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.7.0"))) {
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.7.0"))) {
       return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown-${version}.wasm`;
-    } else {
+    } else if (parsedVersion.lessThanEqual(parseVersion("0.12.1"))) {
       return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/plugin.wasm`;
     }
   },
   schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/markdown-([0-9]+\.[0-9]+\.[0-9]+).json" }),
@@ -60,7 +63,12 @@ export const pluginResolvers: PluginResolver[] = [{
 }, {
   versionPattern: new URLPattern({ pathname: "/toml-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/toml.wasm`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.5.3"))) {
+      return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/toml.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/plugin.wasm`;
+    }
   },
   schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/toml-([0-9]+\.[0-9]+\.[0-9]+).json" }),
   getSchemaUrl(version) {
@@ -69,7 +77,12 @@ export const pluginResolvers: PluginResolver[] = [{
 }, {
   versionPattern: new URLPattern({ pathname: "/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/dockerfile.wasm`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.2.1"))) {
+      return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/dockerfile.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/plugin.wasm`;
+    }
   },
   schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).json" }),
   getSchemaUrl(version) {
@@ -78,7 +91,12 @@ export const pluginResolvers: PluginResolver[] = [{
 }, {
   versionPattern: new URLPattern({ pathname: "/sql-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
   getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/sql.wasm`;
+    const parsedVersion = parseVersion(version);
+    if (parsedVersion.lessThanEqual(parseVersion("0.1.1"))) {
+      return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/sql.wasm`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/plugin.wasm`;
+    }
   },
   schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/sql-([0-9]+\.[0-9]+\.[0-9]+).json" }),
   getSchemaUrl(version) {
