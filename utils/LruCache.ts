@@ -67,18 +67,31 @@ export class LruCacheWithExpiry<TKey, TValue> {
     this.#getTime = options.getTime ?? (() => Date.now());
   }
 
-  get(key: TKey) {
+  async getOrSet(key: TKey, trySet: () => Promise<TValue>) {
+    // this needs to be resilient to failure (ex. GitHub going down),
+    // so if something fails just use the previously cached value
     const expirableValue = this.#inner.get(key);
     if (expirableValue != null) {
       if (this.#getTime() > expirableValue.expiry) {
-        this.#inner.remove(key);
-        return undefined;
+        try {
+          const newValue = await trySet();
+          this.#set(key, newValue);
+          return newValue;
+        } catch (err) {
+          console.error("Updating cache failed. Using old value.", err);
+          return expirableValue.value;
+        }
+      } else {
+        return expirableValue.value;
       }
+    } else {
+      const newValue = await trySet();
+      this.#set(key, newValue);
+      return newValue;
     }
-    return expirableValue?.value;
   }
 
-  set(key: TKey, value: TValue) {
+  #set(key: TKey, value: TValue) {
     this.#inner.set(key, {
       expiry: this.#getTime() + this.#expiryMs,
       value,

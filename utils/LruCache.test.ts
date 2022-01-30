@@ -36,7 +36,7 @@ Deno.test("LruCache - keeps only most recent", () => {
   assertEquals(cache.get(2), 2);
 });
 
-Deno.test("LruCacheWithExpiry - expires values after a time", () => {
+Deno.test("LruCacheWithExpiry - expires values after a time", async () => {
   let currentTime = 0;
   const cache = new LruCacheWithExpiry({
     size: 2,
@@ -44,27 +44,24 @@ Deno.test("LruCacheWithExpiry - expires values after a time", () => {
     getTime: () => currentTime,
   });
 
-  cache.set(1, 1);
-  assertEquals(cache.get(1), 1);
+  assertEquals(await cache.getOrSet(1, () => Promise.resolve(1)), 1);
+  assertEquals(await cache.getOrSet(1, () => Promise.resolve(2)), 1);
   currentTime = 100;
-  assertEquals(cache.get(1), 1);
+  assertEquals(await cache.getOrSet(1, () => Promise.resolve(2)), 1);
   currentTime = 101;
-  assertEquals(cache.get(1), undefined);
-  currentTime = 50; // go back in time and it should be removed
-  assertEquals(cache.get(1), undefined);
+  assertEquals(await cache.getOrSet(1, () => Promise.resolve(2)), 2);
 
-  currentTime = 0;
-  cache.set(1, 1);
-  currentTime = 25;
-  cache.set(2, 2);
-  currentTime = 50;
-  cache.set(3, 3);
-  assertEquals(cache.get(1), undefined);
-  assertEquals(cache.get(3), 3);
-  assertEquals(cache.get(2), 2);
-  currentTime = 150;
-  assertEquals(cache.get(2), undefined);
-  assertEquals(cache.get(3), 3);
-  currentTime = 151;
-  assertEquals(cache.get(3), undefined);
+  currentTime = 1000;
+  assertEquals(await cache.getOrSet(1, () => Promise.resolve(1)), 1);
+  currentTime = 1025;
+  assertEquals(await cache.getOrSet(2, () => Promise.resolve(2)), 2);
+  currentTime = 1050;
+  assertEquals(await cache.getOrSet(3, () => Promise.resolve(3)), 3);
+  assertEquals(await cache.getOrSet(1, () => Promise.resolve(11)), 11);
+  assertEquals(await cache.getOrSet(3, () => Promise.resolve(13)), 3);
+  assertEquals(await cache.getOrSet(2, () => Promise.resolve(12)), 12);
+  currentTime = 1150;
+  assertEquals(await cache.getOrSet(3, () => Promise.resolve(13)), 3);
+  currentTime = 1151;
+  assertEquals(await cache.getOrSet(3, () => Promise.resolve(13)), 13);
 });

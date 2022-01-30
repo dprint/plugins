@@ -47,8 +47,7 @@ export async function getLatestReleaseInfo(username: string, repoName: string) {
   }
 
   const url = `https://api.github.com/repos/${username}/${repoName}/releases/latest`;
-  let result = latestReleaseTagNameCache.get(url);
-  if (result == null) {
+  return await latestReleaseTagNameCache.getOrSet(url, async () => {
     const response = await makeGitHubGetRequest(url, "GET");
     if (response.status === 404) {
       await response.text(); // todo: no way to mark this as used for the sanitizers?
@@ -57,10 +56,8 @@ export async function getLatestReleaseInfo(username: string, repoName: string) {
       const text = await response.text();
       throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
     }
-    result = getReleaseInfo(await response.json());
-    latestReleaseTagNameCache.set(url, result);
-  }
-  return result;
+    return getReleaseInfo(await response.json());
+  });
 }
 
 function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: string }[] }): ReleaseInfo {
