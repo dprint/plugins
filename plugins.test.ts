@@ -243,6 +243,14 @@ Deno.test("should get correct info for yapf resolver", () => {
   );
 });
 
+Deno.test("should get correct info for exec resolver", () => {
+  const resolver = getResolverByName("exec");
+  assertEquals(
+    resolver.getRedirectUrl("0.1.0"),
+    "https://github.com/dprint/dprint-plugin-exec/releases/download/0.1.0/plugin.exe-plugin",
+  );
+});
+
 Deno.test("tryResolvePluginUrl", async () => {
   assertEquals(
     await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/typescript-1.2.3.wasm")),
@@ -271,6 +279,13 @@ Deno.test("tryResolvePluginUrl", async () => {
   assertEquals(
     await tryResolvePluginUrl(new URL("https://plugins.dprint.dev/dprint/non-existent-1.2.3.wasm")),
     "https://github.com/dprint/non-existent/releases/download/1.2.3/plugin.wasm",
+  );
+
+  assertEquals(
+    await tryResolvePluginUrl(
+      new URL("https://plugins.dprint.dev/dprint/dprint-plugin-exec-0.1.0.exe-plugin"),
+    ),
+    "https://github.com/dprint/dprint-plugin-exec/releases/download/0.1.0/plugin.exe-plugin",
   );
 });
 

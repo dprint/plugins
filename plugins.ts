@@ -154,6 +154,11 @@ export const pluginResolvers: PluginResolver[] = [{
       return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/plugin.exe-plugin`;
     }
   },
+}, {
+  versionPattern: new URLPattern({ pathname: "/exec-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
+  getRedirectUrl(version) {
+    return `https://github.com/dprint/dprint-plugin-exec/releases/download/${version}/plugin.exe-plugin`;
+  },
 }];
 
 export async function tryResolvePluginUrl(url: URL) {
@@ -163,7 +168,7 @@ export async function tryResolvePluginUrl(url: URL) {
       return plugin.getRedirectUrl(version);
     }
   }
-  return await tryResolveUserWasmPlugin(url);
+  return (await tryResolveUserWasmPlugin(url)) ?? (await tryResolveUserProcessPlugin(url));
 }
 
 export async function tryResolveSchemaUrl(url: URL) {
@@ -183,12 +188,19 @@ const tagPattern = "([A-Za-z0-9\._]+)";
 const userWasmPluginPattern = new URLPattern({
   pathname: `/${userRepoPattern}-${tagPattern}.wasm`,
 });
+const userProcessPluginPattern = new URLPattern({
+  pathname: `/${userRepoPattern}-${tagPattern}.exe-plugin`,
+});
 const userSchemaPattern = new URLPattern({
   pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
 });
 
 function tryResolveUserWasmPlugin(url: URL) {
   return userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm");
+}
+
+function tryResolveUserProcessPlugin(url: URL) {
+  return userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.exe-plugin");
 }
 
 function tryResolveUserSchemaJson(url: URL) {
