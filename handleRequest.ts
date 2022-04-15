@@ -1,5 +1,5 @@
 import { renderHome } from "./home.tsx";
-import oldMappings from "./old_mappings.json" assert { type: "json" };
+import oldMappings from "./old_redirects.json" assert { type: "json" };
 import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 import { readInfoFile } from "./readInfoFile.ts";
 import { fetchCached } from "./utils/mod.ts";
