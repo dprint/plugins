@@ -175,18 +175,14 @@ Deno.test("should get correct info for sql resolver", async () => {
   }
 
   assertEquals(
-    await getWasmRedirectUrl("0.1.0"),
-    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.0/sql.wasm",
-  );
-  assertEquals(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/sql-0.1.0.json`),
-    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.0/schema.json",
-  );
-  // file name changed after this
-  assertEquals(
     await getWasmRedirectUrl("0.1.1"),
     "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.1/sql.wasm",
   );
+  assertEquals(
+    await getRedirectUrl(`https://plugins.dprint.dev/schemas/sql-0.1.1.json`),
+    "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.1/schema.json",
+  );
+  // file name changed here
   assertEquals(
     await getWasmRedirectUrl("0.1.2"),
     "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.2/plugin.wasm",
