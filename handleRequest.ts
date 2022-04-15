@@ -1,4 +1,5 @@
 import { renderHome } from "./home.tsx";
+import oldMappings from "./old_mappings.json" assert { type: "json" };
 import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 import { readInfoFile } from "./readInfoFile.ts";
 import { fetchCached } from "./utils/mod.ts";
@@ -13,22 +14,17 @@ const contentTypes = {
 
 export async function handleRequest(request: Request) {
   const url = new URL(request.url);
-
-  const pluginUrl = await tryResolvePluginUrl(url);
-  if (pluginUrl != null) {
+  const newUrl = await resolvePluginOrSchemaUrl(url);
+  if (newUrl != null) {
+    const contentType = newUrl.endsWith(".json")
+      ? contentTypes.json
+      : newUrl.endsWith(".wasm")
+      ? contentTypes.wasm
+      : contentTypes.plain;
     return handleConditionalRedirectRequest({
       request,
-      url: pluginUrl,
-      contentType: contentTypes.wasm,
-    });
-  }
-
-  const schemaUrl = await tryResolveSchemaUrl(url);
-  if (schemaUrl != null) {
-    return handleConditionalRedirectRequest({
-      request,
-      url: schemaUrl,
-      contentType: contentTypes.json,
+      url: newUrl,
+      contentType,
     });
   }
 
@@ -46,45 +42,6 @@ export async function handleRequest(request: Request) {
   if (url.pathname.startsWith("/info.json")) {
     const infoFileData = await readInfoFile();
     return createJsonResponse(JSON.stringify(infoFileData, null, 2), request);
-  }
-
-  if (url.pathname.startsWith("/schemas/json-latest.json")) {
-    return handleConditionalRedirectRequest({
-      request,
-      url: "https://github.com/dprint/dprint-plugin-json/releases/latest/download/schema.json",
-      contentType: contentTypes.json,
-    });
-  }
-
-  if (url.pathname.startsWith("/schemas/markdown-latest.json")) {
-    return handleConditionalRedirectRequest({
-      request,
-      url: "https://github.com/dprint/dprint-plugin-markdown/releases/latest/download/schema.json",
-      contentType: contentTypes.json,
-    });
-  }
-
-  if (url.pathname.startsWith("/schemas/typescript-latest.json")) {
-    return handleConditionalRedirectRequest({
-      request,
-      url: "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
-      contentType: contentTypes.json,
-    });
-  }
-
-  if (url.pathname.startsWith("/schemas/toml-latest.json")) {
-    return handleConditionalRedirectRequest({
-      request,
-      url: "https://github.com/dprint/dprint-plugin-toml/releases/latest/download/schema.json",
-      contentType: contentTypes.json,
-    });
-  }
-  if (url.pathname.startsWith("/schemas/dockerfile-latest.json")) {
-    return handleConditionalRedirectRequest({
-      request,
-      url: "https://github.com/dprint/dprint-plugin-dockerfile/releases/latest/download/schema.json",
-      contentType: contentTypes.json,
-    });
   }
 
   if (url.pathname === "/style.css") {
@@ -117,6 +74,12 @@ export async function handleRequest(request: Request) {
   }
 
   return create404Response();
+}
+
+async function resolvePluginOrSchemaUrl(url: URL) {
+  return (oldMappings as { [oldUrl: string]: string })[url.toString()]
+    ?? await tryResolvePluginUrl(url)
+    ?? await tryResolveSchemaUrl(url);
 }
 
 // This is done to allow the playground to access these files

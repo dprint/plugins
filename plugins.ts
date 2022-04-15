@@ -1,190 +1,17 @@
 import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.ts";
-import { parseVersion } from "./utils/mod.ts";
 
-export interface PluginResolver {
-  versionPattern: URLPattern;
-  getRedirectUrl(version: string): string;
-  schemaVersionUrlPattern?: URLPattern;
-  getSchemaUrl?(version: string): string;
-}
-
-// todo: this is very bad. We should deprecate this and standardize everything.
-// Basically the plan would be to standardize to `plugin.wasm` in all the release assets
-// then genenerate a file that has all the old mapping to new mapping urls based on the previous
-// github releases. Then get rid of this complicated logic
-export const pluginResolvers: PluginResolver[] = [{
-  versionPattern: new URLPattern({ pathname: "/typescript-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.44.0"))) {
-      return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript-${version}.wasm`;
-    } else if (parsedVersion.lessThanEqual(parseVersion("0.62.1"))) {
-      return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/plugin.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/typescript-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/json-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.10.1"))) {
-      return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json-${version}.wasm`;
-    } else if (parsedVersion.lessThanEqual(parseVersion("0.14.0"))) {
-      return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/plugin.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/json-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/markdown-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.7.0"))) {
-      return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown-${version}.wasm`;
-    } else if (parsedVersion.lessThanEqual(parseVersion("0.12.1"))) {
-      return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/plugin.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/markdown-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/toml-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.5.3"))) {
-      return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/toml.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/plugin.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/toml-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.2.1"))) {
-      return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/dockerfile.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/plugin.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/sql-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.1.1"))) {
-      return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/sql.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/plugin.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/sql-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.3.0"))) {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt-${version}.wasm`;
-    } else if (parsedVersion.lessThanEqual(parseVersion("0.4.0"))) {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/plugin.wasm`;
-    }
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.4.0"))) {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.exe-plugin`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/plugin.exe-plugin`;
-    }
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/prettier-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.5.0"))) {
-      return `https://github.com/dprint/dprint-plugin-prettier/releases/download/${version}/prettier.exe-plugin`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-prettier/releases/download/${version}/plugin.exe-plugin`;
-    }
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/roslyn-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.4.0"))) {
-      return `https://github.com/dprint/dprint-plugin-roslyn/releases/download/${version}/roslyn.exe-plugin`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-roslyn/releases/download/${version}/plugin.exe-plugin`;
-    }
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/yapf-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    const parsedVersion = parseVersion(version);
-    if (parsedVersion.lessThanEqual(parseVersion("0.2.0"))) {
-      return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/yapf.exe-plugin`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/plugin.exe-plugin`;
-    }
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/exec-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-exec/releases/download/${version}/plugin.exe-plugin`;
-  },
-}];
-
-export async function tryResolvePluginUrl(url: URL) {
-  for (const plugin of pluginResolvers) {
-    const version = plugin.versionPattern.exec(url)?.pathname.groups[0];
-    if (version != null) {
-      return plugin.getRedirectUrl(version);
-    }
-  }
-  return (await tryResolveUserWasmPlugin(url)) ?? (await tryResolveUserProcessPlugin(url));
-}
-
-export async function tryResolveSchemaUrl(url: URL) {
-  for (const plugin of pluginResolvers) {
-    const version = plugin.schemaVersionUrlPattern?.exec(url)?.pathname.groups[0];
-    if (version != null) {
-      return plugin.getSchemaUrl?.(version);
-    }
-  }
-  return await tryResolveUserSchemaJson(url);
-}
-
-// usernames may only contain alphanumeric and hypens
-// repos may only contain alphanumeric, underscores, hyphens, and period
-const userRepoPattern = "([A-Za-z0-9\-]+)/([A-Za-z0-9\-\._]+)";
 const tagPattern = "([A-Za-z0-9\._]+)";
+// repos may only contain alphanumeric, underscores, hyphens, and period
+const repoNamePattern = "([A-Za-z0-9\-\._]+)";
+const dprintWasmPluginPattern = new URLPattern({
+  pathname: `/${repoNamePattern}-${tagPattern}.wasm`,
+});
+const dprintProcessPluginPattern = new URLPattern({
+  pathname: `/${repoNamePattern}-${tagPattern}.exe-plugin`,
+});
+// usernames may only contain alphanumeric and hypens
+const usernamePattern = `([A-Za-z0-9\-]+)`;
+const userRepoPattern = `${usernamePattern}/${repoNamePattern}`;
 const userWasmPluginPattern = new URLPattern({
   pathname: `/${userRepoPattern}-${tagPattern}.wasm`,
 });
@@ -195,15 +22,14 @@ const userSchemaPattern = new URLPattern({
   pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
 });
 
-function tryResolveUserWasmPlugin(url: URL) {
-  return userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm");
+export async function tryResolvePluginUrl(url: URL) {
+  return dprintPluginTagPatternMapper(dprintWasmPluginPattern, url, "plugin.wasm")
+    ?? dprintPluginTagPatternMapper(dprintProcessPluginPattern, url, "plugin.exe-plugin")
+    ?? (await userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm"))
+    ?? (await userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.exe-plugin"));
 }
 
-function tryResolveUserProcessPlugin(url: URL) {
-  return userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.exe-plugin");
-}
-
-function tryResolveUserSchemaJson(url: URL) {
+export function tryResolveSchemaUrl(url: URL) {
   return userRepoTagPatternMapper(userSchemaPattern, url, "schema.json");
 }
 
@@ -251,6 +77,24 @@ export async function getLatestInfo(username: string, repoName: string) {
     version: releaseInfo.tagName.replace(/^v/, ""),
     checksum: releaseInfo.checksum,
   };
+}
+
+function dprintPluginTagPatternMapper(
+  pattern: URLPattern,
+  url: URL,
+  fileName: string,
+) {
+  const result = pattern.exec(url);
+  if (result) {
+    const pluginShortName = result.pathname.groups[0];
+    const tag = result.pathname.groups[1];
+    if (tag === "latest") {
+      return `https://github.com/dprint/dprint-plugin-${pluginShortName}/releases/latest/download/${fileName}`;
+    } else {
+      return `https://github.com/dprint/dprint-plugin-${pluginShortName}/releases/download/${tag}/${fileName}`;
+    }
+  }
+  return undefined;
 }
 
 async function userRepoTagPatternMapper(
