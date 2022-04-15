@@ -28,8 +28,8 @@ Deno.test("should get correct info for typescript resolver", async () => {
   }
 
   assertEquals(
-    await getWasmRedirectUrl("0.1.0"),
-    "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.1.0/typescript-0.1.0.wasm",
+    await getWasmRedirectUrl("0.19.4"),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.19.4/typescript-0.19.4.wasm",
   );
   assertEquals(
     await getWasmRedirectUrl("0.44.0"),
@@ -41,8 +41,8 @@ Deno.test("should get correct info for typescript resolver", async () => {
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.44.1/typescript.wasm",
   );
   assertEquals(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/typescript-0.1.0.json`),
-    "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.1.0/schema.json",
+    await getRedirectUrl(`https://plugins.dprint.dev/schemas/typescript-0.52.1.json`),
+    "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.52.1/schema.json",
   );
   // file name changed after this
   assertEquals(
@@ -61,8 +61,8 @@ Deno.test("should get correct info for json resolver", async () => {
   }
 
   assertEquals(
-    await getWasmRedirectUrl("0.1.0"),
-    "https://github.com/dprint/dprint-plugin-json/releases/download/0.1.0/json-0.1.0.wasm",
+    await getWasmRedirectUrl("0.4.0"),
+    "https://github.com/dprint/dprint-plugin-json/releases/download/0.4.0/json-0.4.0.wasm",
   );
   assertEquals(
     await getWasmRedirectUrl("0.10.1"),
@@ -74,8 +74,8 @@ Deno.test("should get correct info for json resolver", async () => {
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.10.2/json.wasm",
   );
   assertEquals(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/json-0.1.0.json`),
-    "https://github.com/dprint/dprint-plugin-json/releases/download/0.1.0/schema.json",
+    await getRedirectUrl(`https://plugins.dprint.dev/schemas/json-0.13.1.json`),
+    "https://github.com/dprint/dprint-plugin-json/releases/download/0.13.1/schema.json",
   );
   // file name changed after this
   assertEquals(
@@ -107,8 +107,8 @@ Deno.test("should get correct info for markdown resolver", async () => {
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.7.1/markdown.wasm",
   );
   assertEquals(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/markdown-0.1.0.json`),
-    "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.1.0/schema.json",
+    await getRedirectUrl(`https://plugins.dprint.dev/schemas/markdown-0.10.0.json`),
+    "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.10.0/schema.json",
   );
   // file name changed after this
   assertEquals(
@@ -127,12 +127,12 @@ Deno.test("should get correct info for toml resolver", async () => {
   }
 
   assertEquals(
-    await getWasmRedirectUrl("0.1.0"),
-    "https://github.com/dprint/dprint-plugin-toml/releases/download/0.1.0/toml.wasm",
+    await getWasmRedirectUrl("0.1.2"),
+    "https://github.com/dprint/dprint-plugin-toml/releases/download/0.1.2/toml.wasm",
   );
   assertEquals(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/toml-0.1.0.json`),
-    "https://github.com/dprint/dprint-plugin-toml/releases/download/0.1.0/schema.json",
+    await getRedirectUrl(`https://plugins.dprint.dev/schemas/toml-0.5.0.json`),
+    "https://github.com/dprint/dprint-plugin-toml/releases/download/0.5.0/schema.json",
   );
   // file name changed after this
   assertEquals(
@@ -299,11 +299,6 @@ Deno.test("tryResolvePluginUrl", async () => {
 // todo: mock github api for these tests
 
 Deno.test("tryResolveSchemaUrl", async () => {
-  assertEquals(
-    await getRedirectUrl("https://plugins.dprint.dev/schemas/typescript-1.2.3.json"),
-    "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
-  );
-
   assertEquals(
     await getRedirectUrl("https://plugins.dprint.dev/dprint/typescript/1.2.3/schema.json"),
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
