@@ -14,6 +14,15 @@ Deno.test("should get info.json", async () => {
   }
 });
 
+Deno.test("should get cli.json", async () => {
+  const response = await handleRequest(
+    new Request("https://plugins.dprint.dev/cli.json"),
+  );
+  assertEquals(response.headers.get("content-type"), "application/json; charset=utf-8");
+  const data = await response.json();
+  assertEquals(typeof data.version, "string");
+});
+
 async function getRedirectUrl(url: string) {
   const response = await handleRequest(
     new Request(url),

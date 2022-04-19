@@ -1,3 +1,4 @@
+import { LazyExpirableValue } from "./LazyExpirableValue.ts";
 import { LruCache, LruCacheWithExpiry } from "./LruCache.ts";
 import { createSynchronizedActioner } from "./synchronizedActioner.ts";
 
@@ -94,6 +95,26 @@ function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: 
 
     return "wasm";
   }
+}
+
+const latestCliReleaseInfo = new LazyExpirableValue<any>({
+  expiryMs: 10 * 60 * 1_000, // keep for 10 minutes
+  createValue: async () => {
+    const url = `https://api.github.com/repos/dprint/dprint/releases/latest`;
+    const response = await makeGitHubGetRequest(url, "GET");
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
+    }
+    return await response.json();
+  },
+});
+
+export async function getCliInfo() {
+  const data = await latestCliReleaseInfo.getValue();
+  return {
+    version: data.tag_name as string,
+  };
 }
 
 function validateName(name: string) {
