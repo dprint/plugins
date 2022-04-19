@@ -2,7 +2,7 @@ import { renderHome } from "./home.tsx";
 import oldMappings from "./old_redirects.json" assert { type: "json" };
 import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 import { readInfoFile } from "./readInfoFile.ts";
-import { fetchCached } from "./utils/mod.ts";
+import { fetchCached, getCliInfo } from "./utils/mod.ts";
 
 const contentTypes = {
   css: "text/css; charset=utf-8",
@@ -42,6 +42,11 @@ export async function handleRequest(request: Request) {
   if (url.pathname.startsWith("/info.json")) {
     const infoFileData = await readInfoFile();
     return createJsonResponse(JSON.stringify(infoFileData, null, 2), request);
+  }
+
+  if (url.pathname.startsWith("/cli.json")) {
+    const cliInfo = await getCliInfo();
+    return createJsonResponse(JSON.stringify(cliInfo, null, 2), request);
   }
 
   if (url.pathname === "/style.css") {
