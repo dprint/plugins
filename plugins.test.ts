@@ -71,7 +71,7 @@ Deno.test("tryResolveUserLatestJson", async () => {
     assertEquals(releaseInfo?.checksum?.length, 64);
     assertEquals(result, {
       schemaVersion: 1,
-      url: `https://plugins.dprint.dev/prettier-${releaseInfo!.tagName}.exe-plugin`,
+      url: `https://plugins.dprint.dev/prettier-${releaseInfo!.tagName}.json`,
       version: releaseInfo!.tagName,
       checksum: releaseInfo!.checksum,
     });

@@ -7,7 +7,7 @@ const dprintWasmPluginPattern = new URLPattern({
   pathname: `/${repoNamePattern}-${tagPattern}.wasm`,
 });
 const dprintProcessPluginPattern = new URLPattern({
-  pathname: `/${repoNamePattern}-${tagPattern}.exe-plugin`,
+  pathname: `/${repoNamePattern}-${tagPattern}.json`,
 });
 // usernames may only contain alphanumeric and hypens
 const usernamePattern = `([A-Za-z0-9\-]+)`;
@@ -16,7 +16,7 @@ const userWasmPluginPattern = new URLPattern({
   pathname: `/${userRepoPattern}-${tagPattern}.wasm`,
 });
 const userProcessPluginPattern = new URLPattern({
-  pathname: `/${userRepoPattern}-${tagPattern}.exe-plugin`,
+  pathname: `/${userRepoPattern}-${tagPattern}.json`,
 });
 const userSchemaPattern = new URLPattern({
   pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
@@ -24,9 +24,9 @@ const userSchemaPattern = new URLPattern({
 
 export async function tryResolvePluginUrl(url: URL) {
   return dprintPluginTagPatternMapper(dprintWasmPluginPattern, url, "plugin.wasm")
-    ?? dprintPluginTagPatternMapper(dprintProcessPluginPattern, url, "plugin.exe-plugin")
+    ?? dprintPluginTagPatternMapper(dprintProcessPluginPattern, url, "plugin.json")
     ?? (await userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm"))
-    ?? (await userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.exe-plugin"));
+    ?? (await userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.json"));
 }
 
 export function tryResolveSchemaUrl(url: URL) {
@@ -65,7 +65,7 @@ export async function getLatestInfo(username: string, repoName: string) {
     return undefined;
   }
   const displayRepoName = repoName.replace(/^dprint-plugin-/, "");
-  const extension = releaseInfo.kind === "wasm" ? "wasm" : "exe-plugin";
+  const extension = releaseInfo.kind === "wasm" ? "wasm" : "json";
 
   // include the bare minimum in case someone else wants to implement
   // this behaviour on their server

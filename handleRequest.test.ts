@@ -199,50 +199,70 @@ Deno.test("should get correct info for sql resolver", async () => {
 });
 
 Deno.test("should get correct info for prettier resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/prettier-${version}.exe-plugin`);
+  function getProcessPluginRedirectUrl(version: string, ext = "json") {
+    return getRedirectUrl(`https://plugins.dprint.dev/prettier-${version}.${ext}`);
   }
 
   // file name changed after this
   assertEquals(
-    await getProcessPluginRedirectUrl("0.5.0"),
+    await getProcessPluginRedirectUrl("0.5.0", "exe-plugin"),
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.5.0/prettier.exe-plugin",
   );
   assertEquals(
-    await getProcessPluginRedirectUrl("0.5.1"),
+    await getProcessPluginRedirectUrl("0.5.1", "exe-plugin"),
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.5.1/plugin.exe-plugin",
+  );
+
+  // and changed again here
+  assertEquals(
+    await getProcessPluginRedirectUrl("0.6.2", "exe-plugin"),
+    "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.6.2/plugin.exe-plugin",
+  );
+  assertEquals(
+    await getProcessPluginRedirectUrl("0.7.0"),
+    "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.7.0/plugin.json",
   );
 });
 
 Deno.test("should get correct info for roslyn resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/roslyn-${version}.exe-plugin`);
+  function getProcessPluginRedirectUrl(version: string, ext = "json") {
+    return getRedirectUrl(`https://plugins.dprint.dev/roslyn-${version}.${ext}`);
   }
 
   // file name changed after this
   assertEquals(
-    await getProcessPluginRedirectUrl("0.4.0"),
+    await getProcessPluginRedirectUrl("0.4.0", "exe-plugin"),
     "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.4.0/roslyn.exe-plugin",
   );
   assertEquals(
-    await getProcessPluginRedirectUrl("0.4.1"),
-    "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.4.1/plugin.exe-plugin",
+    await getProcessPluginRedirectUrl("0.5.0", "exe-plugin"),
+    "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.5.0/plugin.exe-plugin",
+  );
+  // and again here
+  assertEquals(
+    await getProcessPluginRedirectUrl("0.6.4"),
+    "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.6.4/plugin.json",
   );
 });
 
 Deno.test("should get correct info for rustfmt resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/rustfmt-${version}.exe-plugin`);
+  function getProcessPluginRedirectUrl(version: string, ext = "json") {
+    return getRedirectUrl(`https://plugins.dprint.dev/rustfmt-${version}.${ext}`);
   }
 
   // file name changed after this
   assertEquals(
-    await getProcessPluginRedirectUrl("0.4.0"),
+    await getProcessPluginRedirectUrl("0.4.0", "exe-plugin"),
     "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.4.0/rustfmt.exe-plugin",
   );
   assertEquals(
-    await getProcessPluginRedirectUrl("0.4.1"),
-    "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.4.1/plugin.exe-plugin",
+    await getProcessPluginRedirectUrl("0.5.1", "exe-plugin"),
+    "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.5.1/plugin.exe-plugin",
+  );
+  // and again here
+  assertEquals(
+    await getProcessPluginRedirectUrl("0.6.2"),
+    "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.6.2/plugin.json",
   );
 });
 
@@ -295,13 +315,8 @@ Deno.test("tryResolvePluginUrl", async () => {
   );
 
   assertEquals(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/non-existent-1.2.3.wasm"),
-    "https://github.com/dprint/non-existent/releases/download/1.2.3/plugin.wasm",
-  );
-
-  assertEquals(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-exec-0.1.0.exe-plugin"),
-    "https://github.com/dprint/dprint-plugin-exec/releases/download/0.1.0/plugin.exe-plugin",
+    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-exec-0.3.0.json"),
+    "https://github.com/dprint/dprint-plugin-exec/releases/download/0.3.0/plugin.json",
   );
 });
 

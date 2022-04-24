@@ -87,7 +87,7 @@ function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: 
 
     for (const asset of data.assets) {
       if (typeof asset === "object" && typeof asset.name === "string") {
-        if (asset.name.endsWith(".exe-plugin")) {
+        if (asset.name === "plugin.json") {
           return "process";
         }
       }

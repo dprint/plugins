@@ -10,7 +10,7 @@ This service provides a convenient redirect for a plugin stored in any GitHub re
 
 To use it, create a GitHub release in your repo with:
 
-1. Plugin named `plugin.wasm` (use `plugin.exe-plugin` for process plugins)
+1. Plugin named `plugin.wasm` (use `plugin.json` for process plugins)
 1. JSON schema named `schema.json` (if exists)
 
 Then your redirect urls will look like:
