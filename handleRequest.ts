@@ -19,7 +19,7 @@ export async function handleRequest(request: Request) {
     return redirectWithoutHash(url, atSignIndex);
   }
   if (url.pathname.includes("testing-this-out")) {
-    return new Response(Deno.env.get("DPRINT_PLUGINS_GH_TOKEN")?.substring(0, 5) ?? "fail", {
+    return new Response((Deno.env.get("DPRINT_PLUGINS_GH_TOKEN")?.length ?? 0).toString(), {
       status: 200,
     });
   }
