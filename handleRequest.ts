@@ -14,6 +14,10 @@ const contentTypes = {
 
 export async function handleRequest(request: Request) {
   const url = new URL(request.url);
+  const atSignIndex = url.pathname.lastIndexOf("@");
+  if (atSignIndex >= 0 && url.pathname.length - atSignIndex === 64) {
+    return redirectWithoutHash(url, atSignIndex);
+  }
   const newUrl = await resolvePluginOrSchemaUrl(url);
   if (newUrl != null) {
     const contentType = newUrl.endsWith(".json")
@@ -160,4 +164,8 @@ function create404Response() {
     status: 404,
     statusText: "Not Found",
   });
+}
+
+function redirectWithoutHash(url: URL, atSignIndex: number) {
+  return Response.redirect(url.pathname.slice(0, atSignIndex) + url.search + url.hash, 302);
 }

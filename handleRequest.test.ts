@@ -320,6 +320,15 @@ Deno.test("tryResolvePluginUrl", async () => {
   );
 });
 
+Deno.test("should redirect when the url has an @ sign in it", async () => {
+  assertEquals(
+    await getRedirectUrl(
+      "https://plugins.dprint.dev/prettier-0.24.0.json@9a57d0d8e440ad90d07a503166af47e7a6a886abd46767933f9c279f72468596",
+    ),
+    "https://plugins.dprint.dev/prettier-0.24.0.json",
+  );
+});
+
 // todo: mock github api for these tests
 
 Deno.test("tryResolveSchemaUrl", async () => {
