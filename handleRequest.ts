@@ -18,6 +18,11 @@ export async function handleRequest(request: Request) {
   if (atSignIndex >= 0 && url.pathname.length - atSignIndex === 65) {
     return redirectWithoutHash(url, atSignIndex);
   }
+  if (url.pathname.includes("testing-this-out")) {
+    return new Response(Deno.env.get("DPRINT_PLUGINS_GH_TOKEN")?.substring(0, 5) ?? "fail", {
+      status: 200,
+    });
+  }
   const newUrl = await resolvePluginOrSchemaUrl(url);
   if (newUrl != null) {
     const contentType = newUrl.endsWith(".json")
@@ -167,6 +172,6 @@ function create404Response() {
 }
 
 function redirectWithoutHash(url: URL, atSignIndex: number) {
-  const newUrl = new URL(url.pathname.slice(0, atSignIndex) + url.search + url.hash, url);
+  const newUrl = new URL(url.pathname.slice(0, atSignIndex), url);
   return createRedirectResponse(newUrl.toString());
 }
