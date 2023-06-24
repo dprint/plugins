@@ -15,7 +15,7 @@ const contentTypes = {
 export async function handleRequest(request: Request) {
   const url = new URL(request.url);
   const atSignIndex = url.pathname.lastIndexOf("@");
-  if (atSignIndex >= 0 && url.pathname.length - atSignIndex === 64) {
+  if (atSignIndex >= 0 && url.pathname.length - atSignIndex === 65) {
     return redirectWithoutHash(url, atSignIndex);
   }
   const newUrl = await resolvePluginOrSchemaUrl(url);
@@ -167,5 +167,6 @@ function create404Response() {
 }
 
 function redirectWithoutHash(url: URL, atSignIndex: number) {
-  return Response.redirect(url.pathname.slice(0, atSignIndex) + url.search + url.hash, 302);
+  const newUrl = new URL(url.pathname.slice(0, atSignIndex) + url.search + url.hash, url);
+  return createRedirectResponse(newUrl.toString());
 }
