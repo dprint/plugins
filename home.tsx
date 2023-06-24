@@ -1,6 +1,6 @@
 /** @jsx h */
-import { h } from "https://x.lcas.dev/preact@10.5.12/mod.js";
-import { renderToString } from "https://x.lcas.dev/preact@10.5.12/ssr.js";
+import { h } from "preact";
+import { renderToString } from "preact-render-to-string";
 import { PluginData, PluginsData, readInfoFile } from "./readInfoFile.ts";
 
 export async function renderHome() {
