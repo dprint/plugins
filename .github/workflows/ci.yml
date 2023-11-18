@@ -5,6 +5,10 @@ jobs:
     name: CI
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write
+      contents: read
+
     steps:
       - uses: actions/checkout@v3
       - uses: denoland/setup-deno@v1
