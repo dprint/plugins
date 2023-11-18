@@ -49,7 +49,7 @@ async function renderContent() {
             <code>dprint config update</code> - Automatically updates the plugins in a config file.
           </li>
           <li>
-            <code>dprint config add</code> - Adds one of these plugins.
+            <code>dprint config add</code> - Adds one of these plugins via a multi-select prompt.
           </li>
           <li>
             <code>dprint config add &lt;plugin-name&gt;</code> - Adds a plugin by name.
