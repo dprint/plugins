@@ -41,8 +41,8 @@ export async function tryResolveLatestJson(url: URL) {
   if (!result) {
     return undefined;
   }
-  const username = result.pathname.groups[0];
-  const shortRepoName = result.pathname.groups[1];
+  const username = result.pathname.groups[0]!;
+  const shortRepoName = result.pathname.groups[1]!;
   const latestInfo = await getLatestInfo(username, shortRepoName);
   if (latestInfo == null) {
     return 404;
@@ -104,8 +104,8 @@ async function userRepoTagPatternMapper(
 ) {
   const result = pattern.exec(url);
   if (result) {
-    const username = result.pathname.groups[0];
-    const repo = await getFullRepoName(username, result.pathname.groups[1]);
+    const username = result.pathname.groups[0]!;
+    const repo = await getFullRepoName(username, result.pathname.groups[1]!);
     const tag = result.pathname.groups[2];
     if (tag === "latest") {
       return `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`;
