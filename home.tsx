@@ -43,7 +43,21 @@ async function renderContent() {
       <h1>Latest Plugins</h1>
       {renderPlugins(pluginsData)}
       <p>
-        Run <code>dprint config update</code> to automatically update the plugins in a config file.
+        Helpful commands:
+        <ul>
+          <li>
+            <code>dprint config update</code> - Automatically updates the plugins in a config file.
+          </li>
+          <li>
+            <code>dprint config add</code> - Adds one of these plugins.
+          </li>
+          <li>
+            <code>dprint config add &lt;plugin-name&gt;</code> - Adds a plugin by name.
+          </li>
+          <li>
+            <code>dprint config add &lt;gh-org&gt;/&lt;gh-repo&gt;</code> - Adds a plugin by GitHub repo.
+          </li>
+        </ul>
       </p>
     </section>
   );
