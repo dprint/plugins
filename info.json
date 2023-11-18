@@ -55,6 +55,22 @@
         "dockerfile"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-biome",
+      "selected": false,
+      "configKey": "biome",
+      "fileExtensions": [
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "cjs",
+        "mjs"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
     }
   ]
 }
