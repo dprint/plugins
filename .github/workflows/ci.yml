@@ -14,6 +14,7 @@ jobs:
       - uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+      - uses: dprint/check@v2.2
       - name: Run tests
         run: deno test --allow-env --allow-read=. --allow-net=api.github.com
       - name: Deploy to Deno Deploy
