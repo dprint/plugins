@@ -12,3 +12,8 @@ jobs:
           deno-version: v1.x
       - name: Run tests
         run: deno test --allow-env --allow-read=. --allow-net=api.github.com
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: dprint-plugins
+          entrypoint: main.ts
