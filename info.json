@@ -71,6 +71,16 @@
       "configExcludes": [
         "**/node_modules"
       ]
+    },
+    {
+      "name": "dprint-plugin-ruff",
+      "selected": false,
+      "configKey": "ruff",
+      "fileExtensions": [
+        "py",
+        "pyi"
+      ],
+      "configExcludes": []
     }
   ]
 }
