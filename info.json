@@ -81,6 +81,15 @@
         "pyi"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-jupyter",
+      "selected": false,
+      "configKey": "jupyter",
+      "fileExtensions": [
+        "ipynb"
+      ],
+      "configExcludes": []
     }
   ]
 }
