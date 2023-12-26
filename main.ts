@@ -1,3 +1,6 @@
-import { handleRequest } from "./handleRequest.ts";
+import { createRequestHandler } from "./handleRequest.ts";
+import { RealClock } from "./utils/clock.ts";
 
-Deno.serve((request) => handleRequest(request));
+const { handleRequest } = createRequestHandler(new RealClock());
+
+Deno.serve((request, info) => handleRequest(request, info));

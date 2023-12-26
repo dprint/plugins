@@ -1,0 +1,85 @@
+import { assertEquals } from "../deps.test.ts";
+import { createFetchCacher } from "./fetchCached.ts";
+
+Deno.test("should error when going above 10mb", async (t) => {
+  let time = 0;
+  const clock = {
+    getTime() {
+      return time;
+    },
+  };
+  const { fetchCached } = createFetchCacher(clock);
+  await using _server = Deno.serve({ port: 8040 }, (request) => {
+    if (request.url.endsWith("large")) {
+      return new Response(new Uint8Array(11 * 1024 * 1024).buffer, {
+        status: 200,
+      });
+    } else if (request.url.endsWith("small")) {
+      return new Response(new Uint8Array(9 * 1024 * 1024).buffer, {
+        status: 200,
+      });
+    } else {
+      return new Response("Not found", {
+        status: 404,
+      });
+    }
+  });
+
+  // large
+  await t.step("should error going above 10mb", async () => {
+    const response = await fetchCached({
+      url: `http://localhost:8040/large`,
+      hostname: "127.0.0.1",
+    });
+    if (response.kind !== "error") {
+      throw new Error("Expected error.");
+    }
+    assertEquals(response.response.status, 413);
+  });
+
+  // small
+  await t.step("should not error below 10mb", async () => {
+    const response = await fetchCached({
+      url: `http://localhost:8040/small`,
+      hostname: "127.0.0.1",
+    });
+    if (response.kind !== "success") {
+      throw new Error("Expected error.");
+    }
+    assertEquals(response.body.byteLength, 9 * 1024 * 1024);
+
+    const response2 = await fetchCached({
+      url: `http://localhost:8040/small`,
+      hostname: "127.0.0.1",
+    });
+    if (response.body !== response2.body) {
+      throw new Error("Should have been the same objects.");
+    }
+  });
+
+  await t.step("should error after 20 downloads because of rate limiting", async () => {
+    for (let i = 0; i < 19; i++) {
+      const response = await fetchCached({
+        url: `http://localhost:8040/small`,
+        hostname: "127.0.0.1",
+      });
+      assertEquals(response.kind, "success");
+    }
+
+    let response = await fetchCached({
+      url: `http://localhost:8040/small`,
+      hostname: "127.0.0.1",
+    });
+    if (response.kind !== "error") {
+      throw new Error("Was not error.");
+    }
+    assertEquals(response.response.status, 429);
+    // advance time and it should work again
+    time += 61 * 1000;
+    response = await fetchCached({
+      url: `http://localhost:8040/small`,
+      hostname: "127.0.0.1",
+    });
+    assertEquals(response.kind, "success");
+  });
+});
