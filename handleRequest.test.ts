@@ -1,9 +1,20 @@
 import { assertEquals } from "./deps.test.ts";
-import { handleRequest } from "./handleRequest.ts";
+import { createRequestHandler } from "./handleRequest.ts";
+import { RealClock } from "./utils/clock.ts";
+
+const connInfo: Deno.ServeHandlerInfo = {
+  remoteAddr: {
+    transport: "tcp",
+    hostname: "127.0.0.1",
+    port: 80,
+  },
+};
 
 Deno.test("should get info.json", async () => {
+  const { handleRequest } = createRequestHandler(new RealClock());
   const response = await handleRequest(
     new Request("https://plugins.dprint.dev/info.json"),
+    connInfo,
   );
   assertEquals(response.headers.get("content-type"), "application/json; charset=utf-8");
   const data = await response.json();
@@ -15,8 +26,10 @@ Deno.test("should get info.json", async () => {
 });
 
 Deno.test("should get cli.json", async () => {
+  const { handleRequest } = createRequestHandler(new RealClock());
   const response = await handleRequest(
     new Request("https://plugins.dprint.dev/cli.json"),
+    connInfo,
   );
   assertEquals(response.headers.get("content-type"), "application/json; charset=utf-8");
   const data = await response.json();
@@ -24,8 +37,10 @@ Deno.test("should get cli.json", async () => {
 });
 
 async function getRedirectUrl(url: string) {
+  const { handleRequest } = createRequestHandler(new RealClock());
   const response = await handleRequest(
     new Request(url),
+    connInfo,
   );
   assertEquals(response.status, 302);
   return response.headers.get("location")!;

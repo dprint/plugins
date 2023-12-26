@@ -1,52 +1,106 @@
+export class LruCacheSet<TKey> {
+  #inner: LruCache<TKey, true>;
+
+  constructor(options: { size: number }) {
+    this.#inner = new LruCache({ size: options.size });
+  }
+
+  has(key: TKey) {
+    return this.#inner.get(key) != null;
+  }
+
+  insert(key: TKey) {
+    this.#inner.set(key, true);
+  }
+}
+
+interface LruCacheNode<TKey, TValue> {
+  key: TKey;
+  value: TValue;
+  prev?: LruCacheNode<TKey, TValue>;
+  next?: LruCacheNode<TKey, TValue>;
+}
+
 export class LruCache<TKey, TValue> {
-  #size: number;
-  #map = new Map<TKey, TValue>();
-  #recent: TKey[] = [];
+  readonly #size: number;
+  #map = new Map<TKey, LruCacheNode<TKey, TValue>>();
+  #head: LruCacheNode<TKey, TValue> | undefined;
+  #tail: LruCacheNode<TKey, TValue> | undefined;
 
   constructor(options: { size: number }) {
     this.#size = options.size;
   }
 
   get(key: TKey) {
-    if (!this.#map.has(key)) {
-      return undefined;
+    const node = this.#map.get(key);
+    if (node) {
+      this.#moveToFront(node);
+      return node.value;
     }
-    this.#setMostRecentForKey(key);
-    return this.#map.get(key);
-  }
-
-  #setMostRecentForKey(key: TKey) {
-    this.#removeFromRecent(key);
-    this.#recent.push(key);
+    return undefined;
   }
 
   set(key: TKey, value: TValue) {
-    if (this.#map.has(key)) {
-      this.#setMostRecentForKey(key);
-    } else {
-      this.#recent.push(key);
-      if (this.#recent.length > this.#size) {
-        this.#map.delete(this.#recent[0]);
-        this.#recent.splice(0, 1);
-      }
-    }
+    let node = this.#map.get(key);
 
-    this.#map.set(key, value);
+    if (node) {
+      node.value = value;
+      this.#moveToFront(node);
+    } else {
+      node = { key, value };
+      if (this.#map.size === this.#size) {
+        this.#removeLeastRecentlyUsed();
+      }
+      this.#map.set(key, node);
+      this.#addToFront(node);
+    }
   }
 
   remove(key: TKey) {
-    if (this.#map.delete(key)) {
-      this.#removeFromRecent(key);
+    const node = this.#map.get(key);
+    if (node) {
+      this.#removeNode(node);
+      this.#map.delete(key);
     }
   }
 
-  #removeFromRecent(key: TKey) {
-    for (let i = this.#recent.length - 1; i >= 0; i--) {
-      if (this.#recent[i] === key) {
-        this.#recent.splice(i, 1);
-        break;
-      }
+  #removeNode(node: LruCacheNode<TKey, TValue>) {
+    if (node.prev) {
+      node.prev.next = node.next;
+    } else {
+      this.#head = node.next;
     }
+
+    if (node.next) {
+      node.next.prev = node.prev;
+    } else {
+      this.#tail = node.prev;
+    }
+  }
+
+  #removeLeastRecentlyUsed(): void {
+    if (!this.#tail) return;
+
+    this.#map.delete(this.#tail.key);
+    this.#removeNode(this.#tail);
+  }
+
+  #addToFront(node: LruCacheNode<TKey, TValue>): void {
+    if (!this.#head) {
+      this.#head = node;
+      this.#tail = node;
+      return;
+    }
+    node.next = this.#head;
+    this.#head.prev = node;
+    this.#head = node;
+  }
+
+  #moveToFront(node: LruCacheNode<TKey, TValue>): void {
+    if (node === this.#head) return;
+
+    this.#removeNode(node);
+    this.#addToFront(node);
   }
 }
 
