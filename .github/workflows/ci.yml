@@ -15,7 +15,7 @@ jobs:
         with:
           deno-version: v1.x
       - name: Run tests
-        run: deno test --allow-env --allow-read=. --allow-net=api.github.com
+        run: deno test --allow-env --allow-read=. --allow-net=api.github.com,0.0.0.0,localhost
       - name: Deploy to Deno Deploy
         uses: denoland/deployctl@v1
         with:
