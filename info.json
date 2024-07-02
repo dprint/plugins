@@ -1,6 +1,6 @@
 {
   "schemaVersion": 4,
-  "pluginSystemSchemaVersion": 3,
+  "pluginSystemSchemaVersion": 4,
   "latest": [
     {
       "name": "dprint-plugin-typescript",

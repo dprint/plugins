@@ -8,6 +8,7 @@ const connInfo: Deno.ServeHandlerInfo = {
     hostname: "127.0.0.1",
     port: 80,
   },
+  completed: Promise.resolve(),
 };
 
 Deno.test("should get info.json", async () => {
