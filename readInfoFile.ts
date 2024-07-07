@@ -27,7 +27,10 @@ export async function readInfoFile(): Promise<Readonly<PluginsData>> {
   async function getLatest(latest: Readonly<PluginData>[]) {
     const results = [];
     for (const plugin of latest) {
-      const info = await getLatestInfo("dprint", plugin.name);
+      const [username, pluginName] = plugin.name.split("/");
+      const info = pluginName
+        ? await getLatestInfo(username, pluginName)
+        : await getLatestInfo("dprint", plugin.name);
       if (info != null) {
         results.push({
           ...plugin,

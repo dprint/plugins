@@ -90,6 +90,47 @@
         "ipynb"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "g-plane/malva",
+      "selected": true,
+      "configKey": "malva",
+      "fileExtensions": [
+        "css",
+        "scss",
+        "sass",
+        "less"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "g-plane/markup_fmt",
+      "selected": true,
+      "configKey": "markup",
+      "fileExtensions": [
+        "html",
+        "vue",
+        "svelte",
+        "astro",
+        "jinja",
+        "jinja2",
+        "twig",
+        "njk",
+        "vto"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "g-plane/pretty_yaml",
+      "selected": true,
+      "configKey": "yaml",
+      "fileExtensions": [
+        "yaml",
+        "yml"
+      ],
+      "configExcludes": []
     }
   ]
 }
