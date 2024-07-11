@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: denoland/setup-deno@v1
         with:
-          deno-version: v1.44
+          deno-version: v1.43
       - name: Run tests
         run: deno test --allow-env --allow-read=. --allow-net=api.github.com,0.0.0.0,localhost
       - name: Deploy to Deno Deploy
