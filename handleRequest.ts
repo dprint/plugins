@@ -1,5 +1,5 @@
 import { renderHome } from "./home.tsx";
-import oldMappings from "./old_redirects.json" assert { type: "json" };
+import oldMappings from "./old_redirects.json" with { type: "json" };
 import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
 import { readInfoFile } from "./readInfoFile.ts";
 import { Clock } from "./utils/clock.ts";
@@ -40,13 +40,19 @@ export function createRequestHandler(clock: Clock) {
             status: 404,
           });
         } else {
-          return createJsonResponse(JSON.stringify(userLatestInfo, undefined, 2), request);
+          return createJsonResponse(
+            JSON.stringify(userLatestInfo, undefined, 2),
+            request,
+          );
         }
       }
 
       if (url.pathname.startsWith("/info.json")) {
         const infoFileData = await readInfoFile();
-        return createJsonResponse(JSON.stringify(infoFileData, null, 2), request);
+        return createJsonResponse(
+          JSON.stringify(infoFileData, null, 2),
+          request,
+        );
       }
 
       if (url.pathname.startsWith("/cli.json")) {
@@ -55,7 +61,7 @@ export function createRequestHandler(clock: Clock) {
       }
 
       if (url.pathname === "/style.css") {
-        return Deno.readTextFile("./style.css").then(text =>
+        return Deno.readTextFile("./style.css").then((text) =>
           new Response(text, {
             headers: {
               "content-type": "text/css; charset=utf-8",
@@ -66,14 +72,14 @@ export function createRequestHandler(clock: Clock) {
       }
 
       if (url.pathname === "/") {
-        return renderHome().then(home =>
+        return renderHome().then((home) =>
           new Response(home, {
             headers: {
               "content-type": contentTypes.html,
             },
             status: 200,
           })
-        ).catch(err =>
+        ).catch((err) =>
           new Response(`${err.toString?.() ?? err}`, {
             headers: {
               "content-type": contentTypes.plain,
@@ -96,7 +102,7 @@ export function createRequestHandler(clock: Clock) {
   }) {
     if (shouldDirectlyServeFile(params.request)) {
       return fetchCached(params)
-        .then(result => {
+        .then((result) => {
           if (result.kind === "error") {
             return result.response;
           }
@@ -105,11 +111,13 @@ export function createRequestHandler(clock: Clock) {
             headers: {
               "content-type": params.contentType,
               // allow the playground to download this
-              "Access-Control-Allow-Origin": getAccessControlAllowOrigin(params.request),
+              "Access-Control-Allow-Origin": getAccessControlAllowOrigin(
+                params.request,
+              ),
             },
             status: 200,
           });
-        }).catch(err => {
+        }).catch((err) => {
           console.error(err);
           return new Response("Internal Server Error", {
             status: 500,
@@ -129,7 +137,9 @@ async function resolvePluginOrSchemaUrl(url: URL) {
 
 function getAccessControlAllowOrigin(request: Request) {
   const origin = request.headers.get("origin");
-  return origin != null && new URL(origin).hostname === "localhost" ? origin : "https://dprint.dev";
+  return origin != null && new URL(origin).hostname === "localhost"
+    ? origin
+    : "https://dprint.dev";
 }
 
 function shouldDirectlyServeFile(request: Request) {
