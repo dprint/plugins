@@ -26,7 +26,6 @@ Deno.test("should error when going above 10mb", async (t) => {
   });
 
   const addr = server.addr.hostname + ":" + server.addr.port;
-  console.log("Listening at ", addr);
 
   // large
   await t.step("should error going above 10mb", async () => {
@@ -85,4 +84,6 @@ Deno.test("should error when going above 10mb", async (t) => {
     });
     assertEquals(response.kind, "success");
   });
+
+  await server.shutdown();
 });
