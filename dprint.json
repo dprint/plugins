@@ -1,4 +1,7 @@
 {
+  "malva": {
+    "blockSelectorLinebreak": "always"
+  },
   "excludes": [
     "**/node_modules",
     "**/*-lock.json"
@@ -7,6 +10,8 @@
     "https://plugins.dprint.dev/typescript-0.88.7.wasm",
     "https://plugins.dprint.dev/json-0.19.1.wasm",
     "https://plugins.dprint.dev/markdown-0.16.3.wasm",
-    "https://plugins.dprint.dev/prettier-0.31.0.json@8808616145fecc35574b79e78620f7fb241afba445201e64042dc78e01a1022b"
+    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.3.0.wasm",
+    "https://plugins.dprint.dev/g-plane/malva-v0.5.1.wasm",
+    "https://plugins.dprint.dev/g-plane/markup_fmt-v0.10.0.wasm"
   ]
 }
