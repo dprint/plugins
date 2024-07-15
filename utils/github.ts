@@ -44,25 +44,12 @@ const latestReleaseTagNameCache = new LruCacheWithExpiry<string, ReleaseInfo | u
 });
 
 export async function getLatestReleaseInfo(username: string, repoName: string) {
-  if (!validateName(username) || !validateName(repoName)) {
-    return undefined;
-  }
-
-  const url = `https://api.github.com/repos/${username}/${repoName}/releases/latest`;
-  return await latestReleaseTagNameCache.getOrSet(url, async () => {
-    const response = await makeGitHubGetRequest(url, "GET");
-    if (response.status === 404) {
-      await response.text(); // todo: no way to mark this as used for the sanitizers?
-      return undefined;
-    } else if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
-    }
-    return getReleaseInfo(await response.json());
-  });
+  const releases = await getReleasesData(username, repoName);
+  const latest = releases?.find((release) => !release.draft && !release.prerelease);
+  return latest ? getReleaseInfo(latest) : undefined;
 }
 
-function getReleaseInfo(data: { tag_name: string; body: string; assets: ReleaseAsset[] }): ReleaseInfo {
+function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
   if (typeof data.tag_name !== "string") {
     throw new Error("The tag name was not a string.");
   }
@@ -108,28 +95,40 @@ interface ReleaseAsset {
   download_count: number;
 }
 
-const allDownloadCountCache = new LruCacheWithExpiry<string, number>({
+export async function getAllDownloadCount(username: string, repoName: string) {
+  const releases = await getReleasesData(username, repoName);
+  return releases?.reduce((total, current) => total + getDownloadCount(current.assets), 0) ?? 0;
+}
+
+interface GitHubRelease {
+  tag_name: string;
+  body: string;
+  draft: boolean;
+  prerelease: boolean;
+  assets: ReleaseAsset[];
+}
+
+const releasesCache = new LruCacheWithExpiry<string, GitHubRelease[]>({
   size: 1000,
   expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
 });
 
-export async function getAllDownloadCount(username: string, repoName: string) {
+async function getReleasesData(username: string, repoName: string) {
   if (!validateName(username) || !validateName(repoName)) {
-    return undefined;
+    return;
   }
 
   const url = `https://api.github.com/repos/${username}/${repoName}/releases`;
-  return await allDownloadCountCache.getOrSet(url, async () => {
+  return await releasesCache.getOrSet(url, async () => {
     const response = await makeGitHubGetRequest(url, "GET");
     if (response.status === 404) {
       await response.text(); // todo: no way to mark this as used for the sanitizers?
-      return 0;
+      return;
     } else if (!response.ok) {
       const text = await response.text();
       throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
     }
-    const releases: { assets: ReleaseAsset[] }[] = await response.json();
-    return releases.reduce((total, current) => total + getDownloadCount(current.assets), 0);
+    return response.json();
   });
 }
 
