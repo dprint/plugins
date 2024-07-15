@@ -35,6 +35,7 @@ export interface ReleaseInfo {
   tagName: string;
   checksum: string | undefined;
   kind: "wasm" | "process";
+  downloadCount: number;
 }
 
 const latestReleaseTagNameCache = new LruCacheWithExpiry<string, ReleaseInfo | undefined>({
@@ -61,7 +62,7 @@ export async function getLatestReleaseInfo(username: string, repoName: string) {
   });
 }
 
-function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: string }[] }): ReleaseInfo {
+function getReleaseInfo(data: { tag_name: string; body: string; assets: ReleaseAsset[] }): ReleaseInfo {
   if (typeof data.tag_name !== "string") {
     throw new Error("The tag name was not a string.");
   }
@@ -69,6 +70,7 @@ function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: 
     tagName: data.tag_name,
     checksum: getChecksum(),
     kind: getPluginKind(),
+    downloadCount: getDownloadCount(data.assets),
   };
 
   function getChecksum() {
@@ -95,6 +97,40 @@ function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: 
 
     return "wasm";
   }
+}
+
+function getDownloadCount(assets: ReleaseAsset[]) {
+  return assets.find(({ name }) => name === "plugin.wasm" || name === "plugin.json")?.download_count ?? 0;
+}
+
+interface ReleaseAsset {
+  name: string;
+  download_count: number;
+}
+
+const allDownloadCountCache = new LruCacheWithExpiry<string, number>({
+  size: 1000,
+  expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
+});
+
+export async function getAllDownloadCount(username: string, repoName: string) {
+  if (!validateName(username) || !validateName(repoName)) {
+    return undefined;
+  }
+
+  const url = `https://api.github.com/repos/${username}/${repoName}/releases`;
+  return await allDownloadCountCache.getOrSet(url, async () => {
+    const response = await makeGitHubGetRequest(url, "GET");
+    if (response.status === 404) {
+      await response.text(); // todo: no way to mark this as used for the sanitizers?
+      return 0;
+    } else if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
+    }
+    const releases: { assets: ReleaseAsset[] }[] = await response.json();
+    return releases.reduce((total, current) => total + getDownloadCount(current.assets), 0);
+  });
 }
 
 const latestCliReleaseInfo = new LazyExpirableValue<any>({
