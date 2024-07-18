@@ -16,6 +16,10 @@ export interface PluginData {
   name: string;
   url: string;
   version: string;
+  downloadCount: {
+    currentVersion: number;
+    allVersions: number;
+  };
 }
 
 export async function readInfoFile(): Promise<Readonly<PluginsData>> {
