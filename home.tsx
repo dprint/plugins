@@ -11,7 +11,7 @@ export async function renderHome() {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="description" content="Latest plugin versions for dprint." />
-    <title>Latest Plugins - dprint</title>
+    <title>Plugins - dprint</title>
     <script>
       addEventListener("load", () => {
         for (const button of document.getElementsByClassName("copy-button")) {
@@ -40,7 +40,7 @@ async function renderContent() {
   const pluginsData = await readInfoFile();
   const section = (
     <section id="content">
-      <h1>Latest Plugins</h1>
+      <h1>Plugins</h1>
       {renderPlugins(pluginsData)}
       <p>
         Helpful commands:
