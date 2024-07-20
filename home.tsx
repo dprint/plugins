@@ -69,7 +69,7 @@ function renderPlugins(data: PluginsData) {
     <div id="plugins">
       <div id="plugins-header">
         <div>Name</div>
-        <div>URL</div>
+        <div>Latest URL</div>
         <div>Downloads</div>
         <div></div>
       </div>
