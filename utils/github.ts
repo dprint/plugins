@@ -35,6 +35,7 @@ export interface ReleaseInfo {
   tagName: string;
   checksum: string | undefined;
   kind: "wasm" | "process";
+  downloadCount: number;
 }
 
 const latestReleaseTagNameCache = new LruCacheWithExpiry<string, ReleaseInfo | undefined>({
@@ -43,25 +44,12 @@ const latestReleaseTagNameCache = new LruCacheWithExpiry<string, ReleaseInfo | u
 });
 
 export async function getLatestReleaseInfo(username: string, repoName: string) {
-  if (!validateName(username) || !validateName(repoName)) {
-    return undefined;
-  }
-
-  const url = `https://api.github.com/repos/${username}/${repoName}/releases/latest`;
-  return await latestReleaseTagNameCache.getOrSet(url, async () => {
-    const response = await makeGitHubGetRequest(url, "GET");
-    if (response.status === 404) {
-      await response.text(); // todo: no way to mark this as used for the sanitizers?
-      return undefined;
-    } else if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
-    }
-    return getReleaseInfo(await response.json());
-  });
+  const releases = await getReleasesData(username, repoName);
+  const latest = releases?.find((release) => !release.draft && !release.prerelease);
+  return latest ? getReleaseInfo(latest) : undefined;
 }
 
-function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: string }[] }): ReleaseInfo {
+function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
   if (typeof data.tag_name !== "string") {
     throw new Error("The tag name was not a string.");
   }
@@ -69,6 +57,7 @@ function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: 
     tagName: data.tag_name,
     checksum: getChecksum(),
     kind: getPluginKind(),
+    downloadCount: getDownloadCount(data.assets),
   };
 
   function getChecksum() {
@@ -95,6 +84,52 @@ function getReleaseInfo(data: { tag_name: string; body: string; assets: { name: 
 
     return "wasm";
   }
+}
+
+function getDownloadCount(assets: ReleaseAsset[]) {
+  return assets.find(({ name }) => name === "plugin.wasm" || name === "plugin.json")?.download_count ?? 0;
+}
+
+interface ReleaseAsset {
+  name: string;
+  download_count: number;
+}
+
+export async function getAllDownloadCount(username: string, repoName: string) {
+  const releases = await getReleasesData(username, repoName);
+  return releases?.reduce((total, current) => total + getDownloadCount(current.assets), 0) ?? 0;
+}
+
+interface GitHubRelease {
+  tag_name: string;
+  body: string;
+  draft: boolean;
+  prerelease: boolean;
+  assets: ReleaseAsset[];
+}
+
+const releasesCache = new LruCacheWithExpiry<string, GitHubRelease[]>({
+  size: 1000,
+  expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
+});
+
+async function getReleasesData(username: string, repoName: string) {
+  if (!validateName(username) || !validateName(repoName)) {
+    return;
+  }
+
+  const url = `https://api.github.com/repos/${username}/${repoName}/releases`;
+  return await releasesCache.getOrSet(url, async () => {
+    const response = await makeGitHubGetRequest(url, "GET");
+    if (response.status === 404) {
+      await response.text(); // todo: no way to mark this as used for the sanitizers?
+      return;
+    } else if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
+    }
+    return response.json();
+  });
 }
 
 const latestCliReleaseInfo = new LazyExpirableValue<any>({

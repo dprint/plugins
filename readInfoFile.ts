@@ -1,4 +1,5 @@
 import { getLatestInfo } from "./plugins.ts";
+import { getAllDownloadCount } from "./utils/github.ts";
 import { createAsyncLazy } from "./utils/mod.ts";
 
 const infoLazy = createAsyncLazy<Readonly<PluginsData>>(async () => {
@@ -15,6 +16,10 @@ export interface PluginData {
   name: string;
   url: string;
   version: string;
+  downloadCount: {
+    currentVersion: number;
+    allVersions: number;
+  };
 }
 
 export async function readInfoFile(): Promise<Readonly<PluginsData>> {
@@ -36,6 +41,12 @@ export async function readInfoFile(): Promise<Readonly<PluginsData>> {
           ...plugin,
           version: info.version,
           url: info.url,
+          downloadCount: {
+            currentVersion: info.downloadCount,
+            allVersions: pluginName
+              ? await getAllDownloadCount(username, pluginName)
+              : await getAllDownloadCount("dprint", plugin.name),
+          },
         });
       }
     }

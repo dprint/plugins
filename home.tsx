@@ -70,9 +70,11 @@ function renderPlugins(data: PluginsData) {
       <div id="plugins-header">
         <div>Name</div>
         <div>URL</div>
+        <div>Latest Downloads</div>
+        <div>Total Downloads</div>
         <div></div>
       </div>
-      {data.latest.map(plugin => renderPlugin(plugin))}
+      {data.latest.map((plugin) => renderPlugin(plugin))}
     </div>
   );
 }
@@ -82,6 +84,8 @@ function renderPlugin(plugin: PluginData) {
     <div className="plugin" key={plugin.name}>
       <div>{plugin.name}</div>
       <div>{plugin.url}</div>
+      <div>{plugin.downloadCount.currentVersion}</div>
+      <div>{plugin.downloadCount.allVersions}</div>
       <div>
         <button className="copy-button" title="Copy to clipboard" data-url={plugin.url}>
           Copy

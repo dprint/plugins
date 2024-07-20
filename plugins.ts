@@ -76,6 +76,7 @@ export async function getLatestInfo(username: string, repoName: string) {
       : `https://plugins.dprint.dev/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
     version: releaseInfo.tagName.replace(/^v/, ""),
     checksum: releaseInfo.checksum,
+    downloadCount: releaseInfo.downloadCount,
   };
 }
 
