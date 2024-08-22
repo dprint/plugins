@@ -131,6 +131,16 @@
         "yml"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "g-plane/pretty_graphql",
+      "selected": false,
+      "configKey": "graphql",
+      "fileExtensions": [
+        "graphql",
+        "gql"
+      ],
+      "configExcludes": []
     }
   ]
 }
