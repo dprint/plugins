@@ -4,6 +4,7 @@
   "latest": [
     {
       "name": "dprint-plugin-typescript",
+      "description": "TypeScript/JavaScript code formatter.",
       "selected": true,
       "configKey": "typescript",
       "fileExtensions": [
@@ -20,6 +21,7 @@
     },
     {
       "name": "dprint-plugin-json",
+      "description": "JSON/JSONC code formatter.",
       "selected": true,
       "configKey": "json",
       "fileExtensions": [
@@ -31,6 +33,7 @@
     },
     {
       "name": "dprint-plugin-markdown",
+      "description": "Markdown code formatter.",
       "selected": true,
       "configKey": "markdown",
       "fileExtensions": [
@@ -40,6 +43,7 @@
     },
     {
       "name": "dprint-plugin-toml",
+      "description": "TOML code formatter.",
       "selected": true,
       "configKey": "toml",
       "fileExtensions": [
@@ -49,6 +53,7 @@
     },
     {
       "name": "dprint-plugin-dockerfile",
+      "description": "Dockerfile code formatter.",
       "selected": false,
       "configKey": "dockerfile",
       "fileExtensions": [
@@ -58,6 +63,7 @@
     },
     {
       "name": "dprint-plugin-biome",
+      "description": "Biome (JS/TS) wrapper plugin.",
       "selected": false,
       "configKey": "biome",
       "fileExtensions": [
@@ -74,6 +80,7 @@
     },
     {
       "name": "dprint-plugin-ruff",
+      "description": "Ruff (Python) wrapper plugin.",
       "selected": false,
       "configKey": "ruff",
       "fileExtensions": [
@@ -84,6 +91,7 @@
     },
     {
       "name": "dprint-plugin-jupyter",
+      "description": "Jupyter notebook code block formatter.",
       "selected": false,
       "configKey": "jupyter",
       "fileExtensions": [
@@ -93,6 +101,7 @@
     },
     {
       "name": "g-plane/malva",
+      "description": "CSS, SCSS, Sass and Less formatter.",
       "selected": true,
       "configKey": "malva",
       "fileExtensions": [
@@ -107,6 +116,7 @@
     },
     {
       "name": "g-plane/markup_fmt",
+      "description": "HTML, Vue, Svelte, Astro, Angular, Jinja, Twig, Nunjucks, and Vento formatter.",
       "selected": true,
       "configKey": "markup",
       "fileExtensions": [
@@ -124,6 +134,7 @@
     },
     {
       "name": "g-plane/pretty_yaml",
+      "description": "YAML formatter.",
       "selected": true,
       "configKey": "yaml",
       "fileExtensions": [
@@ -134,6 +145,7 @@
     },
     {
       "name": "g-plane/pretty_graphql",
+      "description": "GraphQL formatter.",
       "selected": false,
       "configKey": "graphql",
       "fileExtensions": [
