@@ -107,6 +107,16 @@ async function userRepoTagPatternMapper(
   if (result) {
     const username = result.pathname.groups[0]!;
     const repo = await getFullRepoName(username, result.pathname.groups[1]!);
+    if (username === "lucacasonato" && repo === "mf2-tools") {
+      switch (fileName) {
+        case "plugin.wasm":
+          fileName = "dprint-plugin-mf2.wasm";
+          break;
+        case "schema.json":
+          fileName = "dprint-plugin-mf2.schema.json";
+          break;
+      }
+    }
     const tag = result.pathname.groups[2];
     if (tag === "latest") {
       return `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`;

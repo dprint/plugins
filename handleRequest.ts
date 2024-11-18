@@ -16,7 +16,7 @@ const contentTypes = {
 export function createRequestHandler(clock: Clock) {
   const { fetchCached } = createFetchCacher(clock);
   return {
-    async handleRequest(request: Request, info: Deno.ServeHandlerInfo) {
+    async handleRequest(request: Request, info: Deno.ServeHandlerInfo<Deno.NetAddr>) {
       const url = new URL(request.url);
       const newUrl = await resolvePluginOrSchemaUrl(url);
       if (newUrl != null) {

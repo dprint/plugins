@@ -2,14 +2,14 @@ import { assertEquals } from "./deps.test.ts";
 import { createRequestHandler } from "./handleRequest.ts";
 import { RealClock } from "./utils/clock.ts";
 
-const connInfo: Deno.ServeHandlerInfo = {
+const connInfo = {
   remoteAddr: {
     transport: "tcp",
     hostname: "127.0.0.1",
     port: 80,
   },
   completed: Promise.resolve(),
-};
+} satisfies Deno.ServeHandlerInfo<Deno.NetAddr>;
 
 Deno.test("should get info.json", async () => {
   const { handleRequest } = createRequestHandler(new RealClock());
@@ -334,6 +334,11 @@ Deno.test("tryResolvePluginUrl", async () => {
     await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-exec-0.3.0.json"),
     "https://github.com/dprint/dprint-plugin-exec/releases/download/0.3.0/plugin.json",
   );
+
+  assertEquals(
+    await getRedirectUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools-0.1.0.wasm"),
+    "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.wasm",
+  );
 });
 
 // todo: mock github api for these tests
@@ -357,5 +362,10 @@ Deno.test("tryResolveSchemaUrl", async () => {
   assertEquals(
     await getRedirectUrl("https://plugins.dprint.dev/dprint/non-existent/1.2.3/schema.json"),
     "https://github.com/dprint/non-existent/releases/download/1.2.3/schema.json",
+  );
+
+  assertEquals(
+    await getRedirectUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools/0.1.0/schema.json"),
+    "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.schema.json",
   );
 });
