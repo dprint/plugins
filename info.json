@@ -141,15 +141,6 @@
         "gql"
       ],
       "configExcludes": []
-    },
-    {
-      "name": "lucacasonato/mf2-tools",
-      "selected": false,
-      "configKey": "mf2",
-      "fileExtensions": [
-        "mf2"
-      ],
-      "configExcludes": []
     }
   ]
 }
