@@ -1,4 +1,4 @@
-import { assert } from "../deps.test.ts";
+import { assert } from "@std/assert";
 import { Clock } from "./clock.ts";
 import { RateLimiter } from "./RateLimiter.ts";
 

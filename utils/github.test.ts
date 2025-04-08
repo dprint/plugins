@@ -1,4 +1,4 @@
-import { assertEquals } from "../deps.test.ts";
+import { assertEquals } from "@std/assert";
 import { checkGithubRepoExists } from "./github.ts";
 
 Deno.test("should get when exists", async () => {
