@@ -1,15 +1,15 @@
-import { assertEquals } from "./deps.test.ts";
+import { assertEquals } from "@std/assert";
 import { createRequestHandler } from "./handleRequest.ts";
 import { RealClock } from "./utils/clock.ts";
 
-const connInfo = {
+const connInfo: Deno.ServeHandlerInfo<Deno.NetAddr> = {
   remoteAddr: {
     transport: "tcp",
     hostname: "127.0.0.1",
     port: 80,
   },
   completed: Promise.resolve(),
-} satisfies Deno.ServeHandlerInfo<Deno.NetAddr>;
+};
 
 Deno.test("should get info.json", async () => {
   const { handleRequest } = createRequestHandler(new RealClock());

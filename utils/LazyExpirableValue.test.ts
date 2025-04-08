@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "../deps.test.ts";
+import { assertEquals, assertRejects } from "@std/assert";
 import { LazyExpirableValue } from "./LazyExpirableValue.ts";
 
 Deno.test("should work", async () => {
