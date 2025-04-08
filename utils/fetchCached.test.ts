@@ -1,4 +1,4 @@
-import { assertEquals } from "../deps.test.ts";
+import { assertEquals } from "@std/assert";
 import { createFetchCacher } from "./fetchCached.ts";
 
 Deno.test("should error when going above 10mb", {

@@ -1,4 +1,4 @@
-import { assertEquals } from "../deps.test.ts";
+import { assertEquals } from "@std/assert";
 import { parseVersion, Version } from "./version.ts";
 
 Deno.test("should parse version", () => {

@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "../deps.test.ts";
+import { assertEquals, assertRejects } from "@std/assert";
 import { createAsyncLazy } from "./asyncLazy.ts";
 
 Deno.test("should create", async () => {

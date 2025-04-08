@@ -1,4 +1,4 @@
-import { assertEquals } from "./deps.test.ts";
+import { assertEquals } from "@std/assert";
 import { tryResolveLatestJson } from "./plugins.ts";
 import { getLatestReleaseInfo } from "./utils/github.ts";
 

@@ -1,8 +1,8 @@
-import { assertEquals } from "./deps.test.ts";
+import { assertEquals } from "@std/assert";
 import { createRequestHandler } from "./handleRequest.ts";
 import { RealClock } from "./utils/clock.ts";
 
-const connInfo: Deno.ServeHandlerInfo = {
+const connInfo: Deno.ServeHandlerInfo<Deno.NetAddr> = {
   remoteAddr: {
     transport: "tcp",
     hostname: "127.0.0.1",
