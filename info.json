@@ -63,9 +63,27 @@
     },
     {
       "name": "dprint-plugin-biome",
-      "description": "Biome (JS/TS) wrapper plugin.",
+      "description": "Biome (JS/TS/JSON) wrapper plugin.",
       "selected": false,
       "configKey": "biome",
+      "fileExtensions": [
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "cjs",
+        "mjs",
+        "json"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "dprint-plugin-oxc",
+      "description": "Oxc (JS/TS) wrapper plugin.",
+      "selected": false,
+      "configKey": "oxc",
       "fileExtensions": [
         "ts",
         "tsx",
