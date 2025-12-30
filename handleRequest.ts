@@ -137,9 +137,13 @@ async function resolvePluginOrSchemaUrl(url: URL) {
 
 function getAccessControlAllowOrigin(request: Request) {
   const origin = request.headers.get("origin");
-  return origin != null && new URL(origin).hostname === "localhost"
+  return origin != null && isAllowedLocalHostname(new URL(origin).hostname)
     ? origin
     : "https://dprint.dev";
+}
+
+function isAllowedLocalHostname(hostname: string) {
+  return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
 function shouldDirectlyServeFile(request: Request) {
