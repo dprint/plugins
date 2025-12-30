@@ -137,12 +137,12 @@ async function resolvePluginOrSchemaUrl(url: URL) {
 
 function getAccessControlAllowOrigin(request: Request) {
   const origin = request.headers.get("origin");
-  return origin != null && isAllowedLocalHostname(new URL(origin).hostname)
+  return origin != null && isLocalHostname(new URL(origin).hostname)
     ? origin
     : "https://dprint.dev";
 }
 
-function isAllowedLocalHostname(hostname: string) {
+function isLocalHostname(hostname: string) {
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
@@ -158,7 +158,7 @@ function shouldDirectlyServeFile(request: Request) {
   }
 
   const hostname = new URL(origin).hostname;
-  return hostname === "localhost" || hostname === "dprint.dev";
+  return isLocalHostname(hostname) || hostname === "dprint.dev";
 }
 
 function createRedirectResponse(location: string) {
