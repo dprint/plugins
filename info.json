@@ -97,6 +97,16 @@
       ]
     },
     {
+      "name": "dprint-plugin-mago",
+      "description": "Mago (PHP) wrapper plugin.",
+      "selected": false,
+      "configKey": "mago",
+      "fileExtensions": [
+        "php"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-ruff",
       "description": "Ruff (Python) wrapper plugin.",
       "selected": false,
