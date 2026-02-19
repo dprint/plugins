@@ -181,6 +181,20 @@
         "gql"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "hrko/dprint-plugin-shfmt",
+      "description": "shfmt (Shell) wrapper plugin.",
+      "selected": false,
+      "configKey": "shfmt",
+      "fileExtensions": [
+        "sh",
+        "bash",
+        "zsh",
+        "mksh",
+        "bats"
+      ],
+      "configExcludes": []
     }
   ]
 }
