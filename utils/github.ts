@@ -61,12 +61,21 @@ function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
   };
 
   function getChecksum() {
-    if (typeof data.body !== "string") {
-      return undefined;
+    if (typeof data.body === "string") {
+      // search the body text for a dprint style checksum
+      const checksum = /\@([a-z0-9]{64})\b/i.exec(data.body);
+      if (checksum?.[1]) {
+        return checksum[1];
+      }
     }
-    // search the body text for a dprint style checksum
-    const checksum = /\@([a-z0-9]{64})\b/i.exec(data.body);
-    return checksum?.[1];
+    // fall back to the digest from the release asset
+    const assetName = getPluginKind() === "wasm" ? "plugin.wasm" : "plugin.json";
+    const asset = data.assets?.find((a) => a.name === assetName);
+    if (asset?.digest) {
+      const match = /^sha256:([a-f0-9]{64})$/i.exec(asset.digest);
+      return match?.[1];
+    }
+    return undefined;
   }
 
   function getPluginKind(): ReleaseInfo["kind"] {
@@ -93,6 +102,7 @@ function getDownloadCount(assets: ReleaseAsset[]) {
 interface ReleaseAsset {
   name: string;
   download_count: number;
+  digest: string | null;
 }
 
 export async function getAllDownloadCount(username: string, repoName: string) {

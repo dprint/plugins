@@ -22,11 +22,12 @@ Deno.test("tryResolveUserLatestJson", async () => {
   {
     const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/typescript/latest.json");
     const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-typescript");
+    assertEquals(releaseInfo?.checksum?.length, 64);
     assertEquals(result, {
       schemaVersion: 1,
       url: `https://plugins.dprint.dev/typescript-${releaseInfo!.tagName}.wasm`,
       version: releaseInfo!.tagName,
-      checksum: undefined,
+      checksum: releaseInfo!.checksum,
     });
   }
   // dprint repo full name
@@ -35,11 +36,12 @@ Deno.test("tryResolveUserLatestJson", async () => {
       "https://plugins.dprint.dev/dprint/dprint-plugin-typescript/latest.json",
     );
     const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-typescript");
+    assertEquals(releaseInfo?.checksum?.length, 64);
     assertEquals(result, {
       schemaVersion: 1,
       url: `https://plugins.dprint.dev/typescript-${releaseInfo!.tagName}.wasm`,
       version: releaseInfo!.tagName,
-      checksum: undefined,
+      checksum: releaseInfo!.checksum,
     });
   }
   // non-dprint repo
@@ -50,7 +52,7 @@ Deno.test("tryResolveUserLatestJson", async () => {
       schemaVersion: 1,
       url: `https://plugins.dprint.dev/malobre/vue-${releaseInfo!.tagName}.wasm`,
       version: releaseInfo!.tagName.replace(/^v/, ""),
-      checksum: undefined,
+      checksum: releaseInfo!.checksum,
     });
   }
   // non-dprint repo full name
@@ -61,7 +63,7 @@ Deno.test("tryResolveUserLatestJson", async () => {
       schemaVersion: 1,
       url: `https://plugins.dprint.dev/malobre/vue-${releaseInfo!.tagName}.wasm`,
       version: releaseInfo!.tagName.replace(/^v/, ""),
-      checksum: undefined,
+      checksum: releaseInfo!.checksum,
     });
   }
   // process plugin repo
