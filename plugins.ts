@@ -132,6 +132,10 @@ async function getFullRepoName(username: string, repoName: string) {
     return repoName;
   }
   const fullName = `dprint-plugin-${repoName}`;
+  // todo: hardcode more repos here
+  if (username === "jakebailey" && fullName === "dprint-plugin-gofumpt") {
+    return fullName;
+  }
   if (await checkGithubRepoExists(username, fullName)) {
     return fullName;
   } else {
