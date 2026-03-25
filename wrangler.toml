@@ -7,6 +7,10 @@ rules = [
   { type = "Text", globs = ["**/*.css", "**/*.txt"], fallthrough = true },
 ]
 
+[observability.logs]
+enabled = true
+invocation_logs = true
+
 [[r2_buckets]]
 binding = "PLUGIN_CACHE"
 bucket_name = "dprint-plugin-cache"
