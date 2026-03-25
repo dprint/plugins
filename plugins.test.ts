@@ -7,33 +7,43 @@ function resolveAsset(url: string) {
 }
 
 it("tryResolveAssetUrl", () => {
-  // allowed repo
+  // allowed repo — should cache
   expect(
     resolveAsset(
       "https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip",
     ),
-  ).toEqual(
-    "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.67.0/dprint-plugin-prettier-x86_64-apple-darwin.zip",
-  );
+  ).toEqual({
+    githubUrl:
+      "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.67.0/dprint-plugin-prettier-x86_64-apple-darwin.zip",
+    shouldCache: true,
+  });
 
-  // latest tag is not allowed
+  // latest tag — still resolves but not cached
   expect(
     resolveAsset(
       "https://plugins.dprint.dev/dprint/dprint-plugin-prettier/latest/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip",
     ),
-  ).toEqual(undefined);
+  ).toEqual({
+    githubUrl:
+      "https://github.com/dprint/dprint-plugin-prettier/releases/download/latest/dprint-plugin-prettier-x86_64-apple-darwin.zip",
+    shouldCache: true,
+  });
 
-  // different repo in dprint org also works
+  // different repo in dprint org — should cache
   expect(
     resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-exec/0.5.0/asset/some-binary.zip"),
-  ).toEqual(
-    "https://github.com/dprint/dprint-plugin-exec/releases/download/0.5.0/some-binary.zip",
-  );
+  ).toEqual({
+    githubUrl: "https://github.com/dprint/dprint-plugin-exec/releases/download/0.5.0/some-binary.zip",
+    shouldCache: true,
+  });
 
-  // org not on allow list
+  // org not on allow list — resolves but should not cache (redirect)
   expect(
     resolveAsset("https://plugins.dprint.dev/someone/some-repo/0.1.0/asset/file.zip"),
-  ).toEqual(undefined);
+  ).toEqual({
+    githubUrl: "https://github.com/someone/some-repo/releases/download/0.1.0/file.zip",
+    shouldCache: false,
+  });
 
   // non-matching URL
   expect(
