@@ -17,7 +17,7 @@ export interface PluginData {
   };
 }
 
-export async function readInfoFile(): Promise<Readonly<PluginsData>> {
+export async function readInfoFile(origin: string): Promise<Readonly<PluginsData>> {
   return {
     ...infoJson,
     latest: await getLatest(infoJson.latest),
@@ -28,8 +28,8 @@ export async function readInfoFile(): Promise<Readonly<PluginsData>> {
     for (const plugin of latest) {
       const [username, pluginName] = plugin.name.split("/");
       const info = pluginName
-        ? await getLatestInfo(username, pluginName)
-        : await getLatestInfo("dprint", plugin.name);
+        ? await getLatestInfo(username, pluginName, origin)
+        : await getLatestInfo("dprint", plugin.name, origin);
       if (info != null) {
         results.push({
           ...plugin,

@@ -1,6 +1,12 @@
 import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
-import { tryResolveAssetUrl, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
+import {
+  isAssetAllowedRepo,
+  tryResolveAssetUrl,
+  tryResolveLatestJson,
+  tryResolvePluginUrl,
+  tryResolveSchemaUrl,
+} from "./plugins.js";
 import { readInfoFile } from "./readInfoFile.js";
 import robotsTxt from "./robots.txt";
 import styleCSS from "./style.css";
@@ -20,13 +26,13 @@ const contentTypes = {
 };
 
 export function createRequestHandler() {
-  const memoryCache = new LruCache<string, { body: ArrayBuffer; contentType: string }>({ size: 50 });
+  const memoryCache = new LruCache<string, { body: ArrayBuffer | string; contentType: string }>({ size: 50 });
   return {
     async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
       const assetUrl = tryResolveAssetUrl(url);
       if (assetUrl != null) {
-        return servePlugin(request, assetUrl, ctx);
+        return servePlugin(request, url, assetUrl, ctx);
       }
 
       const githubUrl = await resolvePluginOrSchemaUrl(url);
@@ -36,10 +42,10 @@ export function createRequestHandler() {
           // plugin.json files resolve correctly
           const assetPath = githubUrlToAssetPath(githubUrl);
           if (assetPath != null) {
-            return Response.redirect(new URL(assetPath, url.origin).href, 302);
+            return Response.redirect(`${url.origin}${assetPath}`, 302);
           }
         }
-        return servePlugin(request, githubUrl, ctx);
+        return servePlugin(request, url, githubUrl, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -57,7 +63,7 @@ export function createRequestHandler() {
       }
 
       if (url.pathname.startsWith("/info.json")) {
-        const infoFileData = await readInfoFile();
+        const infoFileData = await readInfoFile(url.origin);
         return createJsonResponse(
           JSON.stringify(infoFileData, null, 2),
           request,
@@ -107,8 +113,8 @@ export function createRequestHandler() {
     },
   };
 
-  async function servePlugin(request: Request, githubUrl: string, ctx?: ExecutionContext) {
-    const result = await resolveBody(githubUrl, ctx);
+  async function servePlugin(request: Request, requestUrl: URL, githubUrl: string, ctx?: ExecutionContext) {
+    const result = await resolveBodyWithMemoryCache(githubUrl, requestUrl, ctx);
     return new Response(result.body, {
       headers: {
         "content-type": result.contentType,
@@ -118,28 +124,46 @@ export function createRequestHandler() {
     });
   }
 
-  async function resolveBody(
+  async function resolveBodyWithMemoryCache(
     githubUrl: string,
+    requestUrl: URL,
     ctx?: ExecutionContext,
-  ): Promise<{ body: ArrayBuffer | ReadableStream | null; status: number; contentType: string }> {
-    // L1: in-memory cache
+  ): Promise<{ body: ArrayBuffer | ReadableStream | string | null; status: number; contentType: string }> {
+    // L1: in-memory cache (already rewritten)
     const cached = memoryCache.get(githubUrl);
     if (cached != null) {
       return { body: cached.body, status: 200, contentType: cached.contentType };
     }
 
-    // L2: R2
+    const result = await fetchBody(githubUrl, requestUrl, ctx);
+    if (result.status !== 200 || !(result.body instanceof ArrayBuffer)) {
+      return result;
+    }
+
+    // rewrite GitHub URLs in JSON files to use the local asset path
+    const body = rewriteGithubUrls(githubUrl, result.body, requestUrl.origin);
+    const size = typeof body === "string" ? body.length : body.byteLength;
+    if (size <= MAX_MEM_CACHE_BODY_SIZE) {
+      memoryCache.set(githubUrl, { body, contentType: result.contentType });
+    }
+
+    return { body, status: 200, contentType: result.contentType };
+  }
+
+  async function fetchBody(
+    githubUrl: string,
+    requestUrl: URL,
+    ctx?: ExecutionContext,
+  ): Promise<{ body: ArrayBuffer | ReadableStream | string | null; status: number; contentType: string }> {
+    // L2: R2 (stores original content)
     const r2Object = await r2Get(githubUrl);
     if (r2Object != null) {
-      const r2ContentType = r2Object.httpMetadata?.contentType ?? contentTypeForUrl(githubUrl);
-      // small enough for L1 — buffer and cache
+      const contentType = r2Object.httpMetadata?.contentType ?? contentTypeForUrl(githubUrl);
       if (r2Object.size <= MAX_MEM_CACHE_BODY_SIZE) {
-        const buffer = await r2Object.arrayBuffer();
-        memoryCache.set(githubUrl, { body: buffer, contentType: r2ContentType });
-        return { body: buffer, status: 200, contentType: r2ContentType };
+        return { body: await r2Object.arrayBuffer(), status: 200, contentType };
       }
       // large — stream directly without buffering
-      return { body: r2Object.body, status: 200, contentType: r2ContentType };
+      return { body: r2Object.body, status: 200, contentType };
     }
 
     // L3: fetch from GitHub
@@ -155,21 +179,18 @@ export function createRequestHandler() {
       };
     }
 
-    const responseContentType = response.headers.get("content-type") ?? contentTypeForUrl(githubUrl);
+    const contentType = response.headers.get("content-type") ?? contentTypeForUrl(githubUrl);
     const body = await response.arrayBuffer();
 
-    // populate caches
-    const r2Promise = r2Put(githubUrl, body, responseContentType);
+    // store original in R2
+    const r2Promise = r2Put(githubUrl, body, contentType);
     if (ctx != null) {
       ctx.waitUntil(r2Promise);
     } else {
       await r2Promise;
     }
-    if (body.byteLength <= MAX_MEM_CACHE_BODY_SIZE) {
-      memoryCache.set(githubUrl, { body, contentType: responseContentType });
-    }
 
-    return { body, status: 200, contentType: responseContentType };
+    return { body, status: 200, contentType };
   }
 }
 
@@ -203,6 +224,7 @@ function createJsonResponse(text: string, request: Request) {
 // converts a GitHub release URL to a local asset path
 // e.g. https://github.com/dprint/dprint-plugin-prettier/releases/download/0.7.0/plugin.json
 //   -> /dprint/dprint-plugin-prettier/0.7.0/asset/plugin.json
+const githubReleasePatternGlobal = /https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/download\/([^/]+)\/([^\s"]+)/g;
 const githubReleasePattern = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/download\/([^/]+)\/(.+)$/;
 function githubUrlToAssetPath(githubUrl: string) {
   const match = githubReleasePattern.exec(githubUrl);
@@ -211,6 +233,28 @@ function githubUrlToAssetPath(githubUrl: string) {
   }
   const [, username, repo, tag, fileName] = match;
   return `/${username}/${repo}/${tag}/asset/${fileName}`;
+}
+
+const MAX_JSON_REWRITE_SIZE = 1024 * 1024; // 1MB
+
+export function rewriteGithubUrls(githubUrl: string, body: ArrayBuffer, origin: string): ArrayBuffer | string {
+  if (!githubUrl.endsWith("/plugin.json") || body.byteLength > MAX_JSON_REWRITE_SIZE) {
+    return body;
+  }
+  const text = new TextDecoder().decode(body);
+  const rewritten = text.replaceAll(
+    githubReleasePatternGlobal,
+    (match, username, repo, tag, fileName) => {
+      if (!isAssetAllowedRepo(username, repo)) {
+        return match;
+      }
+      return `${origin}/${username}/${repo}/${tag}/asset/${fileName}`;
+    },
+  );
+  if (rewritten === text) {
+    return body;
+  }
+  return rewritten;
 }
 
 function contentTypeForUrl(url: string) {
