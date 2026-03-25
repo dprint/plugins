@@ -7,7 +7,7 @@ import { LruCache } from "./utils/LruCache.js";
 import { getCliInfo } from "./utils/mod.js";
 import { r2Get, r2Put } from "./utils/r2Cache.js";
 
-const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_MEM_CACHE_BODY_SIZE = 10 * 1024 * 1024; // 10MB
 
 const contentTypes = {
   css: "text/css; charset=utf-8",
@@ -112,7 +112,11 @@ export function createRequestHandler() {
     }
   }
 
-  async function resolveBody(githubUrl: string, contentType: string, ctx?: ExecutionContext): Promise<ArrayBuffer | ReadableStream> {
+  async function resolveBody(
+    githubUrl: string,
+    contentType: string,
+    ctx?: ExecutionContext,
+  ): Promise<ArrayBuffer | ReadableStream> {
     // L1: in-memory cache
     const cached = memoryCache.get(githubUrl);
     if (cached != null) {
@@ -123,7 +127,7 @@ export function createRequestHandler() {
     const r2Object = await r2Get(githubUrl);
     if (r2Object != null) {
       // small enough for L1 — buffer and cache
-      if (r2Object.size <= MAX_BODY_SIZE) {
+      if (r2Object.size <= MAX_MEM_CACHE_BODY_SIZE) {
         const buffer = await r2Object.arrayBuffer();
         memoryCache.set(githubUrl, buffer);
         return buffer;
@@ -149,7 +153,7 @@ export function createRequestHandler() {
     } else {
       await r2Promise;
     }
-    if (body.byteLength <= MAX_BODY_SIZE) {
+    if (body.byteLength <= MAX_MEM_CACHE_BODY_SIZE) {
       memoryCache.set(githubUrl, body);
     }
 
