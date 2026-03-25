@@ -135,9 +135,7 @@ export function createRequestHandler() {
     }
 
     // L3: fetch from GitHub
-    const response = await fetch(githubUrl, {
-      headers: { "user-agent": "dprint-plugins" },
-    });
+    const response = await fetchWithRetries(githubUrl);
     if (!response.ok) {
       if (response.status !== 404) {
         console.error(`GitHub fetch error: ${response.status} ${response.statusText} for ${githubUrl}`);
@@ -198,6 +196,20 @@ function contentTypeForUrl(url: string) {
   if (url.endsWith(".wasm")) return contentTypes.wasm;
   if (url.endsWith(".json") || url.endsWith(".exe-plugin")) return contentTypes.json;
   return contentTypes.octetStream;
+}
+
+async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
+  for (let i = 0; i <= retries; i++) {
+    const response = await fetch(url, {
+      headers: { "user-agent": "dprint-plugins" },
+    });
+    if (response.status < 500 || i === retries) {
+      return response;
+    }
+    console.error(`GitHub fetch attempt ${i + 1} failed: ${response.status} for ${url}`);
+    await new Promise((resolve) => setTimeout(resolve, Math.min(1000 * 2 ** i, 2500)));
+  }
+  throw new Error("unreachable");
 }
 
 function create404Response() {
