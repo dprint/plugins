@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { createRequestHandler, resolvePluginOrSchemaUrl, rewriteGithubUrls } from "./handleRequest.js";
+import { createRequestHandler, resolvePluginOrSchemaUrl } from "./handleRequest.js";
 
 it("should get info.json", { timeout: 10_000 }, async () => {
   const { handleRequest } = createRequestHandler();
@@ -362,50 +362,6 @@ it("should return 404 for asset not found", async () => {
     new Request("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.0.0/asset/nonexistent.zip"),
   );
   expect(response.status).toEqual(404);
-});
-
-it("rewriteGithubUrls", () => {
-  const githubUrl = "https://github.com/dprint/dprint-plugin-exec/releases/download/0.6.0/plugin.json";
-  const origin = "https://plugins.dprint.dev";
-  const json = JSON.stringify({
-    "schemaVersion": 2,
-    "kind": "process",
-    "darwin-aarch64": {
-      "reference":
-        "https://github.com/dprint/dprint-plugin-exec/releases/download/0.6.0/dprint-plugin-exec-aarch64-apple-darwin.zip",
-      "checksum": "abc123",
-    },
-    "linux-x86_64": {
-      "reference":
-        "https://github.com/dprint/dprint-plugin-exec/releases/download/0.6.0/dprint-plugin-exec-x86_64-unknown-linux-gnu.zip",
-      "checksum": "def456",
-    },
-  });
-  const body = new TextEncoder().encode(json).buffer as ArrayBuffer;
-  const result = rewriteGithubUrls(githubUrl, body, origin);
-  expect(typeof result).toEqual("string");
-  const parsed = JSON.parse(result as string);
-  expect(parsed["darwin-aarch64"].reference).toEqual(
-    "https://plugins.dprint.dev/dprint/dprint-plugin-exec/0.6.0/asset/dprint-plugin-exec-aarch64-apple-darwin.zip",
-  );
-  expect(parsed["linux-x86_64"].reference).toEqual(
-    "https://plugins.dprint.dev/dprint/dprint-plugin-exec/0.6.0/asset/dprint-plugin-exec-x86_64-unknown-linux-gnu.zip",
-  );
-});
-
-it("rewriteGithubUrls should not rewrite non-plugin.json", () => {
-  const githubUrl = "https://github.com/dprint/dprint-plugin-exec/releases/download/0.6.0/schema.json";
-  const body = new TextEncoder().encode("{}").buffer as ArrayBuffer;
-  const result = rewriteGithubUrls(githubUrl, body, "https://plugins.dprint.dev");
-  expect(result).toBe(body);
-});
-
-it("rewriteGithubUrls should return original buffer when no URLs match", () => {
-  const githubUrl = "https://github.com/dprint/dprint-plugin-exec/releases/download/0.6.0/plugin.json";
-  const json = JSON.stringify({ "key": "value" });
-  const body = new TextEncoder().encode(json).buffer as ArrayBuffer;
-  const result = rewriteGithubUrls(githubUrl, body, "https://plugins.dprint.dev");
-  expect(result).toBe(body);
 });
 
 // todo: mock github api for these tests

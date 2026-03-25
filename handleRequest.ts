@@ -1,7 +1,6 @@
 import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
 import {
-  isAssetAllowedRepo,
   tryResolveAssetUrl,
   tryResolveLatestJson,
   tryResolvePluginUrl,
@@ -26,7 +25,7 @@ const contentTypes = {
 };
 
 export function createRequestHandler() {
-  const memoryCache = new LruCache<string, { body: ArrayBuffer | string; contentType: string }>({ size: 50 });
+  const memoryCache = new LruCache<string, { body: ArrayBuffer; contentType: string }>({ size: 50 });
   return {
     async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
@@ -35,7 +34,7 @@ export function createRequestHandler() {
         if (!assetResult.shouldCache) {
           return Response.redirect(assetResult.githubUrl, 302);
         }
-        return servePlugin(request, url, assetResult.githubUrl, ctx);
+        return servePlugin(request, assetResult.githubUrl, ctx);
       }
 
       const githubUrl = await resolvePluginOrSchemaUrl(url);
@@ -48,7 +47,7 @@ export function createRequestHandler() {
             return Response.redirect(`${url.origin}${assetPath}`, 302);
           }
         }
-        return servePlugin(request, url, githubUrl, ctx);
+        return servePlugin(request, githubUrl, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -116,8 +115,8 @@ export function createRequestHandler() {
     },
   };
 
-  async function servePlugin(request: Request, requestUrl: URL, githubUrl: string, ctx?: ExecutionContext) {
-    const result = await resolveBodyWithMemoryCache(githubUrl, requestUrl, ctx);
+  async function servePlugin(request: Request, githubUrl: string, ctx?: ExecutionContext) {
+    const result = await resolveBodyWithMemoryCache(githubUrl, ctx);
     return new Response(result.body, {
       headers: {
         "content-type": result.contentType,
@@ -129,35 +128,26 @@ export function createRequestHandler() {
 
   async function resolveBodyWithMemoryCache(
     githubUrl: string,
-    requestUrl: URL,
     ctx?: ExecutionContext,
-  ): Promise<{ body: ArrayBuffer | ReadableStream | string | null; status: number; contentType: string }> {
+  ): Promise<{ body: ArrayBuffer | ReadableStream | null; status: number; contentType: string }> {
     // L1: in-memory cache (already rewritten)
     const cached = memoryCache.get(githubUrl);
     if (cached != null) {
       return { body: cached.body, status: 200, contentType: cached.contentType };
     }
 
-    const result = await fetchBody(githubUrl, requestUrl, ctx);
-    if (result.status !== 200 || !(result.body instanceof ArrayBuffer)) {
-      return result;
+    const result = await fetchBody(githubUrl, ctx);
+    if (result.status === 200 && result.body instanceof ArrayBuffer && result.body.byteLength <= MAX_MEM_CACHE_BODY_SIZE) {
+      memoryCache.set(githubUrl, { body: result.body, contentType: result.contentType });
     }
 
-    // rewrite GitHub URLs in JSON files to use the local asset path
-    const body = rewriteGithubUrls(githubUrl, result.body, requestUrl.origin);
-    const size = typeof body === "string" ? body.length : body.byteLength;
-    if (size <= MAX_MEM_CACHE_BODY_SIZE) {
-      memoryCache.set(githubUrl, { body, contentType: result.contentType });
-    }
-
-    return { body, status: 200, contentType: result.contentType };
+    return result;
   }
 
   async function fetchBody(
     githubUrl: string,
-    requestUrl: URL,
     ctx?: ExecutionContext,
-  ): Promise<{ body: ArrayBuffer | ReadableStream | string | null; status: number; contentType: string }> {
+  ): Promise<{ body: ArrayBuffer | ReadableStream | null; status: number; contentType: string }> {
     // L2: R2 (stores original content)
     const r2Object = await r2Get(githubUrl);
     if (r2Object != null) {
@@ -227,7 +217,6 @@ function createJsonResponse(text: string, request: Request) {
 // converts a GitHub release URL to a local asset path
 // e.g. https://github.com/dprint/dprint-plugin-prettier/releases/download/0.7.0/plugin.json
 //   -> /dprint/dprint-plugin-prettier/0.7.0/asset/plugin.json
-const githubReleasePatternGlobal = /https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/download\/([^/]+)\/([^\s"]+)/g;
 const githubReleasePattern = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/download\/([^/]+)\/(.+)$/;
 function githubUrlToAssetPath(githubUrl: string) {
   const match = githubReleasePattern.exec(githubUrl);
@@ -238,33 +227,6 @@ function githubUrlToAssetPath(githubUrl: string) {
   return `/${username}/${repo}/${tag}/asset/${fileName}`;
 }
 
-const MAX_JSON_REWRITE_SIZE = 1024 * 1024; // 1MB
-
-export function rewriteGithubUrls(githubUrl: string, body: ArrayBuffer, origin: string): ArrayBuffer | string {
-  const match = githubReleasePattern.exec(githubUrl);
-  if (
-    !githubUrl.endsWith("/plugin.json")
-    || body.byteLength > MAX_JSON_REWRITE_SIZE
-    || match == null
-    || !isAssetAllowedRepo(match[1], match[2])
-  ) {
-    return body;
-  }
-  const text = new TextDecoder().decode(body);
-  const rewritten = text.replaceAll(
-    githubReleasePatternGlobal,
-    (match, username, repo, tag, fileName) => {
-      if (!isAssetAllowedRepo(username, repo)) {
-        return match;
-      }
-      return `${origin}/${username}/${repo}/${tag}/asset/${fileName}`;
-    },
-  );
-  if (rewritten === text) {
-    return body;
-  }
-  return rewritten;
-}
 
 function contentTypeForUrl(url: string) {
   if (url.endsWith(".wasm")) return contentTypes.wasm;
