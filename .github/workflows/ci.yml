@@ -17,4 +17,4 @@ jobs:
         run: npx vitest run
       - name: Deploy to Cloudflare Workers
         if: github.ref == 'refs/heads/main'
-        run: npx wrangler deploy
+        uses: cloudflare/wrangler-action@v3
