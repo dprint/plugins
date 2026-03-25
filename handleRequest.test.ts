@@ -345,6 +345,17 @@ it("should not redirect wasm plugins", async () => {
   expect(response.status).not.toEqual(302);
 });
 
+it("should redirect non-allowed org asset to GitHub", async () => {
+  const { handleRequest } = createRequestHandler();
+  const response = await handleRequest(
+    new Request("https://plugins.dprint.dev/someone/some-repo/0.1.0/asset/file.zip"),
+  );
+  expect(response.status).toEqual(302);
+  expect(response.headers.get("location")).toEqual(
+    "https://github.com/someone/some-repo/releases/download/0.1.0/file.zip",
+  );
+});
+
 it("should return 404 for asset not found", async () => {
   const { handleRequest } = createRequestHandler();
   const response = await handleRequest(

@@ -56,32 +56,32 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "lucacasonato/mf2-tools",
 ]);
 
-// orgs/users allowed to serve release assets directly
-const ASSET_ALLOWED_ORGS = new Set([
-  "dprint",
-]);
+export function isAssetAllowedRepo(username: string, _repo: string) {
+  switch (username) {
+    case "dprint":
+      return true;
+    default:
+      return false;
+  }
+}
 
 const assetNamePattern = "([A-Za-z0-9\\-\\._]+)";
 const assetPattern = new URLPattern({
   pathname: `/${userRepoPattern}/${tagPattern}/asset/${assetNamePattern}`,
 });
 
-export function tryResolveAssetUrl(url: URL) {
+export function tryResolveAssetUrl(url: URL): { githubUrl: string; shouldCache: boolean } | undefined {
   const result = assetPattern.exec(url);
   if (!result) {
     return undefined;
   }
   const username = result.pathname.groups[0]!;
   const repo = result.pathname.groups[1]!;
-  if (!ASSET_ALLOWED_ORGS.has(username)) {
-    return undefined;
-  }
   const tag = result.pathname.groups[2]!;
-  if (tag === "latest") {
-    return undefined;
-  }
   const assetName = result.pathname.groups[3]!;
-  return `https://github.com/${username}/${repo}/releases/download/${tag}/${assetName}`;
+  const githubUrl = `https://github.com/${username}/${repo}/releases/download/${tag}/${assetName}`;
+  const shouldCache = isAssetAllowedRepo(username, repo);
+  return { githubUrl, shouldCache };
 }
 
 export async function tryResolvePluginUrl(url: URL) {
@@ -105,7 +105,7 @@ export async function tryResolveLatestJson(url: URL) {
   }
   const username = result.pathname.groups[0]!;
   const shortRepoName = result.pathname.groups[1]!;
-  const latestInfo = await getLatestInfo(username, shortRepoName);
+  const latestInfo = await getLatestInfo(username, shortRepoName, url.origin);
   if (latestInfo == null) {
     return 404;
   }
@@ -120,7 +120,7 @@ export async function tryResolveLatestJson(url: URL) {
   };
 }
 
-export async function getLatestInfo(username: string, repoName: string) {
+export async function getLatestInfo(username: string, repoName: string, origin: string) {
   repoName = await getFullRepoName(username, repoName);
   const releaseInfo = await getLatestReleaseInfo(username, repoName);
   if (releaseInfo == null) {
@@ -134,8 +134,8 @@ export async function getLatestInfo(username: string, repoName: string) {
   return {
     schemaVersion: 1,
     url: username === "dprint"
-      ? `https://plugins.dprint.dev/${displayRepoName}-${releaseInfo.tagName}.${extension}`
-      : `https://plugins.dprint.dev/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
+      ? `${origin}/${displayRepoName}-${releaseInfo.tagName}.${extension}`
+      : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
     version: releaseInfo.tagName.replace(/^v/, ""),
     checksum: releaseInfo.checksum,
     downloadCount: releaseInfo.downloadCount,
