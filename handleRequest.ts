@@ -31,6 +31,14 @@ export function createRequestHandler() {
 
       const githubUrl = await resolvePluginOrSchemaUrl(url);
       if (githubUrl != null) {
+        if (!githubUrl.endsWith(".wasm")) {
+          // redirect non-wasm files to asset URL so relative URLs in
+          // plugin.json files resolve correctly
+          const assetPath = githubUrlToAssetPath(githubUrl);
+          if (assetPath != null) {
+            return Response.redirect(new URL(assetPath, url.origin).href, 302);
+          }
+        }
         return servePlugin(request, githubUrl, ctx);
       }
 
@@ -190,6 +198,19 @@ function createJsonResponse(text: string, request: Request) {
     },
     status: 200,
   });
+}
+
+// converts a GitHub release URL to a local asset path
+// e.g. https://github.com/dprint/dprint-plugin-prettier/releases/download/0.7.0/plugin.json
+//   -> /dprint/dprint-plugin-prettier/0.7.0/asset/plugin.json
+const githubReleasePattern = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/releases\/download\/([^/]+)\/(.+)$/;
+function githubUrlToAssetPath(githubUrl: string) {
+  const match = githubReleasePattern.exec(githubUrl);
+  if (match == null) {
+    return undefined;
+  }
+  const [, username, repo, tag, fileName] = match;
+  return `/${username}/${repo}/${tag}/asset/${fileName}`;
 }
 
 function contentTypeForUrl(url: string) {

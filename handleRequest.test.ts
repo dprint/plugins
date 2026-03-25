@@ -326,6 +326,25 @@ it("tryResolvePluginUrl", async () => {
   );
 });
 
+it("should redirect non-wasm plugins to asset URL", async () => {
+  const { handleRequest } = createRequestHandler();
+  const response = await handleRequest(
+    new Request("https://plugins.dprint.dev/prettier-0.7.0.json"),
+  );
+  expect(response.status).toEqual(302);
+  expect(response.headers.get("location")).toEqual(
+    "https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.7.0/asset/plugin.json",
+  );
+});
+
+it("should not redirect wasm plugins", async () => {
+  const { handleRequest } = createRequestHandler();
+  const response = await handleRequest(
+    new Request("https://plugins.dprint.dev/typescript-0.62.2.wasm"),
+  );
+  expect(response.status).not.toEqual(302);
+});
+
 it("should return 404 for asset not found", async () => {
   const { handleRequest } = createRequestHandler();
   const response = await handleRequest(
