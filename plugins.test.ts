@@ -9,14 +9,18 @@ function resolveAsset(url: string) {
 it("tryResolveAssetUrl", () => {
   // allowed repo
   expect(
-    resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip"),
+    resolveAsset(
+      "https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip",
+    ),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.67.0/dprint-plugin-prettier-x86_64-apple-darwin.zip",
   );
 
   // latest tag is not allowed
   expect(
-    resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/latest/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip"),
+    resolveAsset(
+      "https://plugins.dprint.dev/dprint/dprint-plugin-prettier/latest/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip",
+    ),
   ).toEqual(undefined);
 
   // different repo in dprint org also works
