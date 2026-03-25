@@ -112,7 +112,7 @@ export function createRequestHandler() {
     }
   }
 
-  async function resolveBody(githubUrl: string, contentType: string, ctx?: ExecutionContext): Promise<ArrayBuffer> {
+  async function resolveBody(githubUrl: string, contentType: string, ctx?: ExecutionContext): Promise<ArrayBuffer | ReadableStream> {
     // L1: in-memory cache
     const cached = memoryCache.get(githubUrl);
     if (cached != null) {
@@ -120,12 +120,16 @@ export function createRequestHandler() {
     }
 
     // L2: R2
-    const r2Body = await r2Get(githubUrl);
-    if (r2Body != null) {
-      if (r2Body.byteLength <= MAX_BODY_SIZE) {
-        memoryCache.set(githubUrl, r2Body);
+    const r2Object = await r2Get(githubUrl);
+    if (r2Object != null) {
+      // small enough for L1 — buffer and cache
+      if (r2Object.size <= MAX_BODY_SIZE) {
+        const buffer = await r2Object.arrayBuffer();
+        memoryCache.set(githubUrl, buffer);
+        return buffer;
       }
-      return r2Body;
+      // large — stream directly without buffering
+      return r2Object.body;
     }
 
     // L3: fetch from GitHub

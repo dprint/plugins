@@ -13,16 +13,12 @@ function isLatestUrl(githubUrl: string) {
   return githubUrl.includes("/releases/latest/");
 }
 
-export async function r2Get(githubUrl: string): Promise<ArrayBuffer | null> {
+export async function r2Get(githubUrl: string): Promise<R2ObjectBody | null> {
   if (isLatestUrl(githubUrl)) {
     return null;
   }
   try {
-    const object = await env.PLUGIN_CACHE.get(toR2Key(githubUrl));
-    if (object == null) {
-      return null;
-    }
-    return await object.arrayBuffer();
+    return await env.PLUGIN_CACHE.get(toR2Key(githubUrl));
   } catch (err) {
     console.error("R2 get error:", err);
     return null;
