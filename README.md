@@ -2,11 +2,9 @@
 
 Website for [https://plugins.dprint.dev](https://plugins.dprint.dev).
 
-This website is hosted on [Deno Deploy](https://deno.com/deploy).
-
 ## Redirect to Any GitHub Repo (For Plugin Authors)
 
-This service provides a convenient redirect for a plugin stored in any GitHub repo.
+This service provides a convenient URL for a plugin stored in any GitHub repo.
 
 To use it, create a GitHub release in your repo with:
 
@@ -28,8 +26,27 @@ Restrictions and recommendations:
 
 If your repo name is in the format `dprint-plugin-<something>` then you can omit `dprint-plugin-` in the `<repo_name>` for the redirect (ex. `https://plugins.dprint.dev/<user>/dprint-plugin-typescript-0.0.0.wasm` may be shortened to `https://plugins.dprint.dev/<user>/typescript-0.0.0.wasm`).
 
+## Release Assets
+
+For approved repositories, individual release assets can be served directly via:
+
+```
+https://plugins.dprint.dev/<username>/<repo_name>/<tag_name>/asset/<asset_name>
+```
+
+For example:
+
+```
+https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip
+```
+
+This is useful for process plugins that distribute platform-specific binaries. Assets are cached in R2 for persistence.
+
+Note: To get approved, open a PR to this repository including your username and plugin repo.
+
 ## Run Locally
 
 ```bash
-deno run --allow-read=. --allow-net --allow-env --no-check main.ts
+npm install
+npm run dev
 ```

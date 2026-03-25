@@ -1,9 +1,14 @@
-import { renderHome } from "./home.tsx";
+import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
-import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
-import { readInfoFile } from "./readInfoFile.ts";
-import { Clock } from "./utils/clock.ts";
-import { createFetchCacher, getCliInfo } from "./utils/mod.ts";
+import { tryResolveAssetUrl, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
+import { readInfoFile } from "./readInfoFile.js";
+import robotsTxt from "./robots.txt";
+import styleCSS from "./style.css";
+import { LruCache } from "./utils/LruCache.js";
+import { getCliInfo } from "./utils/mod.js";
+import { r2Get, r2Put } from "./utils/r2Cache.js";
+
+const MAX_MEM_CACHE_BODY_SIZE = 10 * 1024 * 1024; // 10MB
 
 const contentTypes = {
   css: "text/css; charset=utf-8",
@@ -11,26 +16,27 @@ const contentTypes = {
   json: "application/json; charset=utf-8",
   plain: "text/plain; charset=utf-8",
   wasm: "application/wasm",
+  octetStream: "application/octet-stream",
 };
 
-export function createRequestHandler(clock: Clock) {
-  const { fetchCached } = createFetchCacher(clock);
+export function createRequestHandler() {
+  const memoryCache = new LruCache<string, ArrayBuffer>({ size: 50 });
   return {
-    async handleRequest(request: Request, info: Deno.ServeHandlerInfo<Deno.NetAddr>) {
+    async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
-      const newUrl = await resolvePluginOrSchemaUrl(url);
-      if (newUrl != null) {
-        const contentType = newUrl.endsWith(".json")
+      const assetUrl = tryResolveAssetUrl(url);
+      if (assetUrl != null) {
+        return servePlugin(request, assetUrl, contentTypes.octetStream, ctx);
+      }
+
+      const githubUrl = await resolvePluginOrSchemaUrl(url);
+      if (githubUrl != null) {
+        const contentType = githubUrl.endsWith(".json") || githubUrl.endsWith(".exe-plugin")
           ? contentTypes.json
-          : newUrl.endsWith(".wasm")
+          : githubUrl.endsWith(".wasm")
           ? contentTypes.wasm
           : contentTypes.plain;
-        return handleConditionalRedirectRequest({
-          request,
-          url: newUrl,
-          contentType,
-          hostname: info.remoteAddr.hostname,
-        });
+        return servePlugin(request, githubUrl, contentType, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -60,15 +66,20 @@ export function createRequestHandler(clock: Clock) {
         return createJsonResponse(JSON.stringify(cliInfo, null, 2), request);
       }
 
+      if (url.pathname === "/robots.txt") {
+        return new Response(robotsTxt, {
+          headers: { "content-type": contentTypes.plain },
+          status: 200,
+        });
+      }
+
       if (url.pathname === "/style.css") {
-        return Deno.readTextFile("./style.css").then((text) =>
-          new Response(text, {
-            headers: {
-              "content-type": "text/css; charset=utf-8",
-            },
-            status: 200,
-          })
-        );
+        return new Response(styleCSS, {
+          headers: {
+            "content-type": contentTypes.css,
+          },
+          status: 200,
+        });
       }
 
       if (url.pathname === "/") {
@@ -93,43 +104,72 @@ export function createRequestHandler(clock: Clock) {
     },
   };
 
-  // This is done to allow the playground to access these files
-  function handleConditionalRedirectRequest(params: {
-    request: Request;
-    url: string;
-    contentType: string;
-    hostname: string;
-  }) {
-    if (shouldDirectlyServeFile(params.request)) {
-      return fetchCached(params)
-        .then((result) => {
-          if (result.kind === "error") {
-            return result.response;
-          }
-
-          return new Response(result.body, {
-            headers: {
-              "content-type": params.contentType,
-              // allow the playground to download this
-              "Access-Control-Allow-Origin": getAccessControlAllowOrigin(
-                params.request,
-              ),
-            },
-            status: 200,
-          });
-        }).catch((err) => {
-          console.error(err);
-          return new Response("Internal Server Error", {
-            status: 500,
-          });
-        });
-    } else {
-      return createRedirectResponse(params.url);
+  async function servePlugin(request: Request, githubUrl: string, contentType: string, ctx?: ExecutionContext) {
+    try {
+      const body = await resolveBody(githubUrl, contentType, ctx);
+      return new Response(body, {
+        headers: {
+          "content-type": contentType,
+          "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+        },
+        status: 200,
+      });
+    } catch (err) {
+      console.error("Error serving plugin:", err);
+      return new Response("Internal Server Error", { status: 500 });
     }
+  }
+
+  async function resolveBody(
+    githubUrl: string,
+    contentType: string,
+    ctx?: ExecutionContext,
+  ): Promise<ArrayBuffer | ReadableStream> {
+    // L1: in-memory cache
+    const cached = memoryCache.get(githubUrl);
+    if (cached != null) {
+      return cached;
+    }
+
+    // L2: R2
+    const r2Object = await r2Get(githubUrl);
+    if (r2Object != null) {
+      // small enough for L1 — buffer and cache
+      if (r2Object.size <= MAX_MEM_CACHE_BODY_SIZE) {
+        const buffer = await r2Object.arrayBuffer();
+        memoryCache.set(githubUrl, buffer);
+        return buffer;
+      }
+      // large — stream directly without buffering
+      return r2Object.body;
+    }
+
+    // L3: fetch from GitHub
+    const response = await fetch(githubUrl, {
+      headers: { "user-agent": "dprint-plugins" },
+    });
+    if (!response.ok) {
+      throw new Error(`GitHub fetch failed: ${response.status} ${response.statusText}`);
+    }
+
+    const body = await response.arrayBuffer();
+
+    // populate caches
+    const r2Promise = r2Put(githubUrl, body, contentType);
+    if (ctx != null) {
+      ctx.waitUntil(r2Promise);
+    } else {
+      await r2Promise;
+    }
+    if (body.byteLength <= MAX_MEM_CACHE_BODY_SIZE) {
+      memoryCache.set(githubUrl, body);
+    }
+
+    return body;
   }
 }
 
-async function resolvePluginOrSchemaUrl(url: URL) {
+export async function resolvePluginOrSchemaUrl(url: URL) {
   return (oldMappings as { [oldUrl: string]: string })[url.toString()]
     ?? await tryResolvePluginUrl(url)
     ?? await tryResolveSchemaUrl(url);
@@ -146,35 +186,10 @@ function isLocalHostname(hostname: string) {
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
-function shouldDirectlyServeFile(request: Request) {
-  // directly serve for when Deno makes a request in order to fix the content type
-  if (request.headers.get("user-agent")?.startsWith("Deno/")) {
-    return true;
-  }
-
-  const origin = request.headers.get("origin");
-  if (origin == null) {
-    return false;
-  }
-
-  const hostname = new URL(origin).hostname;
-  return isLocalHostname(hostname) || hostname === "dprint.dev";
-}
-
-function createRedirectResponse(location: string) {
-  return new Response(null, {
-    headers: {
-      location,
-    },
-    status: 302, // temporary redirect
-  });
-}
-
 function createJsonResponse(text: string, request: Request) {
   return new Response(text, {
     headers: {
       "content-type": contentTypes.json,
-      // allow the dprint website to download this file
       "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
     },
     status: 200,

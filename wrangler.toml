@@ -1,0 +1,12 @@
+name = "dprint-plugins"
+main = "main.ts"
+compatibility_date = "2024-02-24"
+compatibility_flags = ["nodejs_compat"]
+
+rules = [
+  { type = "Text", globs = ["**/*.css", "**/*.txt"], fallthrough = true },
+]
+
+[[r2_buckets]]
+binding = "PLUGIN_CACHE"
+bucket_name = "dprint-plugin-cache"

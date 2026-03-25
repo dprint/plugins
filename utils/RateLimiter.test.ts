@@ -1,8 +1,8 @@
-import { assert } from "@std/assert";
-import { Clock } from "./clock.ts";
-import { RateLimiter } from "./RateLimiter.ts";
+import { expect, it } from "vitest";
+import { Clock } from "./clock.js";
+import { RateLimiter } from "./RateLimiter.js";
 
-Deno.test("rate limits", () => {
+it("rate limits", () => {
   let time = 0;
   const clock: Clock = {
     getTime() {
@@ -14,17 +14,17 @@ Deno.test("rate limits", () => {
     timeWindowMs: 1000,
   });
 
-  assert(rateLimiter.isAllowed("127.0.0.1"));
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeTruthy();
   time += 100;
-  assert(rateLimiter.isAllowed("127.0.0.1"));
-  assert(!rateLimiter.isAllowed("127.0.0.1"));
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeTruthy();
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeFalsy();
   time += 500;
-  assert(!rateLimiter.isAllowed("127.0.0.1"));
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeFalsy();
   time += 500;
-  assert(rateLimiter.isAllowed("127.0.0.1"));
-  assert(!rateLimiter.isAllowed("127.0.0.1"));
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeTruthy();
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeFalsy();
   time += 500;
-  assert(rateLimiter.isAllowed("127.0.0.1"));
-  assert(!rateLimiter.isAllowed("127.0.0.1"));
-  assert(rateLimiter.isAllowed("127.0.0.2"));
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeTruthy();
+  expect(rateLimiter.isAllowed("127.0.0.1")).toBeFalsy();
+  expect(rateLimiter.isAllowed("127.0.0.2")).toBeTruthy();
 });

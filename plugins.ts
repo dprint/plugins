@@ -1,4 +1,4 @@
-import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.ts";
+import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.js";
 
 const tagPattern = "([A-Za-z0-9\._]+)";
 // repos may only contain alphanumeric, underscores, hyphens, and period
@@ -21,6 +21,68 @@ const userProcessPluginPattern = new URLPattern({
 const userSchemaPattern = new URLPattern({
   pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
 });
+
+// known repos where shortname resolves to dprint-plugin-<name>,
+// avoiding a GitHub API call to check existence
+const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
+  // dprint org
+  "dprint/dprint-plugin-typescript",
+  "dprint/dprint-plugin-json",
+  "dprint/dprint-plugin-markdown",
+  "dprint/dprint-plugin-toml",
+  "dprint/dprint-plugin-dockerfile",
+  "dprint/dprint-plugin-biome",
+  "dprint/dprint-plugin-oxc",
+  "dprint/dprint-plugin-mago",
+  "dprint/dprint-plugin-ruff",
+  "dprint/dprint-plugin-jupyter",
+  "dprint/dprint-plugin-prettier",
+  "dprint/dprint-plugin-roslyn",
+  "dprint/dprint-plugin-rustfmt",
+  "dprint/dprint-plugin-yapf",
+  "dprint/dprint-plugin-exec",
+  "dprint/dprint-plugin-sql",
+  // community
+  "jakebailey/dprint-plugin-gofumpt",
+  "malobre/dprint-plugin-vue",
+]);
+
+// repos where the short name IS the repo name (no dprint-plugin- prefix)
+const KNOWN_NON_PREFIXED_REPOS = new Set([
+  "g-plane/malva",
+  "g-plane/markup_fmt",
+  "g-plane/pretty_yaml",
+  "g-plane/pretty_graphql",
+  "lucacasonato/mf2-tools",
+]);
+
+// orgs/users allowed to serve release assets directly
+const ASSET_ALLOWED_ORGS = new Set([
+  "dprint",
+]);
+
+const assetNamePattern = "([A-Za-z0-9\\-\\._]+)";
+const assetPattern = new URLPattern({
+  pathname: `/${userRepoPattern}/${tagPattern}/asset/${assetNamePattern}`,
+});
+
+export function tryResolveAssetUrl(url: URL) {
+  const result = assetPattern.exec(url);
+  if (!result) {
+    return undefined;
+  }
+  const username = result.pathname.groups[0]!;
+  const repo = result.pathname.groups[1]!;
+  if (!ASSET_ALLOWED_ORGS.has(username)) {
+    return undefined;
+  }
+  const tag = result.pathname.groups[2]!;
+  if (tag === "latest") {
+    return undefined;
+  }
+  const assetName = result.pathname.groups[3]!;
+  return `https://github.com/${username}/${repo}/releases/download/${tag}/${assetName}`;
+}
 
 export async function tryResolvePluginUrl(url: URL) {
   return dprintPluginTagPatternMapper(dprintWasmPluginPattern, url, "plugin.wasm")
@@ -132,8 +194,10 @@ async function getFullRepoName(username: string, repoName: string) {
     return repoName;
   }
   const fullName = `dprint-plugin-${repoName}`;
-  // todo: hardcode more repos here
-  if (username === "jakebailey" && fullName === "dprint-plugin-gofumpt") {
+  if (KNOWN_NON_PREFIXED_REPOS.has(`${username}/${repoName}`)) {
+    return repoName;
+  }
+  if (KNOWN_DPRINT_PLUGIN_REPOS.has(`${username}/${fullName}`)) {
     return fullName;
   }
   if (await checkGithubRepoExists(username, fullName)) {
