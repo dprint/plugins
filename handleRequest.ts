@@ -2,6 +2,7 @@ import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
 import { tryResolveAssetUrl, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
 import { readInfoFile } from "./readInfoFile.js";
+import robotsTxt from "./robots.txt";
 import styleCSS from "./style.css";
 import { LruCache } from "./utils/LruCache.js";
 import { getCliInfo } from "./utils/mod.js";
@@ -63,6 +64,13 @@ export function createRequestHandler() {
       if (url.pathname.startsWith("/cli.json")) {
         const cliInfo = await getCliInfo();
         return createJsonResponse(JSON.stringify(cliInfo, null, 2), request);
+      }
+
+      if (url.pathname === "/robots.txt") {
+        return new Response(robotsTxt, {
+          headers: { "content-type": contentTypes.plain },
+          status: 200,
+        });
       }
 
       if (url.pathname === "/style.css") {
