@@ -12,5 +12,6 @@ declare namespace Cloudflare {
   interface Env {
     DPRINT_PLUGINS_GH_TOKEN?: string;
     PLUGIN_CACHE: R2Bucket;
+    DPRINT_PLUGIN_DOWNLOAD_ANALYTICS: AnalyticsEngineDataset;
   }
 }

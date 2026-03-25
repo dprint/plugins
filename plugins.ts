@@ -84,15 +84,23 @@ export function tryResolveAssetUrl(url: URL): { githubUrl: string; shouldCache: 
   return { githubUrl, shouldCache };
 }
 
-export async function tryResolvePluginUrl(url: URL) {
+export interface PluginUrlResult {
+  githubUrl: string;
+  username: string;
+  repo: string;
+  tag: string;
+}
+
+export async function tryResolvePluginUrl(url: URL): Promise<PluginUrlResult | undefined> {
   return dprintPluginTagPatternMapper(dprintWasmPluginPattern, url, "plugin.wasm")
     ?? dprintPluginTagPatternMapper(dprintProcessPluginPattern, url, "plugin.json")
     ?? (await userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm"))
     ?? (await userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.json"));
 }
 
-export function tryResolveSchemaUrl(url: URL) {
-  return userRepoTagPatternMapper(userSchemaPattern, url, "schema.json");
+export async function tryResolveSchemaUrl(url: URL) {
+  const result = await userRepoTagPatternMapper(userSchemaPattern, url, "schema.json");
+  return result?.githubUrl;
 }
 
 const userLatestPattern = new URLPattern({
@@ -146,16 +154,16 @@ function dprintPluginTagPatternMapper(
   pattern: URLPattern,
   url: URL,
   fileName: string,
-) {
+): PluginUrlResult | undefined {
   const result = pattern.exec(url);
   if (result) {
-    const pluginShortName = result.pathname.groups[0];
-    const tag = result.pathname.groups[1];
-    if (tag === "latest") {
-      return `https://github.com/dprint/dprint-plugin-${pluginShortName}/releases/latest/download/${fileName}`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-${pluginShortName}/releases/download/${tag}/${fileName}`;
-    }
+    const pluginShortName = result.pathname.groups[0]!;
+    const tag = result.pathname.groups[1]!;
+    const repo = `dprint-plugin-${pluginShortName}`;
+    const githubUrl = tag === "latest"
+      ? `https://github.com/dprint/${repo}/releases/latest/download/${fileName}`
+      : `https://github.com/dprint/${repo}/releases/download/${tag}/${fileName}`;
+    return { githubUrl, username: "dprint", repo, tag };
   }
   return undefined;
 }
@@ -164,7 +172,7 @@ async function userRepoTagPatternMapper(
   pattern: URLPattern,
   url: URL,
   fileName: string,
-) {
+): Promise<PluginUrlResult | undefined> {
   const result = pattern.exec(url);
   if (result) {
     const username = result.pathname.groups[0]!;
@@ -179,12 +187,11 @@ async function userRepoTagPatternMapper(
           break;
       }
     }
-    const tag = result.pathname.groups[2];
-    if (tag === "latest") {
-      return `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`;
-    } else {
-      return `https://github.com/${username}/${repo}/releases/download/${tag}/${fileName}`;
-    }
+    const tag = result.pathname.groups[2]!;
+    const githubUrl = tag === "latest"
+      ? `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`
+      : `https://github.com/${username}/${repo}/releases/download/${tag}/${fileName}`;
+    return { githubUrl, username, repo, tag };
   }
   return undefined;
 }

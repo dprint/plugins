@@ -1,6 +1,13 @@
+import { env } from "cloudflare:workers";
 import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
-import { tryResolveAssetUrl, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
+import {
+  type PluginUrlResult,
+  tryResolveAssetUrl,
+  tryResolveLatestJson,
+  tryResolvePluginUrl,
+  tryResolveSchemaUrl,
+} from "./plugins.js";
 import { readInfoFile } from "./readInfoFile.js";
 import robotsTxt from "./robots.txt";
 import styleCSS from "./style.css";
@@ -33,17 +40,26 @@ export function createRequestHandler() {
         return servePlugin(request, assetResult.githubUrl, ctx);
       }
 
-      const githubUrl = await resolvePluginOrSchemaUrl(url);
-      if (githubUrl != null) {
-        if (!githubUrl.endsWith(".wasm")) {
-          // redirect non-wasm files to asset URL so relative URLs in
-          // plugin.json files resolve correctly
-          const assetPath = githubUrlToAssetPath(githubUrl);
+      const oldMapping = (oldMappings as { [oldUrl: string]: string })[url.toString()];
+      if (oldMapping != null) {
+        return servePlugin(request, oldMapping, ctx);
+      }
+
+      const pluginResult = await tryResolvePluginUrl(url);
+      if (pluginResult != null) {
+        if (!pluginResult.githubUrl.endsWith(".wasm")) {
+          const assetPath = githubUrlToAssetPath(pluginResult.githubUrl);
           if (assetPath != null) {
             return Response.redirect(`${url.origin}${assetPath}`, 302);
           }
         }
-        return servePlugin(request, githubUrl, ctx);
+        trackPluginDownload(pluginResult);
+        return servePlugin(request, pluginResult.githubUrl, ctx);
+      }
+
+      const schemaUrl = await tryResolveSchemaUrl(url);
+      if (schemaUrl != null) {
+        return servePlugin(request, schemaUrl, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -190,9 +206,15 @@ export function createRequestHandler() {
 }
 
 export async function resolvePluginOrSchemaUrl(url: URL) {
-  return (oldMappings as { [oldUrl: string]: string })[url.toString()]
-    ?? await tryResolvePluginUrl(url)
-    ?? await tryResolveSchemaUrl(url);
+  const oldMapping = (oldMappings as { [oldUrl: string]: string })[url.toString()];
+  if (oldMapping != null) {
+    return oldMapping;
+  }
+  const pluginResult = await tryResolvePluginUrl(url);
+  if (pluginResult != null) {
+    return pluginResult.githubUrl;
+  }
+  return await tryResolveSchemaUrl(url);
 }
 
 function getAccessControlAllowOrigin(request: Request) {
@@ -233,6 +255,18 @@ function contentTypeForUrl(url: string) {
   if (url.endsWith(".wasm")) return contentTypes.wasm;
   if (url.endsWith(".json") || url.endsWith(".exe-plugin")) return contentTypes.json;
   return contentTypes.octetStream;
+}
+
+function trackPluginDownload(result: PluginUrlResult) {
+  try {
+    env.DPRINT_PLUGIN_DOWNLOAD_ANALYTICS.writeDataPoint({
+      indexes: [`${result.username}/${result.repo}`],
+      blobs: [result.tag],
+      doubles: [1],
+    });
+  } catch (err) {
+    console.warn("Failed to write analytics:", err);
+  }
 }
 
 function create404Response() {

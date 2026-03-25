@@ -14,3 +14,7 @@ invocation_logs = true
 [[r2_buckets]]
 binding = "PLUGIN_CACHE"
 bucket_name = "dprint-plugin-cache"
+
+[[analytics_engine_datasets]]
+binding = "DPRINT_PLUGIN_DOWNLOAD_ANALYTICS"
+dataset = "dprint-plugin-downloads"
