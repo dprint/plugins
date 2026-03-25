@@ -2,11 +2,11 @@
 
 Website for [https://plugins.dprint.dev](https://plugins.dprint.dev).
 
-This website is hosted on [Deno Deploy](https://deno.com/deploy).
+This website is hosted on Cloudflare. I really dislike how that makes the code, but Cloudflare has free bandwidth, which is important for this project.
 
 ## Redirect to Any GitHub Repo (For Plugin Authors)
 
-This service provides a convenient redirect for a plugin stored in any GitHub repo.
+This service provides a convenient URL for a plugin stored in any GitHub repo.
 
 To use it, create a GitHub release in your repo with:
 
@@ -31,5 +31,6 @@ If your repo name is in the format `dprint-plugin-<something>` then you can omit
 ## Run Locally
 
 ```bash
-deno run --allow-read=. --allow-net --allow-env --no-check main.ts
+npm install
+npm run dev
 ```

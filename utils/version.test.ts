@@ -1,15 +1,15 @@
-import { assertEquals } from "@std/assert";
-import { parseVersion, Version } from "./version.ts";
+import { expect, it } from "vitest";
+import { parseVersion, Version } from "./version.js";
 
-Deno.test("should parse version", () => {
-  assertEquals(parseVersion("12.34.56"), new Version(12, 34, 56));
+it("should parse version", () => {
+  expect(parseVersion("12.34.56")).toEqual(new Version(12, 34, 56));
 });
 
 function runVersionLessThanTest(a: string, b: string, expected: boolean) {
-  assertEquals(parseVersion(a).lessThan(parseVersion(b)), expected);
+  expect(parseVersion(a).lessThan(parseVersion(b))).toEqual(expected);
 }
 
-Deno.test("less than tests", () => {
+it("less than tests", () => {
   runVersionLessThanTest("1.3.5", "1.3.5", false);
 
   runVersionLessThanTest("1.3.4", "1.3.5", true);
@@ -22,10 +22,10 @@ Deno.test("less than tests", () => {
 });
 
 function runEqualTest(a: string, b: string, expected: boolean) {
-  assertEquals(parseVersion(a).equal(parseVersion(b)), expected);
+  expect(parseVersion(a).equal(parseVersion(b))).toEqual(expected);
 }
 
-Deno.test("equal tests", () => {
+it("equal tests", () => {
   runEqualTest("1.3.5", "1.3.5", true);
 
   runEqualTest("1.3.6", "1.3.5", false);
@@ -34,10 +34,10 @@ Deno.test("equal tests", () => {
 });
 
 function runLessThanEqual(a: string, b: string, expected: boolean) {
-  assertEquals(parseVersion(a).lessThanEqual(parseVersion(b)), expected);
+  expect(parseVersion(a).lessThanEqual(parseVersion(b))).toEqual(expected);
 }
 
-Deno.test("less than equal tests", () => {
+it("less than equal tests", () => {
   runLessThanEqual("1.3.4", "1.3.5", true);
   runLessThanEqual("1.3.5", "1.3.5", true);
   runLessThanEqual("1.3.6", "1.3.5", false);

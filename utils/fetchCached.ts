@@ -1,21 +1,22 @@
-import { Clock } from "./clock.ts";
-import { LruCache, LruCacheSet } from "./LruCache.ts";
-import { RateLimiter } from "./RateLimiter.ts";
+import { Clock } from "./clock.js";
+import { LruCache, LruCacheSet } from "./LruCache.js";
+import { RateLimiter } from "./RateLimiter.js";
 
-const tooLargeResponse = {
+const tooLargeResponse = () => ({
   kind: "error" as const,
   response: new Response("Response body exceeds 10MB limit", {
     status: 413,
   }),
-};
-const tooManyRequestsResponse = {
+} as const);
+const tooManyRequestsResponse = () => ({
   kind: "error" as const,
   response: new Response("Too many requests", {
     status: 429,
   }),
-};
+} as const);
 
-export function createFetchCacher(clock: Clock) {
+export function createFetchCacher(clock: Clock, fetchFn?: (url: string) => Promise<Response>) {
+  const doFetch = fetchFn ?? ((url: string) => fetch(url));
   const directDownloadRateLimiter = new RateLimiter(clock, {
     limit: 10,
     timeWindowMs: 5 * 60 * 1_000,
@@ -32,10 +33,10 @@ export function createFetchCacher(clock: Clock) {
       let cachedBody = cache.get(url);
       if (cachedBody == null) {
         if (!directDownloadRateLimiter.isAllowed(hostname)) {
-          return tooManyRequestsResponse;
+          return tooManyRequestsResponse();
         }
 
-        const response = await fetch(url);
+        const response = await doFetch(url);
         if (!response.ok) {
           return {
             kind: "error",
@@ -46,7 +47,7 @@ export function createFetchCacher(clock: Clock) {
         const reader = response.body!.getReader();
 
         let receivedLength = 0; // received that many bytes at the moment
-        let chunks = []; // array of received binary chunks (comprises the body)
+        const chunks = []; // array of received binary chunks (comprises the body)
         while (true) {
           const { done, value } = await reader.read();
 
@@ -61,14 +62,14 @@ export function createFetchCacher(clock: Clock) {
           if (receivedLength > 10 * 1024 * 1024) {
             reader.cancel(); // stops the reading process
             tooLargeCache.insert(url);
-            return tooLargeResponse;
+            return tooLargeResponse();
           }
         }
 
         // Concatenate chunks into single Uint8Array
-        let chunksAll = new Uint8Array(receivedLength);
+        const chunksAll = new Uint8Array(receivedLength);
         let position = 0;
-        for (let chunk of chunks) {
+        for (const chunk of chunks) {
           chunksAll.set(chunk, position);
           position += chunk.length;
         }
@@ -76,7 +77,7 @@ export function createFetchCacher(clock: Clock) {
         cachedBody = chunksAll.buffer;
         cache.set(url, cachedBody);
       } else if (!cachedRateLimiter.isAllowed(hostname)) {
-        return tooManyRequestsResponse;
+        return tooManyRequestsResponse();
       }
       return {
         kind: "success",

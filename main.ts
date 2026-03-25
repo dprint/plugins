@@ -1,6 +1,10 @@
-import { createRequestHandler } from "./handleRequest.ts";
-import { RealClock } from "./utils/clock.ts";
+import { createRequestHandler } from "./handleRequest.js";
+import { RealClock } from "./utils/clock.js";
 
 const { handleRequest } = createRequestHandler(new RealClock());
 
-Deno.serve((request, info) => handleRequest(request, info));
+export default {
+  fetch(request: Request) {
+    return handleRequest(request);
+  },
+};

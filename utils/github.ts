@@ -1,6 +1,7 @@
-import { LazyExpirableValue } from "./LazyExpirableValue.ts";
-import { LruCache, LruCacheWithExpiry } from "./LruCache.ts";
-import { createSynchronizedActioner } from "./synchronizedActioner.ts";
+import { env } from "cloudflare:workers";
+import { LazyExpirableValue } from "./LazyExpirableValue.js";
+import { LruCache, LruCacheWithExpiry } from "./LruCache.js";
+import { createSynchronizedActioner } from "./synchronizedActioner.js";
 
 const repoExistsCache = new LruCache<string, boolean>({ size: 1000 });
 
@@ -37,11 +38,6 @@ export interface ReleaseInfo {
   kind: "wasm" | "process";
   downloadCount: number;
 }
-
-const latestReleaseTagNameCache = new LruCacheWithExpiry<string, ReleaseInfo | undefined>({
-  size: 1000,
-  expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
-});
 
 export async function getLatestReleaseInfo(username: string, repoName: string) {
   const releases = await getReleasesData(username, repoName);
@@ -118,7 +114,7 @@ interface GitHubRelease {
   assets: ReleaseAsset[];
 }
 
-const releasesCache = new LruCacheWithExpiry<string, GitHubRelease[]>({
+const releasesCache = new LruCacheWithExpiry<string, GitHubRelease[] | undefined>({
   size: 1000,
   expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
 });
@@ -132,7 +128,7 @@ async function getReleasesData(username: string, repoName: string) {
   return await releasesCache.getOrSet(url, async () => {
     const response = await makeGitHubGetRequest(url, "GET");
     if (response.status === 404) {
-      await response.text(); // todo: no way to mark this as used for the sanitizers?
+      await response.text();
       return;
     } else if (!response.ok) {
       const text = await response.text();
@@ -142,7 +138,7 @@ async function getReleasesData(username: string, repoName: string) {
   });
 }
 
-const latestCliReleaseInfo = new LazyExpirableValue<any>({
+const latestCliReleaseInfo = new LazyExpirableValue<{ tag_name: string }>({
   expiryMs: 10 * 60 * 1_000, // keep for 10 minutes
   createValue: async () => {
     const url = `https://api.github.com/repos/dprint/dprint/releases/latest`;
@@ -185,8 +181,10 @@ function makeGitHubGetRequest(url: string, method: "GET" | "HEAD") {
 function getGitHubHeaders() {
   const headers: Record<string, string> = {
     "accept": "application/vnd.github.v3+json",
+    "user-agent": "dprint-plugins",
   };
-  const token = Deno.env.get("DPRINT_PLUGINS_GH_TOKEN");
+  console.log(env);
+  const token = env.DPRINT_PLUGINS_GH_TOKEN;
   if (token != null) {
     headers["authorization"] = "token " + token;
   }

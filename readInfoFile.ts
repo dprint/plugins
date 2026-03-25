@@ -1,11 +1,6 @@
-import { getLatestInfo } from "./plugins.ts";
-import { getAllDownloadCount } from "./utils/github.ts";
-import { createAsyncLazy } from "./utils/mod.ts";
-
-const infoLazy = createAsyncLazy<Readonly<PluginsData>>(async () => {
-  const data = await Deno.readTextFile("./info.json");
-  return JSON.parse(data);
-});
+import infoJson from "./info.json" with { type: "json" };
+import { getLatestInfo } from "./plugins.js";
+import { getAllDownloadCount } from "./utils/github.js";
 
 // only typing what's used on the server
 export interface PluginsData {
@@ -23,13 +18,12 @@ export interface PluginData {
 }
 
 export async function readInfoFile(): Promise<Readonly<PluginsData>> {
-  const infoObj = await infoLazy.get();
   return {
-    ...infoObj,
-    latest: await getLatest(infoObj.latest),
+    ...infoJson,
+    latest: await getLatest(infoJson.latest),
   };
 
-  async function getLatest(latest: Readonly<PluginData>[]) {
+  async function getLatest(latest: typeof infoJson.latest) {
     const results = [];
     for (const plugin of latest) {
       const [username, pluginName] = plugin.name.split("/");

@@ -1,4 +1,4 @@
-import { withTimeout } from "./withTimeout.ts";
+import { withTimeout } from "./withTimeout.js";
 
 /** Creates an object that only lets one action execute at a time. */
 export function createSynchronizedActioner() {

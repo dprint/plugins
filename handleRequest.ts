@@ -1,9 +1,10 @@
-import { renderHome } from "./home.tsx";
+import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
-import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.ts";
-import { readInfoFile } from "./readInfoFile.ts";
-import { Clock } from "./utils/clock.ts";
-import { createFetchCacher, getCliInfo } from "./utils/mod.ts";
+import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
+import { readInfoFile } from "./readInfoFile.js";
+import styleCSS from "./style.css";
+import { Clock } from "./utils/clock.js";
+import { createFetchCacher, getCliInfo } from "./utils/mod.js";
 
 const contentTypes = {
   css: "text/css; charset=utf-8",
@@ -16,7 +17,7 @@ const contentTypes = {
 export function createRequestHandler(clock: Clock) {
   const { fetchCached } = createFetchCacher(clock);
   return {
-    async handleRequest(request: Request, info: Deno.ServeHandlerInfo<Deno.NetAddr>) {
+    async handleRequest(request: Request) {
       const url = new URL(request.url);
       const newUrl = await resolvePluginOrSchemaUrl(url);
       if (newUrl != null) {
@@ -29,7 +30,7 @@ export function createRequestHandler(clock: Clock) {
           request,
           url: newUrl,
           contentType,
-          hostname: info.remoteAddr.hostname,
+          hostname: request.headers.get("CF-Connecting-IP") ?? "unknown",
         });
       }
 
@@ -61,14 +62,12 @@ export function createRequestHandler(clock: Clock) {
       }
 
       if (url.pathname === "/style.css") {
-        return Deno.readTextFile("./style.css").then((text) =>
-          new Response(text, {
-            headers: {
-              "content-type": "text/css; charset=utf-8",
-            },
-            status: 200,
-          })
-        );
+        return new Response(styleCSS, {
+          headers: {
+            "content-type": contentTypes.css,
+          },
+          status: 200,
+        });
       }
 
       if (url.pathname === "/") {

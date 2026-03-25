@@ -1,7 +1,5 @@
-/** @jsx h */
-import { h } from "preact";
 import { renderToString } from "preact-render-to-string";
-import { PluginData, PluginsData, readInfoFile } from "./readInfoFile.ts";
+import { PluginData, PluginsData, readInfoFile } from "./readInfoFile.js";
 
 export async function renderHome() {
   const content = await renderContent();
@@ -85,7 +83,7 @@ function renderPlugin(plugin: PluginData) {
       <div>{plugin.url}</div>
       <div>{plugin.downloadCount.allVersions?.toLocaleString("en-US")}</div>
       <div>
-        <button className="copy-button" title="Copy to clipboard" data-url={plugin.url}>
+        <button type="button" className="copy-button" title="Copy to clipboard" data-url={plugin.url}>
           Copy
         </button>
       </div>

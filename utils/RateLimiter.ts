@@ -1,5 +1,5 @@
-import { Clock } from "./clock.ts";
-import { LruCache } from "./LruCache.ts";
+import { Clock } from "./clock.js";
+import { LruCache } from "./LruCache.js";
 
 export interface RateLimiterOptions {
   limit: number;

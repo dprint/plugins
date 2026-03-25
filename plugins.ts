@@ -1,4 +1,4 @@
-import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.ts";
+import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.js";
 
 const tagPattern = "([A-Za-z0-9\._]+)";
 // repos may only contain alphanumeric, underscores, hyphens, and period

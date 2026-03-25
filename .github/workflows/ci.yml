@@ -6,20 +6,17 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write
       contents: read
 
     steps:
       - uses: actions/checkout@v4
-      - uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
+      - name: Install dependencies
+        run: npm install
       - name: Run tests
+        run: npx vitest run
+      - name: Deploy to Cloudflare Workers
+        if: github.ref == 'refs/heads/main'
+        run: npx wrangler deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: deno test --allow-env --allow-read=. --allow-net=api.github.com,0.0.0.0,localhost
-      - name: Deploy to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: dprint-plugins
-          entrypoint: main.ts
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

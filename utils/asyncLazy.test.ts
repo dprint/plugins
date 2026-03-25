@@ -1,18 +1,18 @@
-import { assertEquals, assertRejects } from "@std/assert";
-import { createAsyncLazy } from "./asyncLazy.ts";
+import { expect, it } from "vitest";
+import { createAsyncLazy } from "./asyncLazy.js";
 
-Deno.test("should create", async () => {
+it("should create", async () => {
   let createdValue = () => Promise.resolve(1);
   const asyncLazy = createAsyncLazy(() => createdValue());
-  assertEquals(await asyncLazy.get(), 1);
+  expect(await asyncLazy.get()).toEqual(1);
   createdValue = () => Promise.resolve(2);
-  assertEquals(await asyncLazy.get(), 1);
+  expect(await asyncLazy.get()).toEqual(1);
 });
 
-Deno.test("should create when throws first time", async () => {
+it("should create when throws first time", async () => {
   let createdValue: () => Promise<number> = () => Promise.reject(new Error());
   const asyncLazy = createAsyncLazy(() => createdValue());
-  assertRejects(() => asyncLazy.get());
+  await expect(asyncLazy.get()).rejects.toThrow();
   createdValue = () => Promise.resolve(1);
-  assertEquals(await asyncLazy.get(), 1);
+  expect(await asyncLazy.get()).toEqual(1);
 });

@@ -1,14 +1,14 @@
-import { assertEquals } from "@std/assert";
-import { checkGithubRepoExists } from "./github.ts";
+import { expect, it } from "vitest";
+import { checkGithubRepoExists } from "./github.js";
 
-Deno.test("should get when exists", async () => {
+it("should get when exists", async () => {
   const getResult = () => checkGithubRepoExists("dprint", "dprint");
-  assertEquals(await getResult(), true);
-  assertEquals(await getResult(), true);
+  expect(await getResult()).toEqual(true);
+  expect(await getResult()).toEqual(true);
 });
 
-Deno.test("should get when not exists", async () => {
+it("should get when not exists", async () => {
   const getResult = () => checkGithubRepoExists("dsherret", "some-random-name");
-  assertEquals(await getResult(), false);
-  assertEquals(await getResult(), false);
+  expect(await getResult()).toEqual(false);
+  expect(await getResult()).toEqual(false);
 });
