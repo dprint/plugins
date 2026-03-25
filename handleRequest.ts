@@ -30,9 +30,12 @@ export function createRequestHandler() {
   return {
     async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
-      const assetUrl = tryResolveAssetUrl(url);
-      if (assetUrl != null) {
-        return servePlugin(request, url, assetUrl, ctx);
+      const assetResult = tryResolveAssetUrl(url);
+      if (assetResult != null) {
+        if (!assetResult.shouldCache) {
+          return Response.redirect(assetResult.githubUrl, 302);
+        }
+        return servePlugin(request, url, assetResult.githubUrl, ctx);
       }
 
       const githubUrl = await resolvePluginOrSchemaUrl(url);
@@ -238,7 +241,13 @@ function githubUrlToAssetPath(githubUrl: string) {
 const MAX_JSON_REWRITE_SIZE = 1024 * 1024; // 1MB
 
 export function rewriteGithubUrls(githubUrl: string, body: ArrayBuffer, origin: string): ArrayBuffer | string {
-  if (!githubUrl.endsWith("/plugin.json") || body.byteLength > MAX_JSON_REWRITE_SIZE) {
+  const match = githubReleasePattern.exec(githubUrl);
+  if (
+    !githubUrl.endsWith("/plugin.json")
+    || body.byteLength > MAX_JSON_REWRITE_SIZE
+    || match == null
+    || !isAssetAllowedRepo(match[1], match[2])
+  ) {
     return body;
   }
   const text = new TextDecoder().decode(body);

@@ -70,22 +70,18 @@ const assetPattern = new URLPattern({
   pathname: `/${userRepoPattern}/${tagPattern}/asset/${assetNamePattern}`,
 });
 
-export function tryResolveAssetUrl(url: URL) {
+export function tryResolveAssetUrl(url: URL): { githubUrl: string; shouldCache: boolean } | undefined {
   const result = assetPattern.exec(url);
   if (!result) {
     return undefined;
   }
   const username = result.pathname.groups[0]!;
   const repo = result.pathname.groups[1]!;
-  if (!isAssetAllowedRepo(username, repo)) {
-    return undefined;
-  }
   const tag = result.pathname.groups[2]!;
-  if (tag === "latest") {
-    return undefined;
-  }
   const assetName = result.pathname.groups[3]!;
-  return `https://github.com/${username}/${repo}/releases/download/${tag}/${assetName}`;
+  const githubUrl = `https://github.com/${username}/${repo}/releases/download/${tag}/${assetName}`;
+  const shouldCache = isAssetAllowedRepo(username, repo);
+  return { githubUrl, shouldCache };
 }
 
 export async function tryResolvePluginUrl(url: URL) {
