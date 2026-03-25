@@ -37,7 +37,7 @@ https://plugins.dprint.dev/<username>/<repo_name>/<tag_name>/asset/<asset_name>
 For example:
 
 ```
-https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip
+https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-aarch64-apple-darwin.zip
 ```
 
 This is useful for process plugins that distribute platform-specific binaries. Assets are cached in R2 for persistence.

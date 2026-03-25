@@ -20,23 +20,18 @@ const contentTypes = {
 };
 
 export function createRequestHandler() {
-  const memoryCache = new LruCache<string, ArrayBuffer>({ size: 50 });
+  const memoryCache = new LruCache<string, { body: ArrayBuffer; contentType: string }>({ size: 50 });
   return {
     async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
       const assetUrl = tryResolveAssetUrl(url);
       if (assetUrl != null) {
-        return servePlugin(request, assetUrl, contentTypes.octetStream, ctx);
+        return servePlugin(request, assetUrl, ctx);
       }
 
       const githubUrl = await resolvePluginOrSchemaUrl(url);
       if (githubUrl != null) {
-        const contentType = githubUrl.endsWith(".json") || githubUrl.endsWith(".exe-plugin")
-          ? contentTypes.json
-          : githubUrl.endsWith(".wasm")
-          ? contentTypes.wasm
-          : contentTypes.plain;
-        return servePlugin(request, githubUrl, contentType, ctx);
+        return servePlugin(request, githubUrl, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -104,44 +99,39 @@ export function createRequestHandler() {
     },
   };
 
-  async function servePlugin(request: Request, githubUrl: string, contentType: string, ctx?: ExecutionContext) {
-    try {
-      const body = await resolveBody(githubUrl, contentType, ctx);
-      return new Response(body, {
-        headers: {
-          "content-type": contentType,
-          "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
-        },
-        status: 200,
-      });
-    } catch (err) {
-      console.error("Error serving plugin:", err);
-      return new Response("Internal Server Error", { status: 500 });
-    }
+  async function servePlugin(request: Request, githubUrl: string, ctx?: ExecutionContext) {
+    const result = await resolveBody(githubUrl, ctx);
+    return new Response(result.body, {
+      headers: {
+        "content-type": result.contentType,
+        "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+      },
+      status: result.status,
+    });
   }
 
   async function resolveBody(
     githubUrl: string,
-    contentType: string,
     ctx?: ExecutionContext,
-  ): Promise<ArrayBuffer | ReadableStream> {
+  ): Promise<{ body: ArrayBuffer | ReadableStream | null; status: number; contentType: string }> {
     // L1: in-memory cache
     const cached = memoryCache.get(githubUrl);
     if (cached != null) {
-      return cached;
+      return { body: cached.body, status: 200, contentType: cached.contentType };
     }
 
     // L2: R2
     const r2Object = await r2Get(githubUrl);
     if (r2Object != null) {
+      const r2ContentType = r2Object.httpMetadata?.contentType ?? contentTypeForUrl(githubUrl);
       // small enough for L1 — buffer and cache
       if (r2Object.size <= MAX_MEM_CACHE_BODY_SIZE) {
         const buffer = await r2Object.arrayBuffer();
-        memoryCache.set(githubUrl, buffer);
-        return buffer;
+        memoryCache.set(githubUrl, { body: buffer, contentType: r2ContentType });
+        return { body: buffer, status: 200, contentType: r2ContentType };
       }
       // large — stream directly without buffering
-      return r2Object.body;
+      return { body: r2Object.body, status: 200, contentType: r2ContentType };
     }
 
     // L3: fetch from GitHub
@@ -149,23 +139,31 @@ export function createRequestHandler() {
       headers: { "user-agent": "dprint-plugins" },
     });
     if (!response.ok) {
-      throw new Error(`GitHub fetch failed: ${response.status} ${response.statusText}`);
+      if (response.status !== 404) {
+        console.error(`GitHub fetch error: ${response.status} ${response.statusText} for ${githubUrl}`);
+      }
+      return {
+        body: response.body,
+        status: response.status,
+        contentType: response.headers.get("content-type") ?? contentTypes.plain,
+      };
     }
 
+    const responseContentType = response.headers.get("content-type") ?? contentTypeForUrl(githubUrl);
     const body = await response.arrayBuffer();
 
     // populate caches
-    const r2Promise = r2Put(githubUrl, body, contentType);
+    const r2Promise = r2Put(githubUrl, body, responseContentType);
     if (ctx != null) {
       ctx.waitUntil(r2Promise);
     } else {
       await r2Promise;
     }
     if (body.byteLength <= MAX_MEM_CACHE_BODY_SIZE) {
-      memoryCache.set(githubUrl, body);
+      memoryCache.set(githubUrl, { body, contentType: responseContentType });
     }
 
-    return body;
+    return { body, status: 200, contentType: responseContentType };
   }
 }
 
@@ -194,6 +192,12 @@ function createJsonResponse(text: string, request: Request) {
     },
     status: 200,
   });
+}
+
+function contentTypeForUrl(url: string) {
+  if (url.endsWith(".wasm")) return contentTypes.wasm;
+  if (url.endsWith(".json") || url.endsWith(".exe-plugin")) return contentTypes.json;
+  return contentTypes.octetStream;
 }
 
 function create404Response() {

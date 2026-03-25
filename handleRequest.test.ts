@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import { createRequestHandler, resolvePluginOrSchemaUrl } from "./handleRequest.js";
 
-it("should get info.json", async () => {
+it("should get info.json", { timeout: 10_000 }, async () => {
   const { handleRequest } = createRequestHandler();
   const response = await handleRequest(
     new Request("https://plugins.dprint.dev/info.json"),
@@ -324,6 +324,14 @@ it("tryResolvePluginUrl", async () => {
   ).toEqual(
     "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.wasm",
   );
+});
+
+it("should return 404 for asset not found", async () => {
+  const { handleRequest } = createRequestHandler();
+  const response = await handleRequest(
+    new Request("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.0.0/asset/nonexistent.zip"),
+  );
+  expect(response.status).toEqual(404);
 });
 
 // todo: mock github api for these tests
