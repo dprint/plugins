@@ -43,6 +43,8 @@ export function createRequestHandler() {
       const githubUrl = await resolvePluginOrSchemaUrl(url);
       if (githubUrl != null) {
         if (!githubUrl.endsWith(".wasm")) {
+          // redirect non-wasm files to asset URL so relative URLs in
+          // plugin.json files resolve correctly
           const assetPath = githubUrlToAssetPath(githubUrl);
           if (assetPath != null) {
             return Response.redirect(`${url.origin}${assetPath}`, 302);
