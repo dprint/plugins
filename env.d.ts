@@ -8,7 +8,9 @@ declare module "*.txt" {
   export default content;
 }
 
-interface Env {
-  DPRINT_PLUGINS_GH_TOKEN?: string;
-  PLUGIN_CACHE: R2Bucket;
+declare namespace Cloudflare {
+  interface Env {
+    DPRINT_PLUGINS_GH_TOKEN?: string;
+    PLUGIN_CACHE: R2Bucket;
+  }
 }
