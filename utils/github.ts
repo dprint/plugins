@@ -1,4 +1,5 @@
 import { env } from "cloudflare:workers";
+import { fetchWithRetries } from "./fetchWithRetries.js";
 import { LazyExpirableValue } from "./LazyExpirableValue.js";
 import { LruCache, LruCacheWithExpiry } from "./LruCache.js";
 import { createSynchronizedActioner } from "./synchronizedActioner.js";
@@ -170,17 +171,18 @@ const synchronizedActioner = createSynchronizedActioner();
 function makeGitHubGetRequest(url: string, method: "GET" | "HEAD") {
   console.log(`Making request to ${url}`);
   return synchronizedActioner.doActionWithTimeout((signal) => {
-    return fetch(url, {
+    return fetchWithRetries(url, {
       method,
       headers: getGitHubHeaders(),
       signal,
-    });
+    }, /* retries */ 1);
   }, 10_000);
 }
 
-function getGitHubHeaders() {
+// headers for GitHub API requests (not raw asset downloads,
+// which don't need auth for public repos)
+function getGitHubDownloadHeaders() {
   const headers: Record<string, string> = {
-    "accept": "application/vnd.github.v3+json",
     "user-agent": "dprint-plugins",
   };
   const token = env.DPRINT_PLUGINS_GH_TOKEN;
@@ -188,4 +190,11 @@ function getGitHubHeaders() {
     headers["authorization"] = "token " + token;
   }
   return headers;
+}
+
+function getGitHubHeaders() {
+  return {
+    ...getGitHubDownloadHeaders(),
+    "accept": "application/vnd.github.v3+json",
+  };
 }

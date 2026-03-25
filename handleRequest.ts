@@ -1,14 +1,10 @@
 import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
-import {
-  tryResolveAssetUrl,
-  tryResolveLatestJson,
-  tryResolvePluginUrl,
-  tryResolveSchemaUrl,
-} from "./plugins.js";
+import { tryResolveAssetUrl, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
 import { readInfoFile } from "./readInfoFile.js";
 import robotsTxt from "./robots.txt";
 import styleCSS from "./style.css";
+import { fetchWithRetries } from "./utils/fetchWithRetries.js";
 import { LruCache } from "./utils/LruCache.js";
 import { getCliInfo } from "./utils/mod.js";
 import { r2Get, r2Put } from "./utils/r2Cache.js";
@@ -130,14 +126,16 @@ export function createRequestHandler() {
     githubUrl: string,
     ctx?: ExecutionContext,
   ): Promise<{ body: ArrayBuffer | ReadableStream | null; status: number; contentType: string }> {
-    // L1: in-memory cache (already rewritten)
+    // L1: in-memory cache
     const cached = memoryCache.get(githubUrl);
     if (cached != null) {
       return { body: cached.body, status: 200, contentType: cached.contentType };
     }
 
     const result = await fetchBody(githubUrl, ctx);
-    if (result.status === 200 && result.body instanceof ArrayBuffer && result.body.byteLength <= MAX_MEM_CACHE_BODY_SIZE) {
+    if (
+      result.status === 200 && result.body instanceof ArrayBuffer && result.body.byteLength <= MAX_MEM_CACHE_BODY_SIZE
+    ) {
       memoryCache.set(githubUrl, { body: result.body, contentType: result.contentType });
     }
 
@@ -160,7 +158,11 @@ export function createRequestHandler() {
     }
 
     // L3: fetch from GitHub
-    const response = await fetchWithRetries(githubUrl);
+    const response = await fetchWithRetries(githubUrl, {
+      // don't need the github token here because these assets
+      // are not part of the github api
+      headers: { "user-agent": "dprint-plugins" },
+    });
     if (!response.ok) {
       if (response.status !== 404) {
         console.error(`GitHub fetch error: ${response.status} ${response.statusText} for ${githubUrl}`);
@@ -227,25 +229,10 @@ function githubUrlToAssetPath(githubUrl: string) {
   return `/${username}/${repo}/${tag}/asset/${fileName}`;
 }
 
-
 function contentTypeForUrl(url: string) {
   if (url.endsWith(".wasm")) return contentTypes.wasm;
   if (url.endsWith(".json") || url.endsWith(".exe-plugin")) return contentTypes.json;
   return contentTypes.octetStream;
-}
-
-async function fetchWithRetries(url: string, retries = 3): Promise<Response> {
-  for (let i = 0; i <= retries; i++) {
-    const response = await fetch(url, {
-      headers: { "user-agent": "dprint-plugins" },
-    });
-    if (response.status < 500 || i === retries) {
-      return response;
-    }
-    console.error(`GitHub fetch attempt ${i + 1} failed: ${response.status} for ${url}`);
-    await new Promise((resolve) => setTimeout(resolve, Math.min(1000 * 2 ** i, 2500)));
-  }
-  throw new Error("unreachable");
 }
 
 function create404Response() {
