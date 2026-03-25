@@ -40,26 +40,15 @@ export function createRequestHandler() {
         return servePlugin(request, assetResult.githubUrl, ctx);
       }
 
-      const oldMapping = (oldMappings as { [oldUrl: string]: string })[url.toString()];
-      if (oldMapping != null) {
-        return servePlugin(request, oldMapping, ctx);
-      }
-
-      const pluginResult = await tryResolvePluginUrl(url);
-      if (pluginResult != null) {
-        if (!pluginResult.githubUrl.endsWith(".wasm")) {
-          const assetPath = githubUrlToAssetPath(pluginResult.githubUrl);
+      const githubUrl = await resolvePluginOrSchemaUrl(url);
+      if (githubUrl != null) {
+        if (!githubUrl.endsWith(".wasm")) {
+          const assetPath = githubUrlToAssetPath(githubUrl);
           if (assetPath != null) {
             return Response.redirect(`${url.origin}${assetPath}`, 302);
           }
         }
-        trackPluginDownload(pluginResult);
-        return servePlugin(request, pluginResult.githubUrl, ctx);
-      }
-
-      const schemaUrl = await tryResolveSchemaUrl(url);
-      if (schemaUrl != null) {
-        return servePlugin(request, schemaUrl, ctx);
+        return servePlugin(request, githubUrl, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -212,6 +201,7 @@ export async function resolvePluginOrSchemaUrl(url: URL) {
   }
   const pluginResult = await tryResolvePluginUrl(url);
   if (pluginResult != null) {
+    trackPluginDownload(pluginResult);
     return pluginResult.githubUrl;
   }
   return await tryResolveSchemaUrl(url);
