@@ -90,7 +90,7 @@ export function createRequestHandler() {
       }
 
       if (url.pathname === "/") {
-        return renderHome().then((home) =>
+        return renderHome(url.origin).then((home) =>
           new Response(home, {
             headers: {
               "content-type": contentTypes.html,

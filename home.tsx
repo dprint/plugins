@@ -1,8 +1,8 @@
 import { renderToString } from "preact-render-to-string";
 import { PluginData, PluginsData, readInfoFile } from "./readInfoFile.js";
 
-export async function renderHome() {
-  const content = await renderContent();
+export async function renderHome(origin: string) {
+  const content = await renderContent(origin);
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,8 +34,8 @@ export async function renderHome() {
 `;
 }
 
-async function renderContent() {
-  const pluginsData = await readInfoFile();
+async function renderContent(origin: string) {
+  const pluginsData = await readInfoFile(origin);
   const section = (
     <section id="content">
       <h1>Plugins</h1>
