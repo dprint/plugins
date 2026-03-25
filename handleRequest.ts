@@ -1,6 +1,6 @@
 import { renderHome } from "./home.jsx";
 import oldMappings from "./old_redirects.json" with { type: "json" };
-import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
+import { tryResolveAssetUrl, tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
 import { readInfoFile } from "./readInfoFile.js";
 import styleCSS from "./style.css";
 import { LruCache } from "./utils/LruCache.js";
@@ -15,6 +15,7 @@ const contentTypes = {
   json: "application/json; charset=utf-8",
   plain: "text/plain; charset=utf-8",
   wasm: "application/wasm",
+  octetStream: "application/octet-stream",
 };
 
 export function createRequestHandler() {
@@ -22,6 +23,11 @@ export function createRequestHandler() {
   return {
     async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
+      const assetUrl = tryResolveAssetUrl(url);
+      if (assetUrl != null) {
+        return servePlugin(request, assetUrl, contentTypes.octetStream, ctx);
+      }
+
       const githubUrl = await resolvePluginOrSchemaUrl(url);
       if (githubUrl != null) {
         const contentType = githubUrl.endsWith(".json") || githubUrl.endsWith(".exe-plugin")

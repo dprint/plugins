@@ -1,6 +1,41 @@
 import { expect, it } from "vitest";
-import { tryResolveLatestJson } from "./plugins.js";
+import { tryResolveAssetUrl, tryResolveLatestJson } from "./plugins.js";
 import { getLatestReleaseInfo } from "./utils/github.js";
+
+function resolveAsset(url: string) {
+  return tryResolveAssetUrl(new URL(url));
+}
+
+it("tryResolveAssetUrl", () => {
+  // allowed repo
+  expect(
+    resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip"),
+  ).toEqual(
+    "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.67.0/dprint-plugin-prettier-x86_64-apple-darwin.zip",
+  );
+
+  // latest tag is not allowed
+  expect(
+    resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/latest/asset/dprint-plugin-prettier-x86_64-apple-darwin.zip"),
+  ).toEqual(undefined);
+
+  // different repo in dprint org also works
+  expect(
+    resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-exec/0.5.0/asset/some-binary.zip"),
+  ).toEqual(
+    "https://github.com/dprint/dprint-plugin-exec/releases/download/0.5.0/some-binary.zip",
+  );
+
+  // org not on allow list
+  expect(
+    resolveAsset("https://plugins.dprint.dev/someone/some-repo/0.1.0/asset/file.zip"),
+  ).toEqual(undefined);
+
+  // non-matching URL
+  expect(
+    resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/file.zip"),
+  ).toEqual(undefined);
+});
 
 it("tryResolveUserLatestJson", async () => {
   // non-matching
