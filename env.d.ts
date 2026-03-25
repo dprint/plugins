@@ -5,4 +5,5 @@ declare module "*.css" {
 
 interface Env {
   DPRINT_PLUGINS_GH_TOKEN?: string;
+  PLUGIN_CACHE: R2Bucket;
 }

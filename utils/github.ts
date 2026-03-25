@@ -183,7 +183,6 @@ function getGitHubHeaders() {
     "accept": "application/vnd.github.v3+json",
     "user-agent": "dprint-plugins",
   };
-  console.log(env);
   const token = env.DPRINT_PLUGINS_GH_TOKEN;
   if (token != null) {
     headers["authorization"] = "token " + token;

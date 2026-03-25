@@ -1,9 +1,8 @@
 import { expect, it } from "vitest";
-import { createRequestHandler } from "./handleRequest.js";
-import { RealClock } from "./utils/clock.js";
+import { createRequestHandler, resolvePluginOrSchemaUrl } from "./handleRequest.js";
 
 it("should get info.json", async () => {
-  const { handleRequest } = createRequestHandler(new RealClock());
+  const { handleRequest } = createRequestHandler();
   const response = await handleRequest(
     new Request("https://plugins.dprint.dev/info.json"),
   );
@@ -17,7 +16,7 @@ it("should get info.json", async () => {
 });
 
 it("should get cli.json", async () => {
-  const { handleRequest } = createRequestHandler(new RealClock());
+  const { handleRequest } = createRequestHandler();
   const response = await handleRequest(
     new Request("https://plugins.dprint.dev/cli.json"),
   );
@@ -26,314 +25,264 @@ it("should get cli.json", async () => {
   expect(typeof data.version).toEqual("string");
 });
 
-async function getRedirectUrl(url: string) {
-  const { handleRequest } = createRequestHandler(new RealClock());
-  const response = await handleRequest(
-    new Request(url),
-  );
-  expect(response.status).toEqual(302);
-  return response.headers.get("location")!;
+async function resolveUrl(url: string) {
+  return await resolvePluginOrSchemaUrl(new URL(url));
 }
 
-it("should get correct info for typescript resolver", async () => {
-  function getWasmRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/typescript-${version}.wasm`);
-  }
-
+it("should resolve typescript URLs", async () => {
   expect(
-    await getWasmRedirectUrl("0.19.4"),
+    await resolveUrl("https://plugins.dprint.dev/typescript-0.19.4.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.19.4/typescript-0.19.4.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.44.0"),
+    await resolveUrl("https://plugins.dprint.dev/typescript-0.44.0.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.44.0/typescript-0.44.0.wasm",
   );
   // file name changed here
   expect(
-    await getWasmRedirectUrl("0.44.1"),
+    await resolveUrl("https://plugins.dprint.dev/typescript-0.44.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.44.1/typescript.wasm",
   );
   expect(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/typescript-0.52.1.json`),
+    await resolveUrl("https://plugins.dprint.dev/schemas/typescript-0.52.1.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.52.1/schema.json",
   );
   // file name changed after this
   expect(
-    await getWasmRedirectUrl("0.62.1"),
+    await resolveUrl("https://plugins.dprint.dev/typescript-0.62.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.62.1/typescript.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.62.2"),
+    await resolveUrl("https://plugins.dprint.dev/typescript-0.62.2.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/0.62.2/plugin.wasm",
   );
 });
 
-it("should get correct info for json resolver", async () => {
-  function getWasmRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/json-${version}.wasm`);
-  }
-
+it("should resolve json URLs", async () => {
   expect(
-    await getWasmRedirectUrl("0.4.0"),
+    await resolveUrl("https://plugins.dprint.dev/json-0.4.0.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.4.0/json-0.4.0.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.10.1"),
+    await resolveUrl("https://plugins.dprint.dev/json-0.10.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.10.1/json-0.10.1.wasm",
   );
   // file name changed here
   expect(
-    await getWasmRedirectUrl("0.10.2"),
+    await resolveUrl("https://plugins.dprint.dev/json-0.10.2.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.10.2/json.wasm",
   );
   expect(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/json-0.13.1.json`),
+    await resolveUrl("https://plugins.dprint.dev/schemas/json-0.13.1.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.13.1/schema.json",
   );
   // file name changed after this
   expect(
-    await getWasmRedirectUrl("0.14.0"),
+    await resolveUrl("https://plugins.dprint.dev/json-0.14.0.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.14.0/json.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.14.1"),
+    await resolveUrl("https://plugins.dprint.dev/json-0.14.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-json/releases/download/0.14.1/plugin.wasm",
   );
 });
 
-it("should get correct info for markdown resolver", async () => {
-  function getWasmRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/markdown-${version}.wasm`);
-  }
-
+it("should resolve markdown URLs", async () => {
   expect(
-    await getWasmRedirectUrl("0.1.0"),
+    await resolveUrl("https://plugins.dprint.dev/markdown-0.1.0.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.1.0/markdown-0.1.0.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.7.0"),
+    await resolveUrl("https://plugins.dprint.dev/markdown-0.7.0.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.7.0/markdown-0.7.0.wasm",
   );
   // file name changed here
   expect(
-    await getWasmRedirectUrl("0.7.1"),
+    await resolveUrl("https://plugins.dprint.dev/markdown-0.7.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.7.1/markdown.wasm",
   );
   expect(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/markdown-0.10.0.json`),
+    await resolveUrl("https://plugins.dprint.dev/schemas/markdown-0.10.0.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.10.0/schema.json",
   );
   // file name changed after this
   expect(
-    await getWasmRedirectUrl("0.12.1"),
+    await resolveUrl("https://plugins.dprint.dev/markdown-0.12.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.12.1/markdown.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.12.2"),
+    await resolveUrl("https://plugins.dprint.dev/markdown-0.12.2.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-markdown/releases/download/0.12.2/plugin.wasm",
   );
 });
 
-it("should get correct info for toml resolver", async () => {
-  function getWasmRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/toml-${version}.wasm`);
-  }
-
+it("should resolve toml URLs", async () => {
   expect(
-    await getWasmRedirectUrl("0.1.2"),
+    await resolveUrl("https://plugins.dprint.dev/toml-0.1.2.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-toml/releases/download/0.1.2/toml.wasm",
   );
   expect(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/toml-0.5.0.json`),
+    await resolveUrl("https://plugins.dprint.dev/schemas/toml-0.5.0.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-toml/releases/download/0.5.0/schema.json",
   );
   // file name changed after this
   expect(
-    await getWasmRedirectUrl("0.5.3"),
+    await resolveUrl("https://plugins.dprint.dev/toml-0.5.3.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-toml/releases/download/0.5.3/toml.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.5.4"),
+    await resolveUrl("https://plugins.dprint.dev/toml-0.5.4.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-toml/releases/download/0.5.4/plugin.wasm",
   );
 });
 
-it("should get correct info for dockerfile resolver", async () => {
-  function getWasmRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/dockerfile-${version}.wasm`);
-  }
-
+it("should resolve dockerfile URLs", async () => {
   expect(
-    await getWasmRedirectUrl("0.1.0"),
+    await resolveUrl("https://plugins.dprint.dev/dockerfile-0.1.0.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.1.0/dockerfile.wasm",
   );
   expect(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/dockerfile-0.1.0.json`),
+    await resolveUrl("https://plugins.dprint.dev/schemas/dockerfile-0.1.0.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.1.0/schema.json",
   );
   // file name changed after this
   expect(
-    await getWasmRedirectUrl("0.2.1"),
+    await resolveUrl("https://plugins.dprint.dev/dockerfile-0.2.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.2.1/dockerfile.wasm",
   );
   expect(
-    await getWasmRedirectUrl("0.2.2"),
+    await resolveUrl("https://plugins.dprint.dev/dockerfile-0.2.2.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-dockerfile/releases/download/0.2.2/plugin.wasm",
   );
 });
 
-it("should get correct info for sql resolver", async () => {
-  function getWasmRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/sql-${version}.wasm`);
-  }
-
+it("should resolve sql URLs", async () => {
   expect(
-    await getWasmRedirectUrl("0.1.1"),
+    await resolveUrl("https://plugins.dprint.dev/sql-0.1.1.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.1/sql.wasm",
   );
   expect(
-    await getRedirectUrl(`https://plugins.dprint.dev/schemas/sql-0.1.1.json`),
+    await resolveUrl("https://plugins.dprint.dev/schemas/sql-0.1.1.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.1/schema.json",
   );
   // file name changed here
   expect(
-    await getWasmRedirectUrl("0.1.2"),
+    await resolveUrl("https://plugins.dprint.dev/sql-0.1.2.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-sql/releases/download/0.1.2/plugin.wasm",
   );
 });
 
-it("should get correct info for prettier resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string, ext = "json") {
-    return getRedirectUrl(`https://plugins.dprint.dev/prettier-${version}.${ext}`);
-  }
-
+it("should resolve prettier URLs", async () => {
   // file name changed after this
   expect(
-    await getProcessPluginRedirectUrl("0.5.0", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/prettier-0.5.0.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.5.0/prettier.exe-plugin",
   );
   expect(
-    await getProcessPluginRedirectUrl("0.5.1", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/prettier-0.5.1.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.5.1/plugin.exe-plugin",
   );
-
   // and changed again here
   expect(
-    await getProcessPluginRedirectUrl("0.6.2", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/prettier-0.6.2.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.6.2/plugin.exe-plugin",
   );
   expect(
-    await getProcessPluginRedirectUrl("0.7.0"),
+    await resolveUrl("https://plugins.dprint.dev/prettier-0.7.0.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-prettier/releases/download/0.7.0/plugin.json",
   );
 });
 
-it("should get correct info for roslyn resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string, ext = "json") {
-    return getRedirectUrl(`https://plugins.dprint.dev/roslyn-${version}.${ext}`);
-  }
-
+it("should resolve roslyn URLs", async () => {
   // file name changed after this
   expect(
-    await getProcessPluginRedirectUrl("0.4.0", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/roslyn-0.4.0.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.4.0/roslyn.exe-plugin",
   );
   expect(
-    await getProcessPluginRedirectUrl("0.5.0", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/roslyn-0.5.0.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.5.0/plugin.exe-plugin",
   );
   // and again here
   expect(
-    await getProcessPluginRedirectUrl("0.6.4"),
+    await resolveUrl("https://plugins.dprint.dev/roslyn-0.6.4.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-roslyn/releases/download/0.6.4/plugin.json",
   );
 });
 
-it("should get correct info for rustfmt resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string, ext = "json") {
-    return getRedirectUrl(`https://plugins.dprint.dev/rustfmt-${version}.${ext}`);
-  }
-
+it("should resolve rustfmt URLs", async () => {
   // file name changed after this
   expect(
-    await getProcessPluginRedirectUrl("0.4.0", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/rustfmt-0.4.0.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.4.0/rustfmt.exe-plugin",
   );
   expect(
-    await getProcessPluginRedirectUrl("0.5.1", "exe-plugin"),
+    await resolveUrl("https://plugins.dprint.dev/rustfmt-0.5.1.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.5.1/plugin.exe-plugin",
   );
   // and again here
   expect(
-    await getProcessPluginRedirectUrl("0.6.2"),
+    await resolveUrl("https://plugins.dprint.dev/rustfmt-0.6.2.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-rustfmt/releases/download/0.6.2/plugin.json",
   );
 });
 
-it("should get correct info for yapf resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/yapf-${version}.exe-plugin`);
-  }
-
+it("should resolve yapf URLs", async () => {
   // file name changed after this
   expect(
-    await getProcessPluginRedirectUrl("0.2.0"),
+    await resolveUrl("https://plugins.dprint.dev/yapf-0.2.0.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.2.0/yapf.exe-plugin",
   );
   expect(
-    await getProcessPluginRedirectUrl("0.2.1"),
+    await resolveUrl("https://plugins.dprint.dev/yapf-0.2.1.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-yapf/releases/download/0.2.1/plugin.exe-plugin",
   );
 });
 
-it("should get correct info for exec resolver", async () => {
-  function getProcessPluginRedirectUrl(version: string) {
-    return getRedirectUrl(`https://plugins.dprint.dev/exec-${version}.exe-plugin`);
-  }
-
+it("should resolve exec URLs", async () => {
   expect(
-    await getProcessPluginRedirectUrl("0.1.0"),
+    await resolveUrl("https://plugins.dprint.dev/exec-0.1.0.exe-plugin"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-exec/releases/download/0.1.0/plugin.exe-plugin",
   );
@@ -341,37 +290,37 @@ it("should get correct info for exec resolver", async () => {
 
 it("tryResolvePluginUrl", async () => {
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/typescript-1.2.3.wasm"),
+    await resolveUrl("https://plugins.dprint.dev/typescript-1.2.3.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/plugin.wasm",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/typescript-1.2.3.wasm"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/typescript-1.2.3.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/plugin.wasm",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-1.2.3.wasm"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-1.2.3.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/plugin.wasm",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-latest.wasm"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript-latest.wasm"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/plugin.wasm",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-exec-0.3.0.json"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/dprint-plugin-exec-0.3.0.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-exec/releases/download/0.3.0/plugin.json",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools-0.1.0.wasm"),
+    await resolveUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools-0.1.0.wasm"),
   ).toEqual(
     "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.wasm",
   );
@@ -381,31 +330,31 @@ it("tryResolvePluginUrl", async () => {
 
 it("tryResolveSchemaUrl", async () => {
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/typescript/1.2.3/schema.json"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/typescript/1.2.3/schema.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript/1.2.3/schema.json"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript/1.2.3/schema.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/download/1.2.3/schema.json",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript/latest/schema.json"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/dprint-plugin-typescript/latest/schema.json"),
   ).toEqual(
     "https://github.com/dprint/dprint-plugin-typescript/releases/latest/download/schema.json",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/dprint/non-existent/1.2.3/schema.json"),
+    await resolveUrl("https://plugins.dprint.dev/dprint/non-existent/1.2.3/schema.json"),
   ).toEqual(
     "https://github.com/dprint/non-existent/releases/download/1.2.3/schema.json",
   );
 
   expect(
-    await getRedirectUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools/0.1.0/schema.json"),
+    await resolveUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools/0.1.0/schema.json"),
   ).toEqual(
     "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.schema.json",
   );

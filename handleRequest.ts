@@ -3,8 +3,11 @@ import oldMappings from "./old_redirects.json" with { type: "json" };
 import { tryResolveLatestJson, tryResolvePluginUrl, tryResolveSchemaUrl } from "./plugins.js";
 import { readInfoFile } from "./readInfoFile.js";
 import styleCSS from "./style.css";
-import { Clock } from "./utils/clock.js";
-import { createFetchCacher, getCliInfo } from "./utils/mod.js";
+import { LruCache } from "./utils/LruCache.js";
+import { getCliInfo } from "./utils/mod.js";
+import { r2Get, r2Put } from "./utils/r2Cache.js";
+
+const MAX_BODY_SIZE = 10 * 1024 * 1024; // 10MB
 
 const contentTypes = {
   css: "text/css; charset=utf-8",
@@ -14,24 +17,19 @@ const contentTypes = {
   wasm: "application/wasm",
 };
 
-export function createRequestHandler(clock: Clock) {
-  const { fetchCached } = createFetchCacher(clock);
+export function createRequestHandler() {
+  const memoryCache = new LruCache<string, ArrayBuffer>({ size: 50 });
   return {
-    async handleRequest(request: Request) {
+    async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
-      const newUrl = await resolvePluginOrSchemaUrl(url);
-      if (newUrl != null) {
-        const contentType = newUrl.endsWith(".json")
+      const githubUrl = await resolvePluginOrSchemaUrl(url);
+      if (githubUrl != null) {
+        const contentType = githubUrl.endsWith(".json") || githubUrl.endsWith(".exe-plugin")
           ? contentTypes.json
-          : newUrl.endsWith(".wasm")
+          : githubUrl.endsWith(".wasm")
           ? contentTypes.wasm
           : contentTypes.plain;
-        return handleConditionalRedirectRequest({
-          request,
-          url: newUrl,
-          contentType,
-          hostname: request.headers.get("CF-Connecting-IP") ?? "unknown",
-        });
+        return servePlugin(request, githubUrl, contentType, ctx);
       }
 
       const userLatestInfo = await tryResolveLatestJson(url);
@@ -92,43 +90,64 @@ export function createRequestHandler(clock: Clock) {
     },
   };
 
-  // This is done to allow the playground to access these files
-  function handleConditionalRedirectRequest(params: {
-    request: Request;
-    url: string;
-    contentType: string;
-    hostname: string;
-  }) {
-    if (shouldDirectlyServeFile(params.request)) {
-      return fetchCached(params)
-        .then((result) => {
-          if (result.kind === "error") {
-            return result.response;
-          }
-
-          return new Response(result.body, {
-            headers: {
-              "content-type": params.contentType,
-              // allow the playground to download this
-              "Access-Control-Allow-Origin": getAccessControlAllowOrigin(
-                params.request,
-              ),
-            },
-            status: 200,
-          });
-        }).catch((err) => {
-          console.error(err);
-          return new Response("Internal Server Error", {
-            status: 500,
-          });
-        });
-    } else {
-      return createRedirectResponse(params.url);
+  async function servePlugin(request: Request, githubUrl: string, contentType: string, ctx?: ExecutionContext) {
+    try {
+      const body = await resolveBody(githubUrl, contentType, ctx);
+      return new Response(body, {
+        headers: {
+          "content-type": contentType,
+          "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+        },
+        status: 200,
+      });
+    } catch (err) {
+      console.error("Error serving plugin:", err);
+      return new Response("Internal Server Error", { status: 500 });
     }
+  }
+
+  async function resolveBody(githubUrl: string, contentType: string, ctx?: ExecutionContext): Promise<ArrayBuffer> {
+    // L1: in-memory cache
+    const cached = memoryCache.get(githubUrl);
+    if (cached != null) {
+      return cached;
+    }
+
+    // L2: R2
+    const r2Body = await r2Get(githubUrl);
+    if (r2Body != null) {
+      if (r2Body.byteLength <= MAX_BODY_SIZE) {
+        memoryCache.set(githubUrl, r2Body);
+      }
+      return r2Body;
+    }
+
+    // L3: fetch from GitHub
+    const response = await fetch(githubUrl, {
+      headers: { "user-agent": "dprint-plugins" },
+    });
+    if (!response.ok) {
+      throw new Error(`GitHub fetch failed: ${response.status} ${response.statusText}`);
+    }
+
+    const body = await response.arrayBuffer();
+
+    // populate caches
+    const r2Promise = r2Put(githubUrl, body, contentType);
+    if (ctx != null) {
+      ctx.waitUntil(r2Promise);
+    } else {
+      await r2Promise;
+    }
+    if (body.byteLength <= MAX_BODY_SIZE) {
+      memoryCache.set(githubUrl, body);
+    }
+
+    return body;
   }
 }
 
-async function resolvePluginOrSchemaUrl(url: URL) {
+export async function resolvePluginOrSchemaUrl(url: URL) {
   return (oldMappings as { [oldUrl: string]: string })[url.toString()]
     ?? await tryResolvePluginUrl(url)
     ?? await tryResolveSchemaUrl(url);
@@ -145,35 +164,10 @@ function isLocalHostname(hostname: string) {
   return hostname === "localhost" || hostname === "127.0.0.1";
 }
 
-function shouldDirectlyServeFile(request: Request) {
-  // directly serve for when Deno makes a request in order to fix the content type
-  if (request.headers.get("user-agent")?.startsWith("Deno/")) {
-    return true;
-  }
-
-  const origin = request.headers.get("origin");
-  if (origin == null) {
-    return false;
-  }
-
-  const hostname = new URL(origin).hostname;
-  return isLocalHostname(hostname) || hostname === "dprint.dev";
-}
-
-function createRedirectResponse(location: string) {
-  return new Response(null, {
-    headers: {
-      location,
-    },
-    status: 302, // temporary redirect
-  });
-}
-
 function createJsonResponse(text: string, request: Request) {
   return new Response(text, {
     headers: {
       "content-type": contentTypes.json,
-      // allow the dprint website to download this file
       "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
     },
     status: 200,
