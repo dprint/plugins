@@ -47,15 +47,18 @@ async function renderContent(origin: string) {
             <code>dprint config update</code> - Automatically updates the plugins in a config file.
           </li>
           <li>
-            <code>dprint config add</code> - Adds one of these plugins via a multi-select prompt.
+            <code>dprint add</code> - Adds one of these plugins via a multi-select prompt.
           </li>
           <li>
-            <code>dprint config add &lt;plugin-name&gt;</code> - Adds a plugin by name.
+            <code>dprint add &lt;plugin-name&gt;</code> - Adds a plugin by name.
           </li>
           <li>
-            <code>dprint config add &lt;gh-org&gt;/&lt;gh-repo&gt;</code> - Adds a plugin by GitHub repo.
+            <code>dprint add &lt;gh-org&gt;/&lt;gh-repo&gt;</code> - Adds a plugin by GitHub repo.
           </li>
         </ul>
+      </p>
+      <p>
+        <a href="https://dprint.dev">Documentation</a>
       </p>
     </section>
   );
