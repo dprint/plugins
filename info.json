@@ -181,6 +181,24 @@
         "gql"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "jolars/panache",
+      "description": "Quarto, Pandoc, R Markdown, and Markdown formatter.",
+      "selected": false,
+      "configKey": "panache",
+      "fileExtensions": [
+        "md",
+        "qmd",
+        "Rmd",
+        "rmd",
+        "Rmarkdown",
+        "rmarkdown",
+        "markdown",
+        "mdown",
+        "mkd"
+      ],
+      "configExcludes": []
     }
   ]
 }
