@@ -335,6 +335,7 @@ it("should redirect non-wasm plugins to asset URL", async () => {
   expect(response.headers.get("location")).toEqual(
     "https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.7.0/asset/plugin.json",
   );
+  expect(response.headers.get("access-control-allow-origin")).toEqual("https://dprint.dev");
 });
 
 it("should not redirect wasm plugins", async () => {
@@ -354,6 +355,7 @@ it("should redirect non-allowed org asset to GitHub", async () => {
   expect(response.headers.get("location")).toEqual(
     "https://github.com/someone/some-repo/releases/download/0.1.0/file.zip",
   );
+  expect(response.headers.get("access-control-allow-origin")).toEqual("https://dprint.dev");
 });
 
 it("should return 404 for asset not found", async () => {
