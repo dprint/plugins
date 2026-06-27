@@ -33,6 +33,23 @@ export function createRequestHandler() {
   return {
     async handleRequest(request: Request, ctx?: ExecutionContext) {
       const url = new URL(request.url);
+
+      // download counts are loaded lazily by the home page so that the
+      // initial render and dprint's info.json don't have to wait on them.
+      // check this before plugin resolution since the path would otherwise
+      // be mistaken for a "{repo}-{tag}.json" process plugin URL
+      if (url.pathname === "/download-count.json") {
+        const name = url.searchParams.get("name");
+        if (name == null) {
+          return create404Response();
+        }
+        const [username, pluginName] = name.split("/");
+        const count = pluginName
+          ? await getPluginDownloadCount(username, pluginName)
+          : await getPluginDownloadCount("dprint", name);
+        return createJsonResponse(JSON.stringify({ count }), request);
+      }
+
       const assetResult = tryResolveAssetUrl(url);
       if (assetResult != null) {
         if (!assetResult.shouldCache) {
@@ -74,20 +91,6 @@ export function createRequestHandler() {
           JSON.stringify(infoFileData, null, 2),
           request,
         );
-      }
-
-      // download counts are loaded lazily by the home page so that the
-      // initial render and dprint's info.json don't have to wait on them
-      if (url.pathname === "/download-count.json") {
-        const name = url.searchParams.get("name");
-        if (name == null) {
-          return create404Response();
-        }
-        const [username, pluginName] = name.split("/");
-        const count = pluginName
-          ? await getPluginDownloadCount(username, pluginName)
-          : await getPluginDownloadCount("dprint", name);
-        return createJsonResponse(JSON.stringify({ count }), request);
       }
 
       if (url.pathname.startsWith("/cli.json")) {
