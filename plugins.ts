@@ -45,6 +45,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   // community
   "jakebailey/dprint-plugin-gofumpt",
   "malobre/dprint-plugin-vue",
+  "drluckyspin/dprint-plugin-swift",
 ]);
 
 // repos where the short name IS the repo name (no dprint-plugin- prefix)
@@ -56,13 +57,15 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "lucacasonato/mf2-tools",
 ]);
 
-export function isAssetAllowedRepo(username: string, _repo: string) {
-  switch (username) {
-    case "dprint":
-      return true;
-    default:
-      return false;
+const APPROVED_ASSET_REPOS = new Set([
+  "drluckyspin/dprint-plugin-swift",
+]);
+
+export function isAssetAllowedRepo(username: string, repo: string) {
+  if (username === "dprint") {
+    return true;
   }
+  return APPROVED_ASSET_REPOS.has(`${username}/${repo}`);
 }
 
 const assetNamePattern = "([A-Za-z0-9\\-\\._]+)";
