@@ -10,6 +10,8 @@
       "fileExtensions": [
         "ts",
         "tsx",
+        "mts",
+        "cts",
         "js",
         "jsx",
         "cjs",
@@ -25,7 +27,8 @@
       "selected": true,
       "configKey": "json",
       "fileExtensions": [
-        "json"
+        "json",
+        "jsonc"
       ],
       "configExcludes": [
         "**/*-lock.json"
@@ -37,7 +40,12 @@
       "selected": true,
       "configKey": "markdown",
       "fileExtensions": [
-        "md"
+        "md",
+        "mkd",
+        "mdwn",
+        "mkdn",
+        "mdown",
+        "markdown"
       ],
       "configExcludes": []
     },
@@ -59,6 +67,9 @@
       "fileExtensions": [
         "dockerfile"
       ],
+      "fileNames": [
+        "Dockerfile"
+      ],
       "configExcludes": []
     },
     {
@@ -69,11 +80,14 @@
       "fileExtensions": [
         "ts",
         "tsx",
+        "mts",
+        "cts",
         "js",
         "jsx",
         "cjs",
         "mjs",
-        "json"
+        "json",
+        "jsonc"
       ],
       "configExcludes": [
         "**/node_modules"
@@ -87,6 +101,8 @@
       "fileExtensions": [
         "ts",
         "tsx",
+        "mts",
+        "cts",
         "js",
         "jsx",
         "cjs",
@@ -154,9 +170,20 @@
         "astro",
         "jinja",
         "jinja2",
+        "j2",
         "twig",
         "njk",
-        "vto"
+        "vto",
+        "component.html",
+        "mustache",
+        "hbs",
+        "handlebars",
+        "xml",
+        "svg",
+        "wsdl",
+        "xsd",
+        "xslt",
+        "xsl"
       ],
       "configExcludes": []
     },
@@ -249,6 +276,148 @@
         "swift"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-prettier",
+      "description": "Prettier wrapper plugin (consider faster dedicated plugins for JS/TS, CSS, etc.).",
+      "selected": false,
+      "configKey": "prettier",
+      "fileExtensions": [
+        "js",
+        "jsx",
+        "mjs",
+        "cjs",
+        "ts",
+        "tsx",
+        "mts",
+        "cts",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "html",
+        "vue",
+        "svelte",
+        "graphql",
+        "gql",
+        "md",
+        "mdx",
+        "yaml",
+        "yml"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "dprint-plugin-roslyn",
+      "description": "C# and Visual Basic code formatter (Roslyn).",
+      "selected": false,
+      "configKey": "roslyn",
+      "fileExtensions": [
+        "cs",
+        "vb"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-exec",
+      "description": "Formats code using formatting CLIs installed on the host machine (rustfmt, clang-format, shfmt, etc.).",
+      "selected": false,
+      "configKey": "exec",
+      "fileExtensions": [],
+      "configExcludes": [],
+      "defaultConfig": {
+        "cwd": "${configDir}"
+      },
+      "configItems": [
+        {
+          "match": {
+            "fileExtensions": [
+              "rs"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "rustfmt",
+                "exts": [
+                  "rs"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "fileExtensions": [
+              "c",
+              "cc",
+              "cpp",
+              "cxx",
+              "h",
+              "hpp",
+              "hxx",
+              "m",
+              "mm"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "clang-format",
+                "exts": [
+                  "c",
+                  "cc",
+                  "cpp",
+                  "cxx",
+                  "h",
+                  "hpp",
+                  "hxx",
+                  "m",
+                  "mm"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "fileExtensions": [
+              "sh",
+              "bash"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "shfmt",
+                "exts": [
+                  "sh",
+                  "bash"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "fileExtensions": [
+              "zig"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "zig fmt --stdin",
+                "exts": [
+                  "zig"
+                ]
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
