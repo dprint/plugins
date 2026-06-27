@@ -1,6 +1,5 @@
 import infoJson from "./info.json" with { type: "json" };
 import { getLatestInfo } from "./plugins.js";
-import { getAllDownloadCount } from "./utils/github.js";
 
 // only typing what's used on the server
 export interface PluginsData {
@@ -11,10 +10,6 @@ export interface PluginData {
   name: string;
   url: string;
   version: string;
-  downloadCount: {
-    currentVersion: number;
-    allVersions: number;
-  };
 }
 
 export async function readInfoFile(origin: string): Promise<Readonly<PluginsData>> {
@@ -35,12 +30,6 @@ export async function readInfoFile(origin: string): Promise<Readonly<PluginsData
           ...plugin,
           version: info.version,
           url: info.url,
-          downloadCount: {
-            currentVersion: info.downloadCount,
-            allVersions: pluginName
-              ? await getAllDownloadCount(username, pluginName)
-              : await getAllDownloadCount("dprint", plugin.name),
-          },
         });
       }
     }

@@ -37,7 +37,6 @@ export interface ReleaseInfo {
   tagName: string;
   checksum: string | undefined;
   kind: "wasm" | "process";
-  downloadCount: number;
 }
 
 export async function getLatestReleaseInfo(username: string, repoName: string) {
@@ -54,7 +53,6 @@ function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
     tagName: data.tag_name,
     checksum: getChecksum(),
     kind: getPluginKind(),
-    downloadCount: getDownloadCount(data.assets),
   };
 
   function getChecksum() {

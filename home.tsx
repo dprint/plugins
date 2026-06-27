@@ -23,6 +23,20 @@ export async function renderHome(origin: string) {
             document.body.removeChild(textArea);
           });
         }
+
+        // download counts are fetched lazily so the page renders without
+        // waiting on GitHub's release data for every plugin
+        for (const cell of document.getElementsByClassName("download-count")) {
+          const name = cell.dataset.name;
+          fetch("/download-count.json?name=" + encodeURIComponent(name))
+            .then((response) => response.json())
+            .then((data) => {
+              cell.textContent = data.count.toLocaleString("en-US");
+            })
+            .catch(() => {
+              cell.textContent = "";
+            });
+        }
       });
     </script>
     <link rel="stylesheet" href="/style.css" />
@@ -84,7 +98,7 @@ function renderPlugin(plugin: PluginData) {
     <div className="plugin" key={plugin.name}>
       <div>{plugin.name}</div>
       <div>{plugin.url}</div>
-      <div>{plugin.downloadCount.allVersions?.toLocaleString("en-US")}</div>
+      <div className="download-count" data-name={plugin.name}>…</div>
       <div>
         <button type="button" className="copy-button" title="Copy to clipboard" data-url={plugin.url}>
           Copy

@@ -1,4 +1,4 @@
-import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.js";
+import { checkGithubRepoExists, getAllDownloadCount, getLatestReleaseInfo } from "./utils/mod.js";
 
 const tagPattern = "([A-Za-z0-9\._]+)";
 // repos may only contain alphanumeric, underscores, hyphens, and period
@@ -149,8 +149,15 @@ export async function getLatestInfo(username: string, repoName: string, origin: 
       : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
     version: releaseInfo.tagName.replace(/^v/, ""),
     checksum: releaseInfo.checksum,
-    downloadCount: releaseInfo.downloadCount,
   };
+}
+
+// resolves the total download count for a plugin across all its releases,
+// taking the short repo name (e.g. "swift" or "dprint-plugin-swift") and
+// expanding it to the full repo name the same way plugin URLs are resolved
+export async function getPluginDownloadCount(username: string, repoName: string) {
+  repoName = await getFullRepoName(username, repoName);
+  return await getAllDownloadCount(username, repoName);
 }
 
 function dprintPluginTagPatternMapper(
