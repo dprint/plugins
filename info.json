@@ -239,6 +239,16 @@
         "mkd"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "drluckyspin/swift",
+      "description": "Swift code formatter (SwiftFormat wrapper).",
+      "selected": false,
+      "configKey": "swiftformat",
+      "fileExtensions": [
+        "swift"
+      ],
+      "configExcludes": []
     }
   ]
 }
