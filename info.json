@@ -181,6 +181,46 @@
         "gql"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "bartlomieju/lax-css",
+      "description": "CSS, SCSS, and Less formatter that never reinterprets your styles.",
+      "selected": false,
+      "configKey": "css",
+      "fileExtensions": [
+        "css",
+        "scss",
+        "less"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "bartlomieju/lax-markup",
+      "description": "HTML, XML, SVG, Vue, Svelte, and Astro formatter that preserves rendering-critical whitespace.",
+      "selected": false,
+      "configKey": "markup",
+      "fileExtensions": [
+        "html",
+        "htm",
+        "vue",
+        "svelte",
+        "astro",
+        "xml",
+        "svg"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "bartlomieju/lax-sql",
+      "description": "Dialect-agnostic SQL formatter.",
+      "selected": false,
+      "configKey": "sql",
+      "fileExtensions": [
+        "sql"
+      ],
+      "configExcludes": []
     }
   ]
 }
