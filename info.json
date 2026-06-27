@@ -181,6 +181,16 @@
         "gql"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "drluckyspin/dprint-plugin-swift",
+      "description": "Swift code formatter (SwiftFormat wrapper).",
+      "selected": false,
+      "configKey": "swiftformat",
+      "fileExtensions": [
+        "swift"
+      ],
+      "configExcludes": []
     }
   ]
 }
