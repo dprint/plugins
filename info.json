@@ -241,7 +241,7 @@
       "configExcludes": []
     },
     {
-      "name": "drluckyspin/dprint-plugin-swift",
+      "name": "drluckyspin/swift",
       "description": "Swift code formatter (SwiftFormat wrapper).",
       "selected": false,
       "configKey": "swiftformat",
