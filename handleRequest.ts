@@ -35,7 +35,7 @@ export function createRequestHandler() {
       const assetResult = tryResolveAssetUrl(url);
       if (assetResult != null) {
         if (!assetResult.shouldCache) {
-          return Response.redirect(assetResult.githubUrl, 302);
+          return createRedirectResponse(request, assetResult.githubUrl);
         }
         return servePlugin(request, assetResult.githubUrl, ctx);
       }
@@ -47,7 +47,7 @@ export function createRequestHandler() {
           // plugin.json files resolve correctly
           const assetPath = githubUrlToAssetPath(githubUrl);
           if (assetPath != null) {
-            return Response.redirect(`${url.origin}${assetPath}`, 302);
+            return createRedirectResponse(request, `${url.origin}${assetPath}`);
           }
         }
         return servePlugin(request, githubUrl, ctx);
@@ -124,6 +124,7 @@ export function createRequestHandler() {
       headers: {
         "content-type": result.contentType,
         "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+        "Vary": "Origin",
       },
       status: result.status,
     });
@@ -209,6 +210,20 @@ export async function resolvePluginOrSchemaUrl(url: URL) {
   return await tryResolveSchemaUrl(url);
 }
 
+// builds a redirect that also carries the CORS header, because for
+// cross-origin fetches the browser runs the CORS check on the redirect
+// response itself — not just the final response it points at
+function createRedirectResponse(request: Request, location: string) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      "location": location,
+      "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+      "Vary": "Origin",
+    },
+  });
+}
+
 function getAccessControlAllowOrigin(request: Request) {
   const origin = request.headers.get("origin");
   return origin != null && isLocalHostname(new URL(origin).hostname)
@@ -225,6 +240,7 @@ function createJsonResponse(text: string, request: Request) {
     headers: {
       "content-type": contentTypes.json,
       "Access-Control-Allow-Origin": getAccessControlAllowOrigin(request),
+      "Vary": "Origin",
     },
     status: 200,
   });
