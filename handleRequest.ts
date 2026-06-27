@@ -68,7 +68,7 @@ export function createRequestHandler() {
       }
 
       if (url.pathname.startsWith("/info.json")) {
-        const infoFileData = await readInfoFile(url.origin);
+        const infoFileData = await readInfoFile(url.origin, ctx);
         return createJsonResponse(
           JSON.stringify(infoFileData, null, 2),
           request,
@@ -97,7 +97,7 @@ export function createRequestHandler() {
       }
 
       if (url.pathname === "/") {
-        return renderHome(url.origin).then((home) =>
+        return renderHome(url.origin, ctx).then((home) =>
           new Response(home, {
             headers: {
               "content-type": contentTypes.html,
