@@ -37,6 +37,17 @@ it("tryResolveAssetUrl", () => {
     shouldCache: true,
   });
 
+  // approved community repo — should cache
+  expect(
+    resolveAsset(
+      "https://plugins.dprint.dev/drluckyspin/dprint-plugin-swift/v0.1.0/asset/dprint-plugin-swift-aarch64-apple-darwin.zip",
+    ),
+  ).toEqual({
+    githubUrl:
+      "https://github.com/drluckyspin/dprint-plugin-swift/releases/download/v0.1.0/dprint-plugin-swift-aarch64-apple-darwin.zip",
+    shouldCache: true,
+  });
+
   // org not on allow list — resolves but should not cache (redirect)
   expect(
     resolveAsset("https://plugins.dprint.dev/someone/some-repo/0.1.0/asset/file.zip"),
