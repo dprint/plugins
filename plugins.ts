@@ -149,7 +149,10 @@ export async function getLatestInfo(username: string, repoName: string, origin: 
       : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
     version: releaseInfo.tagName.replace(/^v/, ""),
     checksum: releaseInfo.checksum,
-    downloadCount: releaseInfo.downloadCount,
+    // identifies this plugin's download analytics: the `username/repo` key that
+    // downloads are recorded under and the tag of the latest release
+    downloadKey: `${username}/${repoName}`,
+    tag: releaseInfo.tagName,
   };
 }
 

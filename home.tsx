@@ -71,7 +71,7 @@ function renderPlugins(data: PluginsData) {
       <div id="plugins-header">
         <div>Name</div>
         <div>Latest URL</div>
-        <div>Downloads</div>
+        <div>Downloads (30d)</div>
         <div></div>
       </div>
       {data.latest.map((plugin) => renderPlugin(plugin))}
