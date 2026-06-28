@@ -105,6 +105,7 @@ function pluginSearchText(plugin: PluginData) {
     plugin.version,
     plugin.description,
     plugin.configKey,
+    ...(plugin.keywords ?? []),
     ...(plugin.fileExtensions ?? []),
     ...(plugin.fileNames ?? []),
   ];

@@ -19,6 +19,7 @@ export interface PluginData {
   // descriptive fields carried over from info.json, used to index the search
   description?: string;
   configKey?: string;
+  keywords?: string[];
   fileExtensions?: string[];
   fileNames?: string[];
   // present on plugins like exec where the real extensions/commands live in

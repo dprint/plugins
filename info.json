@@ -7,6 +7,13 @@
       "description": "TypeScript/JavaScript code formatter.",
       "selected": true,
       "configKey": "typescript",
+      "keywords": [
+        "javascript",
+        "typescript",
+        "node",
+        "deno",
+        "ecmascript"
+      ],
       "fileExtensions": [
         "ts",
         "tsx",
@@ -26,6 +33,10 @@
       "description": "JSON/JSONC code formatter.",
       "selected": true,
       "configKey": "json",
+      "keywords": [
+        "json",
+        "jsonc"
+      ],
       "fileExtensions": [
         "json",
         "jsonc"
@@ -39,6 +50,11 @@
       "description": "Markdown code formatter.",
       "selected": true,
       "configKey": "markdown",
+      "keywords": [
+        "markdown",
+        "commonmark",
+        "gfm"
+      ],
       "fileExtensions": [
         "md",
         "mkd",
@@ -54,6 +70,10 @@
       "description": "TOML code formatter.",
       "selected": true,
       "configKey": "toml",
+      "keywords": [
+        "toml",
+        "cargo"
+      ],
       "fileExtensions": [
         "toml"
       ],
@@ -64,6 +84,11 @@
       "description": "Dockerfile code formatter.",
       "selected": false,
       "configKey": "dockerfile",
+      "keywords": [
+        "docker",
+        "dockerfile",
+        "container"
+      ],
       "fileExtensions": [
         "dockerfile"
       ],
@@ -77,6 +102,13 @@
       "description": "Biome (JS/TS/JSON) wrapper plugin.",
       "selected": false,
       "configKey": "biome",
+      "keywords": [
+        "biome",
+        "rome",
+        "javascript",
+        "typescript",
+        "json"
+      ],
       "fileExtensions": [
         "ts",
         "tsx",
@@ -98,6 +130,12 @@
       "description": "Oxc (JS/TS) wrapper plugin.",
       "selected": false,
       "configKey": "oxc",
+      "keywords": [
+        "oxc",
+        "oxlint",
+        "javascript",
+        "typescript"
+      ],
       "fileExtensions": [
         "ts",
         "tsx",
@@ -117,6 +155,11 @@
       "description": "Mago (PHP) wrapper plugin.",
       "selected": false,
       "configKey": "mago",
+      "keywords": [
+        "php",
+        "mago",
+        "laravel"
+      ],
       "fileExtensions": [
         "php"
       ],
@@ -127,6 +170,12 @@
       "description": "Ruff (Python) wrapper plugin.",
       "selected": false,
       "configKey": "ruff",
+      "keywords": [
+        "python",
+        "ruff",
+        "black",
+        "flake8"
+      ],
       "fileExtensions": [
         "py",
         "pyi"
@@ -138,6 +187,12 @@
       "description": "Jupyter notebook code block formatter.",
       "selected": false,
       "configKey": "jupyter",
+      "keywords": [
+        "jupyter",
+        "notebook",
+        "ipython",
+        "python"
+      ],
       "fileExtensions": [
         "ipynb"
       ],
@@ -148,6 +203,13 @@
       "description": "CSS, SCSS, Sass and Less formatter.",
       "selected": true,
       "configKey": "malva",
+      "keywords": [
+        "css",
+        "scss",
+        "sass",
+        "less",
+        "stylesheet"
+      ],
       "fileExtensions": [
         "css",
         "scss",
@@ -163,6 +225,22 @@
       "description": "HTML, Vue, Svelte, Astro, Angular, Jinja, Twig, Nunjucks, and Vento formatter.",
       "selected": true,
       "configKey": "markup",
+      "keywords": [
+        "html",
+        "vue",
+        "svelte",
+        "astro",
+        "angular",
+        "jinja",
+        "twig",
+        "nunjucks",
+        "vento",
+        "handlebars",
+        "mustache",
+        "xml",
+        "markup",
+        "template"
+      ],
       "fileExtensions": [
         "html",
         "vue",
@@ -192,6 +270,12 @@
       "description": "YAML formatter.",
       "selected": true,
       "configKey": "yaml",
+      "keywords": [
+        "yaml",
+        "kubernetes",
+        "k8s",
+        "config"
+      ],
       "fileExtensions": [
         "yaml",
         "yml"
@@ -203,6 +287,11 @@
       "description": "GraphQL formatter.",
       "selected": false,
       "configKey": "graphql",
+      "keywords": [
+        "graphql",
+        "apollo",
+        "schema"
+      ],
       "fileExtensions": [
         "graphql",
         "gql"
@@ -214,6 +303,12 @@
       "description": "CSS, SCSS, and Less formatter that never reinterprets your styles.",
       "selected": false,
       "configKey": "css",
+      "keywords": [
+        "css",
+        "scss",
+        "less",
+        "stylesheet"
+      ],
       "fileExtensions": [
         "css",
         "scss",
@@ -228,6 +323,15 @@
       "description": "HTML, XML, SVG, Vue, Svelte, and Astro formatter that preserves rendering-critical whitespace.",
       "selected": false,
       "configKey": "markup",
+      "keywords": [
+        "html",
+        "xml",
+        "svg",
+        "vue",
+        "svelte",
+        "astro",
+        "markup"
+      ],
       "fileExtensions": [
         "html",
         "htm",
@@ -244,6 +348,14 @@
       "description": "Dialect-agnostic SQL formatter.",
       "selected": false,
       "configKey": "sql",
+      "keywords": [
+        "sql",
+        "mysql",
+        "postgres",
+        "postgresql",
+        "sqlite",
+        "database"
+      ],
       "fileExtensions": [
         "sql"
       ],
@@ -254,6 +366,12 @@
       "description": "Quarto, Pandoc, R Markdown, and Markdown formatter.",
       "selected": false,
       "configKey": "panache",
+      "keywords": [
+        "quarto",
+        "pandoc",
+        "rmarkdown",
+        "markdown"
+      ],
       "fileExtensions": [
         "md",
         "qmd",
@@ -272,6 +390,14 @@
       "description": "Swift code formatter (SwiftFormat wrapper).",
       "selected": false,
       "configKey": "swiftformat",
+      "keywords": [
+        "swift",
+        "swiftformat",
+        "ios",
+        "macos",
+        "apple",
+        "xcode"
+      ],
       "fileExtensions": [
         "swift"
       ],
@@ -282,6 +408,18 @@
       "description": "Prettier wrapper plugin (consider faster dedicated plugins for JS/TS, CSS, etc.).",
       "selected": false,
       "configKey": "prettier",
+      "keywords": [
+        "prettier",
+        "javascript",
+        "typescript",
+        "css",
+        "html",
+        "vue",
+        "yaml",
+        "graphql",
+        "markdown",
+        "mdx"
+      ],
       "fileExtensions": [
         "js",
         "jsx",
@@ -314,6 +452,15 @@
       "description": "C# and Visual Basic code formatter (Roslyn).",
       "selected": false,
       "configKey": "roslyn",
+      "keywords": [
+        "c#",
+        "csharp",
+        "visual basic",
+        "vb",
+        "dotnet",
+        ".net",
+        "roslyn"
+      ],
       "fileExtensions": [
         "cs",
         "vb"
@@ -325,6 +472,20 @@
       "description": "Formats code using formatting CLIs installed on the host machine (rustfmt, clang-format, shfmt, etc.).",
       "selected": false,
       "configKey": "exec",
+      "keywords": [
+        "rust",
+        "rustfmt",
+        "c",
+        "c++",
+        "cpp",
+        "clang",
+        "clang-format",
+        "shell",
+        "bash",
+        "shfmt",
+        "zig",
+        "cli"
+      ],
       "fileExtensions": [],
       "configExcludes": [],
       "defaultConfig": {
