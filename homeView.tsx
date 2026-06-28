@@ -61,7 +61,29 @@ function renderPage(pluginsData: PluginsData) {
         <a class="docs-link" href="https://dprint.dev/plugins">dprint plugin docs <span>↗</span></a>
       </div>
       {renderPlugins(pluginsData)}
+      {renderCommands()}
     </main>
+  );
+}
+
+function renderCommands() {
+  const commands: { cmd: string; desc: string }[] = [
+    { cmd: "dprint config update", desc: "Automatically updates the plugins in a config file." },
+    { cmd: "dprint add", desc: "Adds one of these plugins via a multi-select prompt." },
+    { cmd: "dprint add <plugin-name>", desc: "Adds a plugin by name." },
+    { cmd: "dprint add <gh-org>/<gh-repo>", desc: "Adds a plugin by GitHub repo." },
+  ];
+  return (
+    <section class="commands">
+      <h2>Helpful commands</h2>
+      <ul>
+        {commands.map((c) => (
+          <li key={c.cmd}>
+            <code>{c.cmd}</code> — {c.desc}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

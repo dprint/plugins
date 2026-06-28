@@ -2,7 +2,7 @@
 
 :root {
   --accent: #8b93a1;
-  --max: 1100px;
+  --max: 1320px;
 }
 
 * {
@@ -77,9 +77,9 @@ a {
 .plugin-table-head,
 .plugin-row {
   display: grid;
-  grid-template-columns: minmax(160px, 0.9fr) minmax(0, 2.4fr) minmax(120px, 0.7fr) auto;
+  grid-template-columns: minmax(260px, max-content) minmax(0, 2fr) minmax(120px, max-content) auto;
   align-items: center;
-  gap: 18px;
+  gap: 18px 24px;
   padding: 14px 22px;
 }
 .plugin-table-head {
@@ -222,4 +222,38 @@ a {
   .col-downloads .dl-label {
     display: inline;
   }
+}
+
+/* ===================== helpful commands ===================== */
+
+.commands {
+  margin-top: 44px;
+}
+.commands h2 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f0f1f3;
+}
+.commands ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.commands li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #a1a9b5;
+}
+.commands code {
+  font-family: inherit;
+  font-size: 13px;
+  color: #fff;
+  background: #181a1e;
+  border: 1px solid #2a2e35;
+  border-radius: 6px;
+  padding: 3px 8px;
 }
