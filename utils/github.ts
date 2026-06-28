@@ -37,7 +37,6 @@ export interface ReleaseInfo {
   tagName: string;
   checksum: string | undefined;
   kind: "wasm" | "process";
-  downloadCount: number;
 }
 
 export async function getLatestReleaseInfo(username: string, repoName: string) {
@@ -54,7 +53,6 @@ function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
     tagName: data.tag_name,
     checksum: getChecksum(),
     kind: getPluginKind(),
-    downloadCount: getDownloadCount(data.assets),
   };
 
   function getChecksum() {
@@ -93,19 +91,9 @@ function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
   }
 }
 
-function getDownloadCount(assets: ReleaseAsset[]) {
-  return assets.find(({ name }) => name === "plugin.wasm" || name === "plugin.json")?.download_count ?? 0;
-}
-
 interface ReleaseAsset {
   name: string;
-  download_count: number;
   digest: string | null;
-}
-
-export async function getAllDownloadCount(username: string, repoName: string) {
-  const releases = await getReleasesData(username, repoName);
-  return releases?.reduce((total, current) => total + getDownloadCount(current.assets), 0) ?? 0;
 }
 
 interface GitHubRelease {

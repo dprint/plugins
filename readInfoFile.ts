@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
 import infoJson from "./info.json" with { type: "json" };
 import { getLatestInfo } from "./plugins.js";
-import { getAllDownloadCount } from "./utils/github.js";
+import { getDownloadCounts, type PluginDownloadCounts } from "./utils/analytics.js";
 
 // only typing what's used on the server
 export interface PluginsData {
@@ -125,6 +125,7 @@ async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
   };
 
   async function getLatest(latest: typeof infoJson.latest) {
+    const downloadCounts = await getDownloadCounts();
     const results = [];
     for (const plugin of latest) {
       const [username, pluginName] = plugin.name.split("/");
@@ -132,19 +133,27 @@ async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
         ? await getLatestInfo(username, pluginName, origin)
         : await getLatestInfo("dprint", plugin.name, origin);
       if (info != null) {
+        const counts = downloadCounts.get(info.downloadKey);
         results.push({
           ...plugin,
           version: info.version,
           url: info.url,
           downloadCount: {
-            currentVersion: info.downloadCount,
-            allVersions: pluginName
-              ? await getAllDownloadCount(username, pluginName)
-              : await getAllDownloadCount("dprint", plugin.name),
+            currentVersion: currentVersionDownloads(counts, info.tag),
+            allVersions: counts?.allVersions ?? 0,
           },
         });
       }
     }
     return results;
   }
+}
+
+// downloads of the latest release over the last 30 days, counting both the exact
+// version tag and the "latest" alias (which always resolves to the current release)
+function currentVersionDownloads(counts: PluginDownloadCounts | undefined, tag: string) {
+  if (counts == null) {
+    return 0;
+  }
+  return (counts.byTag.get(tag) ?? 0) + (counts.byTag.get("latest") ?? 0);
 }
