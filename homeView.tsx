@@ -10,7 +10,7 @@ export function renderHomeHtml(pluginsData: PluginsData) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#1e1e1e" />
     <meta name="description" content="Latest plugin versions for dprint, the pluggable and configurable code formatting platform." />
     <title>Plugins - dprint</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
