@@ -1,68 +1,296 @@
-html {
-  background-color: #1e1e1e;
-  color: #fff;
+/* ===================== base / theme ===================== */
+
+:root {
+  --accent: #8b93a1;
+  --max: 1320px;
 }
 
-body,
-html {
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
 }
 
 body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  font-family:
-    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
-    "Helvetica Neue", sans-serif;
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, Monaco, Consolas, "Courier New", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #1e1e1e;
+  color: #c2c8d0;
+  min-height: 100vh;
 }
 
-a,
-a:visited,
-a:hover {
+::selection {
+  background: #3a3f49;
   color: #fff;
 }
 
-h1 {
-  padding: 0;
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===================== page ===================== */
+
+.page {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 26px 28px 64px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.plugin-search {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #e8e8ea;
+  background: #181a1e;
+  border: 1px solid #33373f;
+  border-radius: 8px;
+  padding: 9px 13px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.plugin-search::placeholder {
+  color: #6e7681;
+}
+.plugin-search:focus {
+  border-color: #4d5564;
+}
+.docs-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #cdd2da;
+  border: 1px solid #33373f;
+  border-radius: 8px;
+  padding: 8px 14px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.docs-link:hover {
+  border-color: #4d5564;
+  color: #fff;
+}
+.docs-link span {
+  color: #6e7681;
+}
+
+/* ===================== registry table ===================== */
+
+.plugin-table {
+  background: #181a1e;
+  border: 1px solid #33373f;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.plugin-table-head,
+.plugin-row {
+  display: grid;
+  grid-template-columns: minmax(260px, max-content) minmax(0, 2fr) minmax(120px, max-content) auto;
+  align-items: center;
+  gap: 18px 24px;
+  padding: 14px 22px;
+}
+.plugin-table-head {
+  background: #1f2228;
+  border-bottom: 1px solid #2a2e35;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6e7681;
+}
+.plugin-table-head .num-col {
+  text-align: right;
+}
+.plugin-row {
+  border-top: 1px solid #23262d;
+  transition: background 0.15s;
+}
+.plugin-row:first-of-type {
+  border-top: none;
+}
+.plugin-row:hover {
+  background: #1d2025;
+}
+.plugin-row[hidden] {
+  display: none;
+}
+
+.no-matches {
+  background: #181a1e;
+  border: 1px solid #33373f;
+  border-radius: 14px;
+  padding: 30px 22px;
+  margin-top: 12px;
+  color: #6e7681;
+  font-size: 14px;
+  text-align: center;
+}
+
+.col-name {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+}
+.col-name .swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  background: var(--accent);
+}
+.col-name .name-text {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #e8e8ea;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.col-name .version-tag {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--accent);
+  background: #23262d;
+  border: 1px solid #2f333b;
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.col-url {
+  min-width: 0;
+}
+.col-url code {
+  display: block;
+  font-family: inherit;
+  font-size: 13px;
+  color: #c2c8d0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-downloads {
+  font-size: 13.5px;
+  color: #a1a9b5;
+  text-align: right;
+  white-space: nowrap;
+}
+.col-downloads .dl-label {
+  display: none;
+  color: #6e7681;
+}
+
+.col-action {
+  text-align: right;
+}
+.copy-btn {
+  background: #23262d;
+  border: 1px solid #383d47;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9aa1ad;
+  padding: 7px 14px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.copy-btn:hover {
+  border-color: #4d5564;
+  color: #fff;
+}
+.copy-btn.copied {
+  color: #a7d39b;
+  border-color: #3f5340;
+}
+
+@media (max-width: 820px) {
+  .plugin-table-head {
+    display: none;
+  }
+  .plugin-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "name action"
+      "url url"
+      "downloads downloads";
+    gap: 10px 14px;
+    padding: 18px 20px;
+  }
+  .col-name {
+    grid-area: name;
+  }
+  .col-action {
+    grid-area: action;
+  }
+  .col-url {
+    grid-area: url;
+  }
+  .col-url code {
+    white-space: normal;
+    word-break: break-all;
+    background: #0f1114;
+    border: 1px solid #2a2e35;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12.5px;
+  }
+  .col-downloads {
+    grid-area: downloads;
+    text-align: left;
+  }
+  .col-downloads .dl-label {
+    display: inline;
+  }
+}
+
+/* ===================== helpful commands ===================== */
+
+.commands {
+  margin-top: 44px;
+}
+.commands h2 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f0f1f3;
+}
+.commands ul {
   margin: 0;
-  margin-bottom: 10px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-
-#content {
-  background-color: #4d5564;
-  align-self: center;
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #000;
+.commands li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #a1a9b5;
 }
-
-#plugins {
-  display: table;
-  border-spacing: 10px;
-}
-
-#plugins-header {
-  display: table-row;
-}
-
-#plugins-header div {
-  display: table-cell;
-  font-weight: bold;
-}
-
-.plugin {
-  display: table-row;
-}
-
-.plugin div {
-  display: table-cell;
-}
-
-code {
-  background-color: #333;
-  border-radius: 3px;
-  display: inline-block;
-  padding: 2px 5px;
+.commands code {
+  font-family: inherit;
+  font-size: 13px;
+  color: #fff;
+  background: #181a1e;
+  border: 1px solid #2a2e35;
+  border-radius: 6px;
+  padding: 3px 8px;
 }
