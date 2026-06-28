@@ -92,15 +92,21 @@ a {
 /* ===================== registry table ===================== */
 
 .plugin-table {
+  display: grid;
+  grid-template-columns: minmax(260px, max-content) minmax(0, 2fr) minmax(120px, max-content) auto;
   background: #181a1e;
   border: 1px solid #33373f;
   border-radius: 14px;
   overflow: hidden;
 }
+/* the head and each row are subgrids of the table so their columns share a
+   single set of widths — otherwise each row sizes its own columns and the
+   url/downloads columns drift out of alignment from row to row. */
 .plugin-table-head,
 .plugin-row {
   display: grid;
-  grid-template-columns: minmax(260px, max-content) minmax(0, 2fr) minmax(120px, max-content) auto;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
   align-items: center;
   gap: 18px 24px;
   padding: 14px 22px;
@@ -114,7 +120,7 @@ a {
   color: #6e7681;
 }
 .plugin-table-head .num-col {
-  text-align: right;
+  text-align: center;
 }
 .plugin-row {
   border-top: 1px solid #23262d;
@@ -221,7 +227,7 @@ a {
 .col-downloads {
   font-size: 13.5px;
   color: #a1a9b5;
-  text-align: right;
+  text-align: center;
   white-space: nowrap;
 }
 .col-downloads .dl-label {
@@ -255,10 +261,16 @@ a {
 }
 
 @media (max-width: 820px) {
+  /* drop the shared subgrid so rows are independent again and the desktop
+     column minimums don't force horizontal overflow on narrow screens. */
+  .plugin-table {
+    display: block;
+  }
   .plugin-table-head {
     display: none;
   }
   .plugin-row {
+    grid-column: auto;
     grid-template-columns: 1fr auto;
     grid-template-areas:
       "name action"
