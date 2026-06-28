@@ -149,6 +149,8 @@ export async function getLatestInfo(username: string, repoName: string, origin: 
       : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
     version: releaseInfo.tagName.replace(/^v/, ""),
     checksum: releaseInfo.checksum,
+    // the GitHub repo this plugin is published from (full name already resolved above)
+    repoUrl: `https://github.com/${username}/${repoName}`,
     // identifies this plugin's download analytics: the `username/repo` key that
     // downloads are recorded under and the tag of the latest release
     downloadKey: `${username}/${repoName}`,

@@ -16,6 +16,10 @@ export interface PluginData {
     currentVersion: number;
     allVersions: number;
   };
+  // links shown on the site: the GitHub repo (derived during the build) and the
+  // optional dprint.dev docs page (carried over from info.json)
+  repoUrl?: string;
+  website?: string;
   // descriptive fields carried over from info.json, used to index the search
   description?: string;
   configKey?: string;
@@ -152,6 +156,7 @@ async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
           ...plugin,
           version: info.version,
           url: info.url,
+          repoUrl: info.repoUrl,
           downloadCount: {
             currentVersion: currentVersionDownloads(counts, info.tag),
             allVersions: counts?.allVersions ?? 0,

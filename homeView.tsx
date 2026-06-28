@@ -105,6 +105,8 @@ function pluginSearchText(plugin: PluginData) {
     plugin.version,
     plugin.description,
     plugin.configKey,
+    plugin.repoUrl,
+    plugin.website,
     ...(plugin.keywords ?? []),
     ...(plugin.fileExtensions ?? []),
     ...(plugin.fileNames ?? []),
@@ -158,8 +160,13 @@ function renderPlugin(plugin: PluginData) {
     <div class="plugin-row" role="row" key={plugin.name} data-search={pluginSearchText(plugin)}>
       <div class="col-name" role="cell">
         <span class="swatch"></span>
-        <span class="name-text">{plugin.name}</span>
-        {plugin.version ? <span class="version-tag">{plugin.version}</span> : null}
+        <div class="name-block">
+          <div class="name-line">
+            <span class="name-text">{plugin.name}</span>
+            {plugin.version ? <span class="version-tag">{plugin.version}</span> : null}
+          </div>
+          {renderPluginLinks(plugin)}
+        </div>
       </div>
       <div class="col-url" role="cell">
         <code>{plugin.url}</code>
@@ -173,6 +180,33 @@ function renderPlugin(plugin: PluginData) {
           copy
         </button>
       </div>
+    </div>
+  );
+}
+
+// the repo and docs links shown beneath a plugin's name. both are optional: the
+// repo url is derived during the build and docs only exist for plugins with a
+// dprint.dev page.
+function renderPluginLinks(plugin: PluginData) {
+  if (plugin.repoUrl == null && plugin.website == null) {
+    return null;
+  }
+  return (
+    <div class="plugin-links">
+      {plugin.repoUrl
+        ? (
+          <a href={plugin.repoUrl} target="_blank" rel="noopener noreferrer">
+            repo <span>↗</span>
+          </a>
+        )
+        : null}
+      {plugin.website
+        ? (
+          <a href={plugin.website} target="_blank" rel="noopener noreferrer">
+            docs <span>↗</span>
+          </a>
+        )
+        : null}
     </div>
   );
 }
