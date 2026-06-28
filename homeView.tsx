@@ -95,6 +95,28 @@ function renderPage(pluginsData: PluginsData) {
   );
 }
 
+// builds the lowercased string the search filters against: name, url, version,
+// description, config key, and every file extension / file name / exec command
+// the plugin handles.
+function pluginSearchText(plugin: PluginData) {
+  const parts: (string | undefined)[] = [
+    plugin.name,
+    plugin.url,
+    plugin.version,
+    plugin.description,
+    plugin.configKey,
+    ...(plugin.fileExtensions ?? []),
+    ...(plugin.fileNames ?? []),
+  ];
+  for (const item of plugin.configItems ?? []) {
+    parts.push(...(item.match?.fileExtensions ?? []));
+    for (const command of item.config?.commands ?? []) {
+      parts.push(command.command, ...(command.exts ?? []));
+    }
+  }
+  return parts.filter(Boolean).join(" ").toLowerCase();
+}
+
 function renderCommands() {
   const commands: { cmd: string; desc: string }[] = [
     { cmd: "dprint config update", desc: "Automatically updates the plugins in a config file." },
@@ -132,7 +154,7 @@ function renderPlugins(data: PluginsData) {
 
 function renderPlugin(plugin: PluginData) {
   return (
-    <div class="plugin-row" role="row" key={plugin.name} data-search={`${plugin.name} ${plugin.url}`.toLowerCase()}>
+    <div class="plugin-row" role="row" key={plugin.name} data-search={pluginSearchText(plugin)}>
       <div class="col-name" role="cell">
         <span class="swatch"></span>
         <span class="name-text">{plugin.name}</span>

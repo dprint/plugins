@@ -16,6 +16,19 @@ export interface PluginData {
     currentVersion: number;
     allVersions: number;
   };
+  // descriptive fields carried over from info.json, used to index the search
+  description?: string;
+  configKey?: string;
+  fileExtensions?: string[];
+  fileNames?: string[];
+  // present on plugins like exec where the real extensions/commands live in
+  // per-match config rather than top-level fileExtensions
+  configItems?: PluginConfigItem[];
+}
+
+interface PluginConfigItem {
+  match?: { fileExtensions?: string[] };
+  config?: { commands?: { command?: string; exts?: string[] }[] };
 }
 
 interface CacheEntry {
