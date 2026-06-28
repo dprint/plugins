@@ -199,6 +199,22 @@
       "configExcludes": []
     },
     {
+      "name": "jakebailey/gofumpt",
+      "description": "Gofumpt (Go) wrapper plugin.",
+      "selected": false,
+      "configKey": "gofumpt",
+      "keywords": [
+        "go",
+        "golang",
+        "gofumpt",
+        "gofmt"
+      ],
+      "fileExtensions": [
+        "go"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "g-plane/malva",
       "description": "CSS, SCSS, Sass and Less formatter.",
       "selected": true,
