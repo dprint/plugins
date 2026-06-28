@@ -44,6 +44,25 @@ export function renderHomeHtml(pluginsData: PluginsData) {
             }, 1600);
           });
         }
+
+        // live filter
+        const search = document.getElementById("plugin-search");
+        if (search != null) {
+          const rows = document.getElementsByClassName("plugin-row");
+          const table = document.getElementsByClassName("plugin-table")[0];
+          const noMatches = document.getElementById("no-matches");
+          search.addEventListener("input", () => {
+            const query = search.value.trim().toLowerCase();
+            let visible = 0;
+            for (const row of rows) {
+              const match = query === "" || (row.dataset.search || "").indexOf(query) !== -1;
+              row.hidden = !match;
+              if (match) visible++;
+            }
+            if (table != null) table.hidden = visible === 0;
+            if (noMatches != null) noMatches.hidden = visible !== 0;
+          });
+        }
       });
     </script>
   </head>
@@ -58,9 +77,19 @@ function renderPage(pluginsData: PluginsData) {
   return (
     <main class="page">
       <div class="topbar">
+        <input
+          type="search"
+          id="plugin-search"
+          class="plugin-search"
+          placeholder="Filter plugins…"
+          aria-label="Filter plugins"
+          autocomplete="off"
+          spellcheck={false}
+        />
         <a class="docs-link" href="https://dprint.dev/plugins">dprint plugin docs <span>↗</span></a>
       </div>
       {renderPlugins(pluginsData)}
+      <div id="no-matches" class="no-matches" hidden>No plugins match your filter.</div>
       {renderCommands()}
     </main>
   );
@@ -103,7 +132,7 @@ function renderPlugins(data: PluginsData) {
 
 function renderPlugin(plugin: PluginData) {
   return (
-    <div class="plugin-row" role="row" key={plugin.name}>
+    <div class="plugin-row" role="row" key={plugin.name} data-search={`${plugin.name} ${plugin.url}`.toLowerCase()}>
       <div class="col-name" role="cell">
         <span class="swatch"></span>
         <span class="name-text">{plugin.name}</span>
