@@ -613,6 +613,53 @@
           }
         }
       ]
+    },
+    {
+      "name": "sargunv/dprint-clang-format",
+      "description": "C, C++, and Objective-C code formatter (clang-format).",
+      "selected": false,
+      "configKey": "clangFormat",
+      "keywords": [
+        "c",
+        "c++",
+        "cpp",
+        "objective-c",
+        "objc",
+        "clang",
+        "clang-format"
+      ],
+      "fileExtensions": [
+        "c",
+        "cc",
+        "cpp",
+        "cxx",
+        "h",
+        "hh",
+        "hpp",
+        "hxx",
+        "m",
+        "mm"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "sargunv/dprint-cmakefmt",
+      "description": "CMake code formatter (cmakefmt).",
+      "selected": false,
+      "configKey": "cmakefmt",
+      "keywords": [
+        "cmake",
+        "cmakefmt",
+        "build"
+      ],
+      "fileExtensions": [
+        "cmake"
+      ],
+      "fileNames": [
+        "CMakeLists.txt",
+        "CMakeLists.txt.in"
+      ],
+      "configExcludes": []
     }
   ]
 }
