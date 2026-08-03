@@ -330,6 +330,21 @@
       "configExcludes": []
     },
     {
+      "name": "apcamargo/typstyle",
+      "description": "A beautiful and reliable code formatter for Typst.",
+      "selected": false,
+      "configKey": "typstyle",
+      "keywords": [
+        "typst",
+        "typstyle",
+        "markup"
+      ],
+      "fileExtensions": [
+        "typ"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "bartlomieju/lax-css",
       "description": "CSS, SCSS, and Less formatter that never reinterprets your styles.",
       "selected": false,
