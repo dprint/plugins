@@ -6,6 +6,9 @@
       "name": "dprint-plugin-typescript",
       "description": "TypeScript/JavaScript code formatter.",
       "website": "https://dprint.dev/plugins/typescript/",
+      "npm": {
+        "name": "@dprint/typescript"
+      },
       "selected": true,
       "configKey": "typescript",
       "keywords": [
@@ -33,6 +36,9 @@
       "name": "dprint-plugin-json",
       "description": "JSON/JSONC code formatter.",
       "website": "https://dprint.dev/plugins/json/",
+      "npm": {
+        "name": "@dprint/json"
+      },
       "selected": true,
       "configKey": "json",
       "keywords": [
@@ -51,6 +57,9 @@
       "name": "dprint-plugin-markdown",
       "description": "Markdown code formatter.",
       "website": "https://dprint.dev/plugins/markdown/",
+      "npm": {
+        "name": "@dprint/markdown"
+      },
       "selected": true,
       "configKey": "markdown",
       "keywords": [
@@ -72,6 +81,9 @@
       "name": "dprint-plugin-toml",
       "description": "TOML code formatter.",
       "website": "https://dprint.dev/plugins/toml/",
+      "npm": {
+        "name": "@dprint/toml"
+      },
       "selected": true,
       "configKey": "toml",
       "keywords": [
@@ -87,6 +99,9 @@
       "name": "dprint-plugin-dockerfile",
       "description": "Dockerfile code formatter.",
       "website": "https://dprint.dev/plugins/dockerfile/",
+      "npm": {
+        "name": "@dprint/dockerfile"
+      },
       "selected": false,
       "configKey": "dockerfile",
       "keywords": [
@@ -106,6 +121,9 @@
       "name": "dprint-plugin-biome",
       "description": "Biome (JS/TS/JSON) wrapper plugin.",
       "website": "https://dprint.dev/plugins/biome/",
+      "npm": {
+        "name": "@dprint/biome"
+      },
       "selected": false,
       "configKey": "biome",
       "keywords": [
@@ -135,6 +153,9 @@
       "name": "dprint-plugin-oxc",
       "description": "Oxc (JS/TS) wrapper plugin.",
       "website": "https://dprint.dev/plugins/oxc/",
+      "npm": {
+        "name": "@dprint/oxc"
+      },
       "selected": false,
       "configKey": "oxc",
       "keywords": [
@@ -161,6 +182,9 @@
       "name": "dprint-plugin-mago",
       "description": "Mago (PHP) wrapper plugin.",
       "website": "https://dprint.dev/plugins/mago/",
+      "npm": {
+        "name": "@dprint/mago"
+      },
       "selected": false,
       "configKey": "mago",
       "keywords": [
@@ -177,6 +201,9 @@
       "name": "dprint-plugin-ruff",
       "description": "Ruff (Python) wrapper plugin.",
       "website": "https://dprint.dev/plugins/ruff/",
+      "npm": {
+        "name": "@dprint/ruff"
+      },
       "selected": false,
       "configKey": "ruff",
       "keywords": [
@@ -195,6 +222,9 @@
       "name": "dprint-plugin-jupyter",
       "description": "Jupyter notebook code block formatter.",
       "website": "https://dprint.dev/plugins/jupyter/",
+      "npm": {
+        "name": "@dprint/jupyter"
+      },
       "selected": false,
       "configKey": "jupyter",
       "keywords": [
@@ -212,6 +242,9 @@
       "name": "jakebailey/gofumpt",
       "description": "Gofumpt (Go) wrapper plugin.",
       "website": "https://dprint.dev/plugins/gofumpt/",
+      "npm": {
+        "name": "@jakebailey/dprint-plugin-gofumpt"
+      },
       "selected": false,
       "configKey": "gofumpt",
       "keywords": [
@@ -229,6 +262,9 @@
       "name": "g-plane/malva",
       "description": "CSS, SCSS, Sass and Less formatter.",
       "website": "https://dprint.dev/plugins/malva/",
+      "npm": {
+        "name": "dprint-plugin-malva"
+      },
       "selected": true,
       "configKey": "malva",
       "keywords": [
@@ -252,6 +288,9 @@
       "name": "g-plane/markup_fmt",
       "description": "HTML, Vue, Svelte, Astro, Angular, Jinja, Twig, Nunjucks, and Vento formatter.",
       "website": "https://dprint.dev/plugins/markup_fmt/",
+      "npm": {
+        "name": "dprint-plugin-markup"
+      },
       "selected": true,
       "configKey": "markup",
       "keywords": [
@@ -298,6 +337,9 @@
       "name": "g-plane/pretty_yaml",
       "description": "YAML formatter.",
       "website": "https://dprint.dev/plugins/pretty_yaml/",
+      "npm": {
+        "name": "dprint-plugin-yaml"
+      },
       "selected": true,
       "configKey": "yaml",
       "keywords": [
@@ -316,6 +358,9 @@
       "name": "g-plane/pretty_graphql",
       "description": "GraphQL formatter.",
       "website": "https://dprint.dev/plugins/pretty_graphql/",
+      "npm": {
+        "name": "dprint-plugin-graphql"
+      },
       "selected": false,
       "configKey": "graphql",
       "keywords": [
@@ -332,6 +377,9 @@
     {
       "name": "bartlomieju/lax-css",
       "description": "CSS, SCSS, and Less formatter that never reinterprets your styles.",
+      "npm": {
+        "name": "lax-css"
+      },
       "selected": false,
       "configKey": "css",
       "keywords": [
@@ -352,6 +400,9 @@
     {
       "name": "bartlomieju/lax-markup",
       "description": "HTML, XML, SVG, Vue, Svelte, and Astro formatter that preserves rendering-critical whitespace.",
+      "npm": {
+        "name": "lax-markup"
+      },
       "selected": false,
       "configKey": "markup",
       "keywords": [
@@ -377,6 +428,9 @@
     {
       "name": "bartlomieju/lax-sql",
       "description": "Dialect-agnostic SQL formatter.",
+      "npm": {
+        "name": "lax-sql"
+      },
       "selected": false,
       "configKey": "sql",
       "keywords": [
@@ -438,6 +492,9 @@
       "name": "dprint-plugin-prettier",
       "description": "Prettier wrapper plugin (consider faster dedicated plugins for JS/TS, CSS, etc.).",
       "website": "https://dprint.dev/plugins/prettier/",
+      "npm": {
+        "name": "@dprint/prettier"
+      },
       "selected": false,
       "configKey": "prettier",
       "keywords": [
@@ -483,6 +540,9 @@
       "name": "dprint-plugin-roslyn",
       "description": "C# and Visual Basic code formatter (Roslyn).",
       "website": "https://dprint.dev/plugins/roslyn/",
+      "npm": {
+        "name": "@dprint/roslyn"
+      },
       "selected": false,
       "configKey": "roslyn",
       "keywords": [
@@ -504,6 +564,9 @@
       "name": "dprint-plugin-exec",
       "description": "Formats code using formatting CLIs installed on the host machine (rustfmt, clang-format, shfmt, etc.).",
       "website": "https://dprint.dev/plugins/exec/",
+      "npm": {
+        "name": "@dprint/exec"
+      },
       "selected": false,
       "configKey": "exec",
       "keywords": [

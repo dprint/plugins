@@ -1,3 +1,4 @@
+import infoJson from "./info.json" with { type: "json" };
 import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.js";
 
 const tagPattern = "([A-Za-z0-9\._]+)";
@@ -56,6 +57,16 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "g-plane/pretty_graphql",
   "lucacasonato/mf2-tools",
 ]);
+
+/** The npm package a plugin is distributed as. */
+export interface PluginNpmInfo {
+  name: string;
+}
+
+// the npm packages declared in info.json, keyed by `username/repo`. both the
+// prefixed and unprefixed repo names are registered because either may be the
+// resolved repo name (ex. `dprint/dprint-plugin-typescript` and `g-plane/malva`)
+const npmPackagesByRepo = buildNpmPackagesByRepo();
 
 const APPROVED_ASSET_REPOS = new Set([
   "drluckyspin/dprint-plugin-swift",
@@ -128,6 +139,8 @@ export async function tryResolveLatestJson(url: URL) {
     url: latestInfo.url,
     version: latestInfo.version,
     checksum: latestInfo.checksum,
+    // when set, the cli writes an npm specifier into config files instead of the url
+    npm: latestInfo.npm,
   };
 }
 
@@ -155,6 +168,8 @@ export async function getLatestInfo(username: string, repoName: string, origin: 
     // downloads are recorded under and the tag of the latest release
     downloadKey: `${username}/${repoName}`,
     tag: releaseInfo.tagName,
+    // the npm package this plugin is published to, when it has one
+    npm: npmPackagesByRepo.get(`${username}/${repoName}`),
   };
 }
 
@@ -202,6 +217,21 @@ async function userRepoTagPatternMapper(
     return { githubUrl, username, repo, tag };
   }
   return undefined;
+}
+
+function buildNpmPackagesByRepo() {
+  const result = new Map<string, PluginNpmInfo>();
+  for (const plugin of infoJson.latest as { name: string; npm?: PluginNpmInfo }[]) {
+    if (plugin.npm == null) {
+      continue;
+    }
+    const slashIndex = plugin.name.indexOf("/");
+    const username = slashIndex === -1 ? "dprint" : plugin.name.slice(0, slashIndex);
+    const shortName = plugin.name.slice(slashIndex + 1).replace(/^dprint-plugin-/, "");
+    result.set(`${username}/${shortName}`, plugin.npm);
+    result.set(`${username}/dprint-plugin-${shortName}`, plugin.npm);
+  }
+  return result;
 }
 
 async function getFullRepoName(username: string, repoName: string) {
