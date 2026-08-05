@@ -86,6 +86,7 @@ it("tryResolveUserLatestJson", async () => {
       url: `https://plugins.dprint.dev/typescript-${releaseInfo!.tagName}.wasm`,
       version: releaseInfo!.tagName,
       checksum: releaseInfo!.checksum,
+      npm: { name: "@dprint/typescript" },
     });
   }
   // dprint repo full name
@@ -100,6 +101,7 @@ it("tryResolveUserLatestJson", async () => {
       url: `https://plugins.dprint.dev/typescript-${releaseInfo!.tagName}.wasm`,
       version: releaseInfo!.tagName,
       checksum: releaseInfo!.checksum,
+      npm: { name: "@dprint/typescript" },
     });
   }
   // non-dprint repo
@@ -134,6 +136,19 @@ it("tryResolveUserLatestJson", async () => {
       url: `https://plugins.dprint.dev/prettier-${releaseInfo!.tagName}.json`,
       version: releaseInfo!.tagName,
       checksum: releaseInfo!.checksum,
+      npm: { name: "@dprint/prettier" },
+    });
+  }
+  // community repo published to npm
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/g-plane/malva/latest.json");
+    const releaseInfo = await getLatestReleaseInfo("g-plane", "malva");
+    expect(result).toEqual({
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/g-plane/malva-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName.replace(/^v/, ""),
+      checksum: releaseInfo!.checksum,
+      npm: { name: "dprint-plugin-malva" },
     });
   }
 
