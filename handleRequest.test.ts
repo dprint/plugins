@@ -1,7 +1,9 @@
 import { expect, it } from "vitest";
 import { createRequestHandler, resolvePluginOrSchemaUrl } from "./handleRequest.js";
 
-it("should get info.json", { timeout: 10_000 }, async () => {
+// builds the info file for real, which makes a serialized github request per
+// plugin, so this grows by roughly a request every time a plugin is added
+it("should get info.json", { timeout: 60_000 }, async () => {
   const { handleRequest } = createRequestHandler();
   const response = await handleRequest(
     new Request("https://plugins.dprint.dev/info.json"),

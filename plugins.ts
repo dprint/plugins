@@ -47,6 +47,8 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "jakebailey/dprint-plugin-gofumpt",
   "malobre/dprint-plugin-vue",
   "drluckyspin/dprint-plugin-swift",
+  "apcamargo/dprint-plugin-typstyle",
+  "jolars/dprint-plugin-panache",
 ]);
 
 // repos where the short name IS the repo name (no dprint-plugin- prefix)
@@ -56,11 +58,19 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "g-plane/pretty_yaml",
   "g-plane/pretty_graphql",
   "lucacasonato/mf2-tools",
+  "bartlomieju/lax-css",
+  "bartlomieju/lax-markup",
+  "bartlomieju/lax-sql",
+  "sargunv/dprint-clang-format",
+  "sargunv/dprint-cmakefmt",
 ]);
 
 /** The npm package a plugin is distributed as. */
 export interface PluginNpmInfo {
   name: string;
+  // where the plugin sits within the package, for one that doesn't ship it at
+  // the root. defaults to plugin.wasm / plugin.json by plugin kind.
+  path?: string;
 }
 
 // the npm packages declared in info.json, keyed by `username/repo`. both the

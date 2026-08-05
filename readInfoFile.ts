@@ -1,7 +1,8 @@
 import { env } from "cloudflare:workers";
 import infoJson from "./info.json" with { type: "json" };
-import { getLatestInfo } from "./plugins.js";
+import { getLatestInfo, type PluginNpmInfo } from "./plugins.js";
 import { getDownloadCounts, type PluginDownloadCounts } from "./utils/analytics.js";
+import { getNpmDownloadCounts, getNpmLatestVersions } from "./utils/npm.js";
 
 // only typing what's used on the server
 export interface PluginsData {
@@ -13,9 +14,16 @@ export interface PluginData {
   url: string;
   version: string;
   downloadCount: {
+    // downloads of this plugin's url from the registry
     currentVersion: number;
+    // downloads of this plugin from anywhere it's distributed — the registry
+    // plus, for a plugin published to npm, its package's npm downloads
     allVersions: number;
   };
+  // the npm package this plugin is published to, when it has one. it's carried
+  // over from info.json with the version resolved from the registry during the
+  // build, so the version is absent when that lookup failed.
+  npm?: PluginNpmInfo & { version?: string };
   // links shown on the site: the GitHub repo (derived during the build) and the
   // optional dprint.dev docs page (carried over from info.json)
   repoUrl?: string;
@@ -143,29 +151,84 @@ async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
   };
 
   async function getLatest(latest: typeof infoJson.latest) {
-    const downloadCounts = await getDownloadCounts();
-    const results = [];
+    // the release lookups below run one at a time to stay within GitHub's api
+    // guidelines and are what this build spends its time on, so these are
+    // started here and awaited after them rather than before. each falls back
+    // to an empty result, since the loop throwing abandons them unawaited.
+    const npmPackageNames = latest.map((plugin) => npmInfo(plugin)?.name).filter((name) => name != null);
+    const downloadCountsPromise = getDownloadCounts().catch(() => new Map<string, PluginDownloadCounts>());
+    const npmDownloadCountsPromise = getNpmDownloadCounts(npmPackageNames).catch(() => new Map<string, number>());
+    const npmVersionsPromise = getNpmLatestVersions(npmPackageNames).catch(() => new Map<string, string>());
+
+    const released = [];
     for (const plugin of latest) {
       const [username, pluginName] = plugin.name.split("/");
       const info = pluginName
         ? await getLatestInfo(username, pluginName, origin)
         : await getLatestInfo("dprint", plugin.name, origin);
       if (info != null) {
-        const counts = downloadCounts.get(info.downloadKey);
-        results.push({
-          ...plugin,
-          version: info.version,
-          url: info.url,
-          repoUrl: info.repoUrl,
-          downloadCount: {
-            currentVersion: currentVersionDownloads(counts, info.tag),
-            allVersions: counts?.allVersions ?? 0,
-          },
-        });
+        released.push({ plugin, info });
       }
     }
-    return results;
+
+    const sources: ResolvedSources = {
+      downloadCounts: await downloadCountsPromise,
+      npmDownloadCounts: await npmDownloadCountsPromise,
+      npmVersions: await npmVersionsPromise,
+    };
+    return released.map(({ plugin, info }) => toPluginData(plugin, info, sources));
   }
+}
+
+/** What the build resolved for a plugin's latest release. */
+export interface PluginReleaseInfo {
+  version: string;
+  url: string;
+  repoUrl: string;
+  downloadKey: string;
+  tag: string;
+}
+
+/** What the build looked up for the plugins as a whole. */
+export interface ResolvedSources {
+  downloadCounts: Map<string, PluginDownloadCounts>;
+  npmDownloadCounts: Map<string, number>;
+  npmVersions: Map<string, string>;
+}
+
+/**
+ * Merges an info.json entry with what the build resolved for it. Exported
+ * because this is what decides the shape of the served info.json.
+ */
+export function toPluginData(
+  plugin: { name: string; npm?: PluginNpmInfo },
+  info: PluginReleaseInfo,
+  sources: ResolvedSources,
+): PluginData {
+  const counts = sources.downloadCounts.get(info.downloadKey);
+  const npm = plugin.npm;
+  return {
+    ...plugin,
+    version: info.version,
+    url: info.url,
+    repoUrl: info.repoUrl,
+    // spreads what info.json declared rather than rebuilding it, so the rest of
+    // the npm properties the cli reads (ex. `path`) survive. the package stays
+    // listed even when the version lookup failed — the cli reads the name to
+    // know the plugin is on npm at all.
+    npm: npm == null ? undefined : { ...npm, version: sources.npmVersions.get(npm.name) },
+    downloadCount: {
+      currentVersion: currentVersionDownloads(counts, info.tag),
+      // downloads of the plugin's url from the registry, plus its npm package's
+      allVersions: (counts?.allVersions ?? 0) + (npm == null ? 0 : sources.npmDownloadCounts.get(npm.name) ?? 0),
+    },
+  };
+}
+
+// reads the optional `npm` off an info.json entry, whose inferred type is a
+// union that only some members declare the property on
+function npmInfo(plugin: { npm?: PluginNpmInfo }) {
+  return plugin.npm;
 }
 
 // downloads of the latest release over the last 30 days, counting both the exact
