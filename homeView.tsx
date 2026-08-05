@@ -95,13 +95,15 @@ function renderPage(pluginsData: PluginsData) {
   );
 }
 
-// builds the lowercased string the search filters against: name, url, version,
-// description, config key, and every file extension / file name / exec command
-// the plugin handles.
+// builds the lowercased string the search filters against: name, url, npm
+// specifier, version, description, config key, and every file extension / file
+// name / exec command the plugin handles.
 function pluginSearchText(plugin: PluginData) {
   const parts: (string | undefined)[] = [
     plugin.name,
+    // the url stays searchable even when the npm specifier is what's shown
     plugin.url,
+    latestReference(plugin),
     plugin.version,
     plugin.description,
     plugin.configKey,
@@ -169,19 +171,40 @@ function renderPlugin(plugin: PluginData) {
         </div>
       </div>
       <div class="col-url" role="cell">
-        <code>{plugin.url}</code>
+        <code>{latestReference(plugin)}</code>
       </div>
       <div class="col-downloads num-col" role="cell">
         <span class="dl-label">Downloads (30d) </span>
         {plugin.downloadCount.allVersions?.toLocaleString("en-US")}
       </div>
       <div class="col-action" role="cell">
-        <button type="button" class="copy-btn copy-button" title="Copy URL to clipboard" data-url={plugin.url}>
+        <button
+          type="button"
+          class="copy-btn copy-button"
+          title="Copy to clipboard"
+          data-url={latestReference(plugin)}
+        >
           copy
         </button>
       </div>
     </div>
   );
+}
+
+// what to put in a config file's `plugins` array: an npm specifier for a plugin
+// published to npm, otherwise its plugins.dprint.dev url. both are kept in the
+// data so this can become a user toggle later.
+function latestReference(plugin: PluginData) {
+  const npm = plugin.npm;
+  if (npm?.version == null) {
+    return plugin.url;
+  }
+  // mirrors how the cli writes an npm plugin into a config file: the path
+  // within the package defaults by plugin kind, and is only spelled out when
+  // it isn't the wasm default
+  const isWasm = plugin.url.toLowerCase().endsWith(".wasm");
+  const path = npm.path ?? (isWasm ? "plugin.wasm" : "plugin.json");
+  return `npm:${npm.name}@${npm.version}${path === "plugin.wasm" ? "" : `/${path}`}`;
 }
 
 // the repo and docs links shown beneath a plugin's name. both are optional: the

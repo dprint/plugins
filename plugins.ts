@@ -61,6 +61,9 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
 /** The npm package a plugin is distributed as. */
 export interface PluginNpmInfo {
   name: string;
+  // where the plugin sits within the package, for one that doesn't ship it at
+  // the root. defaults to plugin.wasm / plugin.json by plugin kind.
+  path?: string;
 }
 
 // the npm packages declared in info.json, keyed by `username/repo`. both the
