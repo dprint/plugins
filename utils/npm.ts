@@ -79,7 +79,7 @@ async function fetchJson(url: string) {
       fetchWithRetries(url, {
         headers: { "user-agent": "dprint-plugins" },
         signal,
-      }),
+      }, /* retries */ 1),
     FETCH_TIMEOUT_MS,
   );
   if (!response.ok) {

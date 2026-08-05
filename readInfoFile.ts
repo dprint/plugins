@@ -151,41 +151,78 @@ async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
   };
 
   async function getLatest(latest: typeof infoJson.latest) {
+    // the release lookups below run one at a time to stay within GitHub's api
+    // guidelines and are what this build spends its time on, so these are
+    // started here and awaited after them rather than before. each falls back
+    // to an empty result, since the loop throwing abandons them unawaited.
     const npmPackageNames = latest.map((plugin) => npmInfo(plugin)?.name).filter((name) => name != null);
-    const [downloadCounts, npmDownloadCounts, npmVersions] = await Promise.all([
-      getDownloadCounts(),
-      getNpmDownloadCounts(npmPackageNames),
-      getNpmLatestVersions(npmPackageNames),
-    ]);
-    const results = [];
+    const downloadCountsPromise = getDownloadCounts().catch(() => new Map<string, PluginDownloadCounts>());
+    const npmDownloadCountsPromise = getNpmDownloadCounts(npmPackageNames).catch(() => new Map<string, number>());
+    const npmVersionsPromise = getNpmLatestVersions(npmPackageNames).catch(() => new Map<string, string>());
+
+    const released = [];
     for (const plugin of latest) {
       const [username, pluginName] = plugin.name.split("/");
       const info = pluginName
         ? await getLatestInfo(username, pluginName, origin)
         : await getLatestInfo("dprint", plugin.name, origin);
       if (info != null) {
-        const counts = downloadCounts.get(info.downloadKey);
-        const npm = npmInfo(plugin);
-        const npmDownloads = npm == null ? 0 : npmDownloadCounts.get(npm.name) ?? 0;
-        results.push({
-          ...plugin,
-          version: info.version,
-          url: info.url,
-          repoUrl: info.repoUrl,
-          // spreads what info.json declared rather than rebuilding it, so the
-          // rest of the npm properties the cli reads (ex. `path`) survive. the
-          // package stays listed even when the version lookup failed — the cli
-          // reads the name to know the plugin is on npm at all.
-          npm: npm == null ? undefined : { ...npm, version: npmVersions.get(npm.name) },
-          downloadCount: {
-            currentVersion: currentVersionDownloads(counts, info.tag),
-            allVersions: (counts?.allVersions ?? 0) + npmDownloads,
-          },
-        });
+        released.push({ plugin, info });
       }
     }
-    return results;
+
+    const sources: ResolvedSources = {
+      downloadCounts: await downloadCountsPromise,
+      npmDownloadCounts: await npmDownloadCountsPromise,
+      npmVersions: await npmVersionsPromise,
+    };
+    return released.map(({ plugin, info }) => toPluginData(plugin, info, sources));
   }
+}
+
+/** What the build resolved for a plugin's latest release. */
+export interface PluginReleaseInfo {
+  version: string;
+  url: string;
+  repoUrl: string;
+  downloadKey: string;
+  tag: string;
+}
+
+/** What the build looked up for the plugins as a whole. */
+export interface ResolvedSources {
+  downloadCounts: Map<string, PluginDownloadCounts>;
+  npmDownloadCounts: Map<string, number>;
+  npmVersions: Map<string, string>;
+}
+
+/**
+ * Merges an info.json entry with what the build resolved for it. Exported
+ * because this is what decides the shape of the served info.json.
+ */
+export function toPluginData(
+  plugin: { name: string; npm?: PluginNpmInfo },
+  info: PluginReleaseInfo,
+  sources: ResolvedSources,
+): PluginData {
+  const counts = sources.downloadCounts.get(info.downloadKey);
+  const npm = plugin.npm;
+  return {
+    ...plugin,
+    version: info.version,
+    url: info.url,
+    repoUrl: info.repoUrl,
+    // spreads what info.json declared rather than rebuilding it, so the rest of
+    // the npm properties the cli reads (ex. `path`) survive. the package stays
+    // listed even when the version lookup failed — the cli reads the name to
+    // know the plugin is on npm at all.
+    npm: npm == null ? undefined : { ...npm, version: sources.npmVersions.get(npm.name) },
+    downloadCount: {
+      currentVersion: currentVersionDownloads(counts, info.tag),
+      // downloads of the plugin's url from the registry, plus its npm package's
+      allVersions: (counts?.allVersions ?? 0) + (npm == null ? 0 : sources.npmDownloadCounts.get(npm.name) ?? 0),
+    },
+  };
 }
 
 // reads the optional `npm` off an info.json entry, whose inferred type is a
