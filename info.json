@@ -738,6 +738,20 @@
         "CMakeLists.txt.in"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "jolars/fatou",
+      "description": "Julia code formatter (fatou).",
+      "selected": false,
+      "configKey": "fatou",
+      "keywords": [
+        "julia",
+        "fatou"
+      ],
+      "fileExtensions": [
+        "jl"
+      ],
+      "configExcludes": []
     }
   ]
 }
