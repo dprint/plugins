@@ -740,6 +740,23 @@
       "configExcludes": []
     },
     {
+      "name": "jolars/arity",
+      "description": "R code formatter (arity).",
+      "selected": false,
+      "configKey": "arity",
+      "keywords": [
+        "r",
+        "rstats",
+        "arity",
+        "tidyverse"
+      ],
+      "fileExtensions": [
+        "R",
+        "r"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "jolars/fatou",
       "description": "Julia code formatter (fatou).",
       "selected": false,
