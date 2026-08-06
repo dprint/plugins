@@ -738,6 +738,23 @@
         "CMakeLists.txt.in"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "jolars/arity",
+      "description": "R code formatter (arity).",
+      "selected": false,
+      "configKey": "arity",
+      "keywords": [
+        "r",
+        "rstats",
+        "arity",
+        "tidyverse"
+      ],
+      "fileExtensions": [
+        "R",
+        "r"
+      ],
+      "configExcludes": []
     }
   ]
 }
