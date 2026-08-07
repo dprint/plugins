@@ -769,6 +769,27 @@
         "jl"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "jolars/badness",
+      "description": "LaTeX and BibTeX code formatter (badness).",
+      "selected": false,
+      "configKey": "badness",
+      "keywords": [
+        "latex",
+        "tex",
+        "bibtex",
+        "badness"
+      ],
+      "fileExtensions": [
+        "tex",
+        "sty",
+        "cls",
+        "dtx",
+        "ins",
+        "bib"
+      ],
+      "configExcludes": []
     }
   ]
 }
