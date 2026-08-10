@@ -1,7 +1,8 @@
 import infoJson from "./info.json" with { type: "json" };
-import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.js";
+import { checkGithubRepoExists, getLatestReleaseInfo, type ReleaseInfo } from "./utils/mod.js";
 
 const tagPattern = "([A-Za-z0-9\._]+)";
+const releaseTagPattern = "([A-Za-z0-9\-\._]+)";
 // repos may only contain alphanumeric, underscores, hyphens, and period
 const repoNamePattern = "([A-Za-z0-9\-\._]+)";
 const dprintWasmPluginPattern = new URLPattern({
@@ -20,7 +21,7 @@ const userProcessPluginPattern = new URLPattern({
   pathname: `/${userRepoPattern}-${tagPattern}.json`,
 });
 const userSchemaPattern = new URLPattern({
-  pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
+  pathname: `/${userRepoPattern}/${releaseTagPattern}/schema.json`,
 });
 
 // known repos where shortname resolves to dprint-plugin-<name>,
@@ -63,6 +64,7 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "bartlomieju/lax-sql",
   "sargunv/dprint-clang-format",
   "sargunv/dprint-cmakefmt",
+  "kjanat/PSScriptAnalyzer",
 ]);
 
 /** The npm package a plugin is distributed as. */
@@ -78,8 +80,13 @@ export interface PluginNpmInfo {
 // resolved repo name (ex. `dprint/dprint-plugin-typescript` and `g-plane/malva`)
 const npmPackagesByRepo = buildNpmPackagesByRepo();
 
+const RELEASE_TAG_SUFFIXES = new Map([
+  ["kjanat/PSScriptAnalyzer", "-dprint"],
+]);
+
 const APPROVED_ASSET_REPOS = new Set([
   "drluckyspin/dprint-plugin-swift",
+  "kjanat/PSScriptAnalyzer",
 ]);
 
 export function isAssetAllowedRepo(username: string, repo: string) {
@@ -91,7 +98,7 @@ export function isAssetAllowedRepo(username: string, repo: string) {
 
 const assetNamePattern = "([A-Za-z0-9\\-\\._]+)";
 const assetPattern = new URLPattern({
-  pathname: `/${userRepoPattern}/${tagPattern}/asset/${assetNamePattern}`,
+  pathname: `/${userRepoPattern}/${releaseTagPattern}/asset/${assetNamePattern}`,
 });
 
 export function tryResolveAssetUrl(url: URL): { githubUrl: string; shouldCache: boolean } | undefined {
@@ -160,26 +167,46 @@ export async function getLatestInfo(username: string, repoName: string, origin: 
   if (releaseInfo == null) {
     return undefined;
   }
+  return getLatestInfoFromRelease(username, repoName, origin, releaseInfo);
+}
+
+export function getLatestInfoFromRelease(
+  username: string,
+  repoName: string,
+  origin: string,
+  releaseInfo: ReleaseInfo,
+) {
   const displayRepoName = repoName.replace(/^dprint-plugin-/, "");
   const extension = releaseInfo.kind === "wasm" ? "wasm" : "json";
+  const repoKey = `${username}/${repoName}`;
+  const tagSuffix = RELEASE_TAG_SUFFIXES.get(repoKey);
+  if (tagSuffix != null && !releaseInfo.tagName.endsWith(tagSuffix)) {
+    return undefined;
+  }
+  const version = tagSuffix == null
+    ? releaseInfo.tagName.replace(/^v/, "")
+    : releaseInfo.tagName.slice(0, -tagSuffix.length);
+  const url = tagSuffix == null
+    ? username === "dprint"
+      ? `${origin}/${displayRepoName}-${releaseInfo.tagName}.${extension}`
+      : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`
+    : `${origin}/${username}/${repoName}/${releaseInfo.tagName}/asset/plugin.${extension}`;
 
   // include the bare minimum in case someone else wants to implement
   // this behaviour on their server
   return {
     schemaVersion: 1,
-    url: username === "dprint"
-      ? `${origin}/${displayRepoName}-${releaseInfo.tagName}.${extension}`
-      : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
-    version: releaseInfo.tagName.replace(/^v/, ""),
+    url,
+    version,
     checksum: releaseInfo.checksum,
     // the GitHub repo this plugin is published from (full name already resolved above)
-    repoUrl: `https://github.com/${username}/${repoName}`,
+    repoUrl: `https://github.com/${repoKey}`,
     // identifies this plugin's download analytics: the `username/repo` key that
     // downloads are recorded under and the tag of the latest release
-    downloadKey: `${username}/${repoName}`,
+    downloadKey: repoKey,
     tag: releaseInfo.tagName,
     // the npm package this plugin is published to, when it has one
-    npm: npmPackagesByRepo.get(`${username}/${repoName}`),
+    npm: npmPackagesByRepo.get(repoKey),
   };
 }
 

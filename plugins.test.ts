@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { tryResolveAssetUrl, tryResolveLatestJson } from "./plugins.js";
+import { getLatestInfoFromRelease, tryResolveAssetUrl, tryResolveLatestJson, tryResolveSchemaUrl } from "./plugins.js";
 import { getLatestReleaseInfo } from "./utils/github.js";
 
 function resolveAsset(url: string) {
@@ -56,10 +56,57 @@ it("tryResolveAssetUrl", () => {
     shouldCache: false,
   });
 
+  // approved repo with a semantic-version tag suffix
+  expect(
+    resolveAsset(
+      "https://plugins.dprint.dev/kjanat/PSScriptAnalyzer/0.1.1-dprint/asset/plugin.wasm",
+    ),
+  ).toEqual({
+    githubUrl: "https://github.com/kjanat/PSScriptAnalyzer/releases/download/0.1.1-dprint/plugin.wasm",
+    shouldCache: true,
+  });
+
   // non-matching URL
   expect(
     resolveAsset("https://plugins.dprint.dev/dprint/dprint-plugin-prettier/0.67.0/file.zip"),
   ).toEqual(undefined);
+});
+
+it("resolves a postfixed dprint release tag", () => {
+  expect(
+    getLatestInfoFromRelease("kjanat", "PSScriptAnalyzer", "https://plugins.dprint.dev", {
+      tagName: "0.1.1-dprint",
+      checksum: "a".repeat(64),
+      kind: "wasm",
+    }),
+  ).toEqual({
+    schemaVersion: 1,
+    url: "https://plugins.dprint.dev/kjanat/PSScriptAnalyzer/0.1.1-dprint/asset/plugin.wasm",
+    version: "0.1.1",
+    checksum: "a".repeat(64),
+    repoUrl: "https://github.com/kjanat/PSScriptAnalyzer",
+    downloadKey: "kjanat/PSScriptAnalyzer",
+    tag: "0.1.1-dprint",
+    npm: undefined,
+  });
+
+  expect(
+    getLatestInfoFromRelease("kjanat", "PSScriptAnalyzer", "https://plugins.dprint.dev", {
+      tagName: "npm-0.1.1",
+      checksum: "a".repeat(64),
+      kind: "wasm",
+    }),
+  ).toEqual(undefined);
+});
+
+it("resolves a schema from a postfixed dprint release tag", async () => {
+  expect(
+    await tryResolveSchemaUrl(
+      new URL("https://plugins.dprint.dev/kjanat/PSScriptAnalyzer/0.1.1-dprint/schema.json"),
+    ),
+  ).toEqual(
+    "https://github.com/kjanat/PSScriptAnalyzer/releases/download/0.1.1-dprint/schema.json",
+  );
 });
 
 it("tryResolveUserLatestJson", async () => {
