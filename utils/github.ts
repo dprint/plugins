@@ -64,13 +64,6 @@ function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
         return match[1];
       }
     }
-    // fall back to searching the body text for a dprint style checksum
-    if (typeof data.body === "string") {
-      const checksum = /\@([a-z0-9]{64})\b/i.exec(data.body);
-      if (checksum?.[1]) {
-        return checksum[1];
-      }
-    }
     return undefined;
   }
 
@@ -98,7 +91,6 @@ interface ReleaseAsset {
 
 interface GitHubRelease {
   tag_name: string;
-  body: string;
   draft: boolean;
   prerelease: boolean;
   assets: ReleaseAsset[];
