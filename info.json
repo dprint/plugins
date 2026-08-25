@@ -790,6 +790,17 @@
         "bib"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-sql",
+      "version": "0.1.1",
+      "selected": false,
+      "url": "https://plugins.dprint.dev/sql-0.1.1.wasm",
+      "configKey": "sql",
+      "fileExtensions": [
+        "sql"
+      ],
+      "configExcludes": []
     }
   ]
 }
