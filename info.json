@@ -804,6 +804,30 @@
         "bib"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "colinaaa/sort-package-json",
+      "description": "Sorts package.json keys into a conventional order.",
+      "npm": {
+        "name": "dprint-plugin-sort-package-json"
+      },
+      "selected": false,
+      "configKey": "sortPackageJson",
+      "keywords": [
+        "package.json",
+        "npm",
+        "pnpm",
+        "yarn",
+        "bun",
+        "sort-package-json"
+      ],
+      "fileExtensions": [],
+      "fileNames": [
+        "package.json"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
     }
   ]
 }
