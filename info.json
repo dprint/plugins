@@ -375,6 +375,20 @@
       "configExcludes": []
     },
     {
+      "name": "apcamargo/bibtex-tidy",
+      "description": "Tidy bibtex files.",
+      "selected": false,
+      "configKey": "bibtex-tidy",
+      "keywords": [
+        "bibtex",
+        "bibtex-tidy"
+      ],
+      "fileExtensions": [
+        "bib"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "apcamargo/typstyle",
       "description": "A beautiful and reliable code formatter for Typst.",
       "selected": false,
