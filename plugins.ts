@@ -49,6 +49,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "drluckyspin/dprint-plugin-swift",
   "apcamargo/dprint-plugin-typstyle",
   "jolars/dprint-plugin-panache",
+  "kachick/dprint-plugin-kdl",
 ]);
 
 // repos where the short name IS the repo name (no dprint-plugin- prefix)

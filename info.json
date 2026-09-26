@@ -259,6 +259,22 @@
       "configExcludes": []
     },
     {
+      "name": "kachick/kdl",
+      "description": "KDL crate wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-kdl"
+      },
+      "selected": false,
+      "configKey": "kdl",
+      "keywords": [
+        "kdl"
+      ],
+      "fileExtensions": [
+        "kdl"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "g-plane/malva",
       "description": "CSS, SCSS, Sass and Less formatter.",
       "website": "https://dprint.dev/plugins/malva/",
