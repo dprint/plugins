@@ -275,6 +275,23 @@
       "configExcludes": []
     },
     {
+      "name": "kachick/typstyle",
+      "description": "Typstyle (Typst) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-typstyle"
+      },
+      "selected": false,
+      "configKey": "typst",
+      "keywords": [
+        "typst",
+        "typstyle"
+      ],
+      "fileExtensions": [
+        "typ"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "g-plane/malva",
       "description": "CSS, SCSS, Sass and Less formatter.",
       "website": "https://dprint.dev/plugins/malva/",
