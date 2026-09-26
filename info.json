@@ -275,6 +275,23 @@
       "configExcludes": []
     },
     {
+      "name": "kachick/nix",
+      "description": "Nixfmt-rs (Nix) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-nix"
+      },
+      "selected": false,
+      "configKey": "nix",
+      "keywords": [
+        "nix",
+        "nixfmt-rs"
+      ],
+      "fileExtensions": [
+        "nix"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "kachick/typstyle",
       "description": "Typstyle (Typst) wrapper plugin.",
       "npm": {
