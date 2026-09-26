@@ -51,6 +51,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "jolars/dprint-plugin-panache",
   "kachick/dprint-plugin-kdl",
   "kachick/dprint-plugin-nix",
+  "kachick/dprint-plugin-sh",
   "kachick/dprint-plugin-typstyle",
 ]);
 

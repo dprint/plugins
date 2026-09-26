@@ -292,6 +292,47 @@
       "configExcludes": []
     },
     {
+      "name": "kachick/sh",
+      "description": "Shuck-formatter (shell script) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-sh"
+      },
+      "selected": false,
+      "configKey": "sh",
+      "keywords": [
+        "sh",
+        "shell-script",
+        "shuck-formatter",
+        "bash",
+        "zsh",
+        "envrc"
+      ],
+      "fileExtensions": [
+        "sh",
+        "bash",
+        "zsh",
+        "ksh",
+        "mksh",
+        "dash",
+        "bats"
+      ],
+      "fileNames": [
+        ".envrc",
+        ".bashrc",
+        ".bash_profile",
+        ".bash_aliases",
+        ".bash_login",
+        ".bash_logout",
+        ".profile",
+        ".zshrc",
+        ".zshenv",
+        ".zprofile",
+        ".zlogin",
+        ".zlogout"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "kachick/typstyle",
       "description": "Typstyle (Typst) wrapper plugin.",
       "npm": {
