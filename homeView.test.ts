@@ -93,8 +93,8 @@ it("should keep the url searchable when a specifier replaced it", () => {
 
 it("should list plugins by repo without the dprint org", () => {
   const { html } = renderReferences([
-    createPlugin({ name: "dprint-plugin-json", repo: "dprint/dprint-plugin-json" }),
-    createPlugin({ name: "dprint_plugin_malva", repo: "g-plane/malva" }),
+    createPlugin({ name: "dprint-plugin-json", github: "dprint/dprint-plugin-json" }),
+    createPlugin({ name: "dprint_plugin_malva", github: "g-plane/malva" }),
     // data cached before info.json declared the repo
     createPlugin({ name: "dprint-plugin-cached" }),
   ]);
