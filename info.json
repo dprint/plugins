@@ -157,6 +157,7 @@
         "name": "@dprint/oxc"
       },
       "selected": false,
+      "neverPreselect": true,
       "configKey": "oxc",
       "keywords": [
         "oxc",
