@@ -82,6 +82,24 @@ export interface PluginNpmInfo {
 // resolved repo name (ex. `dprint/dprint-plugin-typescript` and `g-plane/malva`)
 const npmPackagesByRepo = buildNpmPackagesByRepo();
 
+// the repos of the info.json plugins that aren't named after their repo, keyed
+// by plugin name
+const reposByPluginName = buildReposByPluginName();
+
+/**
+ * The GitHub repo an info.json entry is published from. An entry's name is
+ * the name the plugin reports about itself, which the cli matches against the
+ * plugins in a config file, so `repo` says where it's published from when
+ * that's not a dprint org repo with the same name.
+ */
+export function getPluginRepo(plugin: { name: string; repo?: string }) {
+  const repo = plugin.repo ?? plugin.name;
+  const slashIndex = repo.indexOf("/");
+  return slashIndex === -1
+    ? { username: "dprint", repoName: repo }
+    : { username: repo.slice(0, slashIndex), repoName: repo.slice(slashIndex + 1) };
+}
+
 const APPROVED_ASSET_REPOS = new Set([
   "drluckyspin/dprint-plugin-swift",
 ]);
@@ -139,8 +157,13 @@ export async function tryResolveLatestJson(url: URL) {
   if (!result) {
     return undefined;
   }
-  const username = result.pathname.groups[0]!;
-  const shortRepoName = result.pathname.groups[1]!;
+  // `dprint add <plugin-name>` asks for `dprint/<plugin-name>`, and the name a
+  // plugin outside the dprint org has in info.json isn't the repo it's published from
+  const namedRepo = result.pathname.groups[0] === "dprint"
+    ? reposByPluginName.get(result.pathname.groups[1]!)
+    : undefined;
+  const username = namedRepo?.username ?? result.pathname.groups[0]!;
+  const shortRepoName = namedRepo?.repoName ?? result.pathname.groups[1]!;
   const latestInfo = await getLatestInfo(username, shortRepoName, url.origin);
   if (latestInfo == null) {
     return 404;
@@ -235,15 +258,24 @@ async function userRepoTagPatternMapper(
 
 function buildNpmPackagesByRepo() {
   const result = new Map<string, PluginNpmInfo>();
-  for (const plugin of infoJson.latest as { name: string; npm?: PluginNpmInfo }[]) {
+  for (const plugin of infoJson.latest as { name: string; repo?: string; npm?: PluginNpmInfo }[]) {
     if (plugin.npm == null) {
       continue;
     }
-    const slashIndex = plugin.name.indexOf("/");
-    const username = slashIndex === -1 ? "dprint" : plugin.name.slice(0, slashIndex);
-    const shortName = plugin.name.slice(slashIndex + 1).replace(/^dprint-plugin-/, "");
+    const { username, repoName } = getPluginRepo(plugin);
+    const shortName = repoName.replace(/^dprint-plugin-/, "");
     result.set(`${username}/${shortName}`, plugin.npm);
     result.set(`${username}/dprint-plugin-${shortName}`, plugin.npm);
+  }
+  return result;
+}
+
+function buildReposByPluginName() {
+  const result = new Map<string, { username: string; repoName: string }>();
+  for (const plugin of infoJson.latest as { name: string; repo?: string }[]) {
+    if (plugin.repo != null) {
+      result.set(plugin.name, getPluginRepo(plugin));
+    }
   }
   return result;
 }

@@ -86,7 +86,9 @@ function renderPage(pluginsData: PluginsData) {
           autocomplete="off"
           spellcheck={false}
         />
-        <a class="docs-link" href="https://dprint.dev/plugins">dprint plugin docs <span>↗</span></a>
+        <a class="docs-link" href="https://dprint.dev/plugins">
+          dprint plugin docs <span>↗</span>
+        </a>
       </div>
       {renderPlugins(pluginsData)}
       <div id="no-matches" class="no-matches" hidden>No plugins match your filter.</div>
@@ -101,6 +103,7 @@ function renderPage(pluginsData: PluginsData) {
 function pluginSearchText(plugin: PluginData) {
   const parts: (string | undefined)[] = [
     plugin.name,
+    plugin.repo,
     // the url stays searchable even when the npm specifier is what's shown
     plugin.url,
     latestReference(plugin),
@@ -164,7 +167,7 @@ function renderPlugin(plugin: PluginData) {
         <span class="swatch"></span>
         <div class="name-block">
           <div class="name-line">
-            <span class="name-text">{plugin.name}</span>
+            <span class="name-text">{plugin.repo ?? plugin.name}</span>
             {plugin.version ? <span class="version-tag">{plugin.version}</span> : null}
           </div>
           {renderPluginLinks(plugin)}
@@ -174,7 +177,7 @@ function renderPlugin(plugin: PluginData) {
         <code>{latestReference(plugin)}</code>
       </div>
       <div class="col-downloads num-col" role="cell">
-        <span class="dl-label">Downloads (30d) </span>
+        <span class="dl-label">Downloads (30d)</span>
         {plugin.downloadCount.allVersions?.toLocaleString("en-US")}
       </div>
       <div class="col-action" role="cell">
