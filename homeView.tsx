@@ -103,7 +103,7 @@ function renderPage(pluginsData: PluginsData) {
 function pluginSearchText(plugin: PluginData) {
   const parts: (string | undefined)[] = [
     plugin.name,
-    plugin.github,
+    plugin.repo,
     // the url stays searchable even when the npm specifier is what's shown
     plugin.url,
     latestReference(plugin),
@@ -216,7 +216,7 @@ function latestReference(plugin: PluginData) {
 // plugins are listed by the repo they're published from, with the dprint org
 // left off its own plugins
 function displayName(plugin: PluginData) {
-  return plugin.github?.replace(/^dprint\//, "") ?? plugin.name;
+  return plugin.repo?.replace(/^dprint\//, "") ?? plugin.name;
 }
 
 function renderPluginLinks(plugin: PluginData) {

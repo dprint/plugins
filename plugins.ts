@@ -88,11 +88,11 @@ const reposByPluginName = buildReposByPluginName();
 /**
  * The GitHub repo an info.json entry is published from. An entry's `name` is
  * the name the plugin reports about itself, which the cli matches against the
- * plugins in a config file, so `github` is what says where it's published from.
+ * plugins in a config file, so `repo` is what says where it's published from.
  */
-export function getPluginRepo(plugin: { github: string }) {
-  const slashIndex = plugin.github.indexOf("/");
-  return { username: plugin.github.slice(0, slashIndex), repoName: plugin.github.slice(slashIndex + 1) };
+export function getPluginRepo(plugin: { repo: string }) {
+  const slashIndex = plugin.repo.indexOf("/");
+  return { username: plugin.repo.slice(0, slashIndex), repoName: plugin.repo.slice(slashIndex + 1) };
 }
 
 const APPROVED_ASSET_REPOS = new Set([
@@ -253,7 +253,7 @@ async function userRepoTagPatternMapper(
 
 function buildNpmPackagesByRepo() {
   const result = new Map<string, PluginNpmInfo>();
-  for (const plugin of infoJson.latest as { github: string; npm?: PluginNpmInfo }[]) {
+  for (const plugin of infoJson.latest as { repo: string; npm?: PluginNpmInfo }[]) {
     if (plugin.npm == null) {
       continue;
     }
