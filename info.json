@@ -156,56 +156,6 @@
       ]
     },
     {
-      "name": "dprint-plugin-oxc",
-      "repo": "dprint/dprint-plugin-oxc",
-      "description": "Oxc (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/TOML) wrapper plugin.",
-      "website": "https://dprint.dev/plugins/oxc/",
-      "npm": {
-        "name": "@dprint/oxc"
-      },
-      "selected": false,
-      "configKey": "oxc",
-      "keywords": [
-        "oxc",
-        "oxfmt",
-        "oxlint",
-        "javascript",
-        "typescript",
-        "json",
-        "css",
-        "scss",
-        "less",
-        "graphql",
-        "yaml",
-        "toml"
-      ],
-      "fileExtensions": [
-        "ts",
-        "tsx",
-        "mts",
-        "cts",
-        "js",
-        "jsx",
-        "cjs",
-        "mjs",
-        "json",
-        "jsonc",
-        "json5",
-        "css",
-        "scss",
-        "less",
-        "graphql",
-        "gql",
-        "yaml",
-        "yml",
-        "toml"
-      ],
-      "configExcludes": [
-        "**/node_modules",
-        "**/*-lock.json"
-      ]
-    },
-    {
       "name": "dprint-plugin-mago",
       "repo": "dprint/dprint-plugin-mago",
       "description": "Mago (PHP) wrapper plugin.",
@@ -503,6 +453,56 @@
         "gql"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-oxc",
+      "repo": "dprint/dprint-plugin-oxc",
+      "description": "Oxc (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/TOML) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/oxc/",
+      "npm": {
+        "name": "@dprint/oxc"
+      },
+      "selected": false,
+      "configKey": "oxc",
+      "keywords": [
+        "oxc",
+        "oxfmt",
+        "oxlint",
+        "javascript",
+        "typescript",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "yaml",
+        "toml"
+      ],
+      "fileExtensions": [
+        "ts",
+        "tsx",
+        "mts",
+        "cts",
+        "js",
+        "jsx",
+        "cjs",
+        "mjs",
+        "json",
+        "jsonc",
+        "json5",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "gql",
+        "yaml",
+        "yml",
+        "toml"
+      ],
+      "configExcludes": [
+        "**/node_modules",
+        "**/*-lock.json"
+      ]
     },
     {
       "name": "dprint-plugin-bibtex-tidy",
