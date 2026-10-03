@@ -15,8 +15,9 @@ it("getPluginRepo", () => {
   expect(getPluginRepo({ repo: "g-plane/malva" })).toEqual({ username: "g-plane", repoName: "malva" });
 });
 
-it("info.json entries should say what repo they're published from", () => {
+it("info.json entries should have a display name and say what repo they're published from", () => {
   for (const plugin of infoJson.latest) {
+    expect(plugin.displayName, plugin.name).toBeTruthy();
     expect(plugin.repo, plugin.name).toMatch(/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/);
   }
 });

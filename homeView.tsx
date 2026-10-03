@@ -103,6 +103,7 @@ function renderPage(pluginsData: PluginsData) {
 function pluginSearchText(plugin: PluginData) {
   const parts: (string | undefined)[] = [
     plugin.name,
+    plugin.displayName,
     plugin.repo,
     // the url stays searchable even when the npm specifier is what's shown
     plugin.url,
@@ -167,7 +168,7 @@ function renderPlugin(plugin: PluginData) {
         <span class="swatch"></span>
         <div class="name-block">
           <div class="name-line">
-            <span class="name-text">{displayName(plugin)}</span>
+            <span class="name-text">{plugin.displayName ?? plugin.name}</span>
             {plugin.version ? <span class="version-tag">{plugin.version}</span> : null}
           </div>
           {renderPluginLinks(plugin)}
@@ -213,18 +214,6 @@ function latestReference(plugin: PluginData) {
 // the repo and docs links shown beneath a plugin's name. both are optional: the
 // repo url is derived during the build and docs only exist for plugins with a
 // dprint.dev page.
-// plugins are listed by the repo they're published from: the dprint org is
-// left off its own plugins and the `dprint-plugin-` prefix off everyone else's
-// (ex. `dprint-plugin-json` and `kachick/kdl`)
-function displayName(plugin: PluginData) {
-  if (plugin.repo == null) {
-    return plugin.name;
-  }
-  return plugin.repo.startsWith("dprint/")
-    ? plugin.repo.slice("dprint/".length)
-    : plugin.repo.replace("/dprint-plugin-", "/");
-}
-
 function renderPluginLinks(plugin: PluginData) {
   if (plugin.repoUrl == null && plugin.website == null) {
     return null;
