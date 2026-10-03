@@ -250,105 +250,6 @@
       "configExcludes": []
     },
     {
-      "name": "dprint-plugin-kdl",
-      "displayName": "kachick/kdl",
-      "repoUrl": "https://github.com/kachick/dprint-plugin-kdl",
-      "description": "KDL crate wrapper plugin.",
-      "npm": {
-        "name": "@kachick/dprint-plugin-kdl"
-      },
-      "selected": false,
-      "configKey": "kdl",
-      "keywords": [
-        "kdl"
-      ],
-      "fileExtensions": [
-        "kdl"
-      ],
-      "configExcludes": []
-    },
-    {
-      "name": "dprint-plugin-nix",
-      "displayName": "kachick/nix",
-      "repoUrl": "https://github.com/kachick/dprint-plugin-nix",
-      "description": "Nixfmt-rs (Nix) wrapper plugin.",
-      "npm": {
-        "name": "@kachick/dprint-plugin-nix"
-      },
-      "selected": false,
-      "configKey": "nix",
-      "keywords": [
-        "nix",
-        "nixfmt-rs"
-      ],
-      "fileExtensions": [
-        "nix"
-      ],
-      "configExcludes": []
-    },
-    {
-      "name": "dprint-plugin-sh",
-      "displayName": "kachick/sh",
-      "repoUrl": "https://github.com/kachick/dprint-plugin-sh",
-      "description": "Shuck-formatter (shell script) wrapper plugin.",
-      "npm": {
-        "name": "@kachick/dprint-plugin-sh"
-      },
-      "selected": false,
-      "configKey": "sh",
-      "keywords": [
-        "sh",
-        "shell-script",
-        "shuck-formatter",
-        "bash",
-        "zsh",
-        "envrc"
-      ],
-      "fileExtensions": [
-        "sh",
-        "bash",
-        "zsh",
-        "ksh",
-        "mksh",
-        "dash",
-        "bats"
-      ],
-      "fileNames": [
-        ".envrc",
-        ".bashrc",
-        ".bash_profile",
-        ".bash_aliases",
-        ".bash_login",
-        ".bash_logout",
-        ".profile",
-        ".zshrc",
-        ".zshenv",
-        ".zprofile",
-        ".zlogin",
-        ".zlogout"
-      ],
-      "configExcludes": []
-    },
-    {
-      "name": "kachick/typstyle",
-      "displayName": "kachick/typstyle",
-      "repoUrl": "https://github.com/kachick/dprint-plugin-typstyle",
-      "description": "Typstyle (Typst) wrapper plugin.",
-      "npm": {
-        "name": "@kachick/dprint-plugin-typstyle"
-      },
-      "selected": false,
-      "configKey": "typst",
-      "keywords": [
-        "typst",
-        "typstyle"
-      ],
-      "fileExtensions": [
-        "typ"
-      ],
-      "configExcludes": []
-    },
-    {
       "name": "dprint_plugin_malva",
       "displayName": "g-plane/malva",
       "repoUrl": "https://github.com/g-plane/malva",
@@ -522,6 +423,105 @@
         "**/node_modules",
         "**/*-lock.json"
       ]
+    },
+    {
+      "name": "dprint-plugin-kdl",
+      "displayName": "kachick/kdl",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-kdl",
+      "description": "KDL crate wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-kdl"
+      },
+      "selected": false,
+      "configKey": "kdl",
+      "keywords": [
+        "kdl"
+      ],
+      "fileExtensions": [
+        "kdl"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-nix",
+      "displayName": "kachick/nix",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-nix",
+      "description": "Nixfmt-rs (Nix) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-nix"
+      },
+      "selected": false,
+      "configKey": "nix",
+      "keywords": [
+        "nix",
+        "nixfmt-rs"
+      ],
+      "fileExtensions": [
+        "nix"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-sh",
+      "displayName": "kachick/sh",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-sh",
+      "description": "Shuck-formatter (shell script) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-sh"
+      },
+      "selected": false,
+      "configKey": "sh",
+      "keywords": [
+        "sh",
+        "shell-script",
+        "shuck-formatter",
+        "bash",
+        "zsh",
+        "envrc"
+      ],
+      "fileExtensions": [
+        "sh",
+        "bash",
+        "zsh",
+        "ksh",
+        "mksh",
+        "dash",
+        "bats"
+      ],
+      "fileNames": [
+        ".envrc",
+        ".bashrc",
+        ".bash_profile",
+        ".bash_aliases",
+        ".bash_login",
+        ".bash_logout",
+        ".profile",
+        ".zshrc",
+        ".zshenv",
+        ".zprofile",
+        ".zlogin",
+        ".zlogout"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "kachick/typstyle",
+      "displayName": "kachick/typstyle",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-typstyle",
+      "description": "Typstyle (Typst) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-typstyle"
+      },
+      "selected": false,
+      "configKey": "typst",
+      "keywords": [
+        "typst",
+        "typstyle"
+      ],
+      "fileExtensions": [
+        "typ"
+      ],
+      "configExcludes": []
     },
     {
       "name": "dprint-plugin-bibtex-tidy",
