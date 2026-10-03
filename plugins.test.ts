@@ -1,10 +1,25 @@
 import { expect, it } from "vitest";
-import { tryResolveAssetUrl, tryResolveLatestJson } from "./plugins.js";
+import infoJson from "./info.json" with { type: "json" };
+import { getPluginRepo, tryResolveAssetUrl, tryResolveLatestJson } from "./plugins.js";
 import { getLatestReleaseInfo } from "./utils/github.js";
 
 function resolveAsset(url: string) {
   return tryResolveAssetUrl(new URL(url));
 }
+
+it("getPluginRepo", () => {
+  expect(getPluginRepo({ repo: "dprint/dprint-plugin-typescript" })).toEqual({
+    username: "dprint",
+    repoName: "dprint-plugin-typescript",
+  });
+  expect(getPluginRepo({ repo: "g-plane/malva" })).toEqual({ username: "g-plane", repoName: "malva" });
+});
+
+it("info.json entries should say what repo they're published from", () => {
+  for (const plugin of infoJson.latest) {
+    expect(plugin.repo, plugin.name).toMatch(/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/);
+  }
+});
 
 it("tryResolveAssetUrl", () => {
   // allowed repo — should cache
@@ -142,6 +157,18 @@ it("tryResolveUserLatestJson", async () => {
   // community repo published to npm
   {
     const result = await getValidResultForUrl("https://plugins.dprint.dev/g-plane/malva/latest.json");
+    const releaseInfo = await getLatestReleaseInfo("g-plane", "malva");
+    expect(result).toEqual({
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/g-plane/malva-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName.replace(/^v/, ""),
+      checksum: releaseInfo!.checksum,
+      npm: { name: "dprint-plugin-malva" },
+    });
+  }
+  // community plugin asked for by the name it has in info.json
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/dprint_plugin_malva/latest.json");
     const releaseInfo = await getLatestReleaseInfo("g-plane", "malva");
     expect(result).toEqual({
       schemaVersion: 1,

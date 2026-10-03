@@ -86,7 +86,9 @@ function renderPage(pluginsData: PluginsData) {
           autocomplete="off"
           spellcheck={false}
         />
-        <a class="docs-link" href="https://dprint.dev/plugins">dprint plugin docs <span>↗</span></a>
+        <a class="docs-link" href="https://dprint.dev/plugins">
+          dprint plugin docs <span>↗</span>
+        </a>
       </div>
       {renderPlugins(pluginsData)}
       <div id="no-matches" class="no-matches" hidden>No plugins match your filter.</div>
@@ -101,6 +103,7 @@ function renderPage(pluginsData: PluginsData) {
 function pluginSearchText(plugin: PluginData) {
   const parts: (string | undefined)[] = [
     plugin.name,
+    plugin.repo,
     // the url stays searchable even when the npm specifier is what's shown
     plugin.url,
     latestReference(plugin),
@@ -164,7 +167,7 @@ function renderPlugin(plugin: PluginData) {
         <span class="swatch"></span>
         <div class="name-block">
           <div class="name-line">
-            <span class="name-text">{plugin.name}</span>
+            <span class="name-text">{displayName(plugin)}</span>
             {plugin.version ? <span class="version-tag">{plugin.version}</span> : null}
           </div>
           {renderPluginLinks(plugin)}
@@ -174,7 +177,7 @@ function renderPlugin(plugin: PluginData) {
         <code>{latestReference(plugin)}</code>
       </div>
       <div class="col-downloads num-col" role="cell">
-        <span class="dl-label">Downloads (30d) </span>
+        <span class="dl-label">Downloads (30d)</span>
         {plugin.downloadCount.allVersions?.toLocaleString("en-US")}
       </div>
       <div class="col-action" role="cell">
@@ -210,6 +213,18 @@ function latestReference(plugin: PluginData) {
 // the repo and docs links shown beneath a plugin's name. both are optional: the
 // repo url is derived during the build and docs only exist for plugins with a
 // dprint.dev page.
+// plugins are listed by the repo they're published from: the dprint org is
+// left off its own plugins and the `dprint-plugin-` prefix off everyone else's
+// (ex. `dprint-plugin-json` and `kachick/kdl`)
+function displayName(plugin: PluginData) {
+  if (plugin.repo == null) {
+    return plugin.name;
+  }
+  return plugin.repo.startsWith("dprint/")
+    ? plugin.repo.slice("dprint/".length)
+    : plugin.repo.replace("/dprint-plugin-", "/");
+}
+
 function renderPluginLinks(plugin: PluginData) {
   if (plugin.repoUrl == null && plugin.website == null) {
     return null;

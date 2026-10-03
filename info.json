@@ -4,6 +4,7 @@
   "latest": [
     {
       "name": "dprint-plugin-typescript",
+      "repo": "dprint/dprint-plugin-typescript",
       "description": "TypeScript/JavaScript code formatter.",
       "website": "https://dprint.dev/plugins/typescript/",
       "npm": {
@@ -34,6 +35,7 @@
     },
     {
       "name": "dprint-plugin-json",
+      "repo": "dprint/dprint-plugin-json",
       "description": "JSON/JSONC code formatter.",
       "website": "https://dprint.dev/plugins/json/",
       "npm": {
@@ -55,6 +57,7 @@
     },
     {
       "name": "dprint-plugin-markdown",
+      "repo": "dprint/dprint-plugin-markdown",
       "description": "Markdown code formatter.",
       "website": "https://dprint.dev/plugins/markdown/",
       "npm": {
@@ -79,6 +82,7 @@
     },
     {
       "name": "dprint-plugin-toml",
+      "repo": "dprint/dprint-plugin-toml",
       "description": "TOML code formatter.",
       "website": "https://dprint.dev/plugins/toml/",
       "npm": {
@@ -97,6 +101,7 @@
     },
     {
       "name": "dprint-plugin-dockerfile",
+      "repo": "dprint/dprint-plugin-dockerfile",
       "description": "Dockerfile code formatter.",
       "website": "https://dprint.dev/plugins/dockerfile/",
       "npm": {
@@ -119,6 +124,7 @@
     },
     {
       "name": "dprint-plugin-biome",
+      "repo": "dprint/dprint-plugin-biome",
       "description": "Biome (JS/TS/JSON) wrapper plugin.",
       "website": "https://dprint.dev/plugins/biome/",
       "npm": {
@@ -151,6 +157,7 @@
     },
     {
       "name": "dprint-plugin-mago",
+      "repo": "dprint/dprint-plugin-mago",
       "description": "Mago (PHP) wrapper plugin.",
       "website": "https://dprint.dev/plugins/mago/",
       "npm": {
@@ -170,6 +177,7 @@
     },
     {
       "name": "dprint-plugin-ruff",
+      "repo": "dprint/dprint-plugin-ruff",
       "description": "Ruff (Python) wrapper plugin.",
       "website": "https://dprint.dev/plugins/ruff/",
       "npm": {
@@ -191,6 +199,7 @@
     },
     {
       "name": "dprint-plugin-jupyter",
+      "repo": "dprint/dprint-plugin-jupyter",
       "description": "Jupyter notebook code block formatter.",
       "website": "https://dprint.dev/plugins/jupyter/",
       "npm": {
@@ -210,7 +219,8 @@
       "configExcludes": []
     },
     {
-      "name": "jakebailey/gofumpt",
+      "name": "dprint-plugin-gofumpt",
+      "repo": "jakebailey/dprint-plugin-gofumpt",
       "description": "Gofumpt (Go) wrapper plugin.",
       "website": "https://dprint.dev/plugins/gofumpt/",
       "npm": {
@@ -230,7 +240,8 @@
       "configExcludes": []
     },
     {
-      "name": "kachick/kdl",
+      "name": "dprint-plugin-kdl",
+      "repo": "kachick/dprint-plugin-kdl",
       "description": "KDL crate wrapper plugin.",
       "npm": {
         "name": "@kachick/dprint-plugin-kdl"
@@ -246,7 +257,8 @@
       "configExcludes": []
     },
     {
-      "name": "kachick/nix",
+      "name": "dprint-plugin-nix",
+      "repo": "kachick/dprint-plugin-nix",
       "description": "Nixfmt-rs (Nix) wrapper plugin.",
       "npm": {
         "name": "@kachick/dprint-plugin-nix"
@@ -263,7 +275,8 @@
       "configExcludes": []
     },
     {
-      "name": "kachick/sh",
+      "name": "dprint-plugin-sh",
+      "repo": "kachick/dprint-plugin-sh",
       "description": "Shuck-formatter (shell script) wrapper plugin.",
       "npm": {
         "name": "@kachick/dprint-plugin-sh"
@@ -305,6 +318,7 @@
     },
     {
       "name": "kachick/typstyle",
+      "repo": "kachick/dprint-plugin-typstyle",
       "description": "Typstyle (Typst) wrapper plugin.",
       "npm": {
         "name": "@kachick/dprint-plugin-typstyle"
@@ -321,7 +335,8 @@
       "configExcludes": []
     },
     {
-      "name": "g-plane/malva",
+      "name": "dprint_plugin_malva",
+      "repo": "g-plane/malva",
       "description": "CSS, SCSS, Sass and Less formatter.",
       "website": "https://dprint.dev/plugins/malva/",
       "npm": {
@@ -347,7 +362,8 @@
       ]
     },
     {
-      "name": "g-plane/markup_fmt",
+      "name": "dprint_plugin_markup",
+      "repo": "g-plane/markup_fmt",
       "description": "HTML, Vue, Svelte, Astro, Angular, Jinja, Twig, Nunjucks, and Vento formatter.",
       "website": "https://dprint.dev/plugins/markup_fmt/",
       "npm": {
@@ -396,7 +412,8 @@
       "configExcludes": []
     },
     {
-      "name": "g-plane/pretty_yaml",
+      "name": "dprint_plugin_yaml",
+      "repo": "g-plane/pretty_yaml",
       "description": "YAML formatter.",
       "website": "https://dprint.dev/plugins/pretty_yaml/",
       "npm": {
@@ -417,7 +434,8 @@
       "configExcludes": []
     },
     {
-      "name": "g-plane/pretty_graphql",
+      "name": "dprint_plugin_graphql",
+      "repo": "g-plane/pretty_graphql",
       "description": "GraphQL formatter.",
       "website": "https://dprint.dev/plugins/pretty_graphql/",
       "npm": {
@@ -438,6 +456,7 @@
     },
     {
       "name": "dprint-plugin-oxc",
+      "repo": "dprint/dprint-plugin-oxc",
       "description": "Oxc (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/TOML) wrapper plugin.",
       "website": "https://dprint.dev/plugins/oxc/",
       "npm": {
@@ -486,7 +505,8 @@
       ]
     },
     {
-      "name": "apcamargo/bibtex-tidy",
+      "name": "dprint-plugin-bibtex-tidy",
+      "repo": "apcamargo/dprint-plugin-bibtex-tidy",
       "description": "Tidy bibtex files.",
       "selected": false,
       "configKey": "bibtex-tidy",
@@ -501,6 +521,7 @@
     },
     {
       "name": "apcamargo/typstyle",
+      "repo": "apcamargo/dprint-plugin-typstyle",
       "description": "A beautiful and reliable code formatter for Typst.",
       "selected": false,
       "configKey": "typstyle",
@@ -515,7 +536,8 @@
       "configExcludes": []
     },
     {
-      "name": "bartlomieju/lax-css",
+      "name": "lax-css",
+      "repo": "bartlomieju/lax-css",
       "description": "CSS, SCSS, and Less formatter that never reinterprets your styles.",
       "npm": {
         "name": "lax-css"
@@ -538,7 +560,8 @@
       ]
     },
     {
-      "name": "bartlomieju/lax-markup",
+      "name": "lax-markup",
+      "repo": "bartlomieju/lax-markup",
       "description": "HTML, XML, SVG, Vue, Svelte, and Astro formatter that preserves rendering-critical whitespace.",
       "npm": {
         "name": "lax-markup"
@@ -566,7 +589,8 @@
       "configExcludes": []
     },
     {
-      "name": "bartlomieju/lax-sql",
+      "name": "lax-sql",
+      "repo": "bartlomieju/lax-sql",
       "description": "Dialect-agnostic SQL formatter.",
       "npm": {
         "name": "lax-sql"
@@ -587,7 +611,8 @@
       "configExcludes": []
     },
     {
-      "name": "jolars/panache",
+      "name": "dprint-plugin-panache",
+      "repo": "jolars/dprint-plugin-panache",
       "description": "Quarto, Pandoc, R Markdown, and Markdown formatter.",
       "selected": false,
       "configKey": "panache",
@@ -611,7 +636,8 @@
       "configExcludes": []
     },
     {
-      "name": "drluckyspin/swift",
+      "name": "dprint-plugin-swift",
+      "repo": "drluckyspin/dprint-plugin-swift",
       "description": "Swift code formatter (SwiftFormat wrapper).",
       "selected": false,
       "configKey": "swiftformat",
@@ -630,6 +656,7 @@
     },
     {
       "name": "dprint-plugin-prettier",
+      "repo": "dprint/dprint-plugin-prettier",
       "description": "Prettier wrapper plugin (consider faster dedicated plugins for JS/TS, CSS, etc.).",
       "website": "https://dprint.dev/plugins/prettier/",
       "npm": {
@@ -678,6 +705,7 @@
     },
     {
       "name": "dprint-plugin-roslyn",
+      "repo": "dprint/dprint-plugin-roslyn",
       "description": "C# and Visual Basic code formatter (Roslyn).",
       "website": "https://dprint.dev/plugins/roslyn/",
       "npm": {
@@ -702,6 +730,7 @@
     },
     {
       "name": "dprint-plugin-exec",
+      "repo": "dprint/dprint-plugin-exec",
       "description": "Formats code using formatting CLIs installed on the host machine (rustfmt, clang-format, shfmt, etc.).",
       "website": "https://dprint.dev/plugins/exec/",
       "npm": {
@@ -818,7 +847,8 @@
       ]
     },
     {
-      "name": "sargunv/dprint-clang-format",
+      "name": "dprint-plugin-clang-format",
+      "repo": "sargunv/dprint-clang-format",
       "description": "C, C++, and Objective-C code formatter (clang-format).",
       "selected": false,
       "configKey": "clangFormat",
@@ -846,7 +876,8 @@
       "configExcludes": []
     },
     {
-      "name": "sargunv/dprint-cmakefmt",
+      "name": "dprint-cmakefmt",
+      "repo": "sargunv/dprint-cmakefmt",
       "description": "CMake code formatter (cmakefmt).",
       "selected": false,
       "configKey": "cmakefmt",
@@ -865,7 +896,8 @@
       "configExcludes": []
     },
     {
-      "name": "jolars/arity",
+      "name": "dprint-plugin-arity",
+      "repo": "jolars/dprint-plugin-arity",
       "description": "R code formatter (arity).",
       "selected": false,
       "configKey": "arity",
@@ -882,7 +914,8 @@
       "configExcludes": []
     },
     {
-      "name": "jolars/fatou",
+      "name": "dprint-plugin-fatou",
+      "repo": "jolars/dprint-plugin-fatou",
       "description": "Julia code formatter (fatou).",
       "selected": false,
       "configKey": "fatou",
@@ -896,7 +929,8 @@
       "configExcludes": []
     },
     {
-      "name": "jolars/badness",
+      "name": "dprint-plugin-badness",
+      "repo": "jolars/dprint-plugin-badness",
       "description": "LaTeX and BibTeX code formatter (badness).",
       "selected": false,
       "configKey": "badness",

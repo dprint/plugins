@@ -1,6 +1,6 @@
 import { env } from "cloudflare:workers";
 import infoJson from "./info.json" with { type: "json" };
-import { getLatestInfo, type PluginNpmInfo } from "./plugins.js";
+import { getLatestInfo, getPluginRepo, type PluginNpmInfo } from "./plugins.js";
 import { getDownloadCounts, type PluginDownloadCounts } from "./utils/analytics.js";
 import { getNpmDownloadCounts, getNpmLatestVersions } from "./utils/npm.js";
 
@@ -10,7 +10,11 @@ export interface PluginsData {
 }
 
 export interface PluginData {
+  // the name the plugin reports about itself
   name: string;
+  // the `username/repo` the plugin is published from. carried over from
+  // info.json, so it's absent from data cached before info.json declared it
+  repo?: string;
   url: string;
   version: string;
   downloadCount: {
@@ -162,10 +166,8 @@ async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
 
     const released = [];
     for (const plugin of latest) {
-      const [username, pluginName] = plugin.name.split("/");
-      const info = pluginName
-        ? await getLatestInfo(username, pluginName, origin)
-        : await getLatestInfo("dprint", plugin.name, origin);
+      const { username, repoName } = getPluginRepo(plugin);
+      const info = await getLatestInfo(username, repoName, origin);
       if (info != null) {
         released.push({ plugin, info });
       }
