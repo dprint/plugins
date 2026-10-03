@@ -213,10 +213,16 @@ function latestReference(plugin: PluginData) {
 // the repo and docs links shown beneath a plugin's name. both are optional: the
 // repo url is derived during the build and docs only exist for plugins with a
 // dprint.dev page.
-// plugins are listed by the repo they're published from, with the dprint org
-// left off its own plugins
+// plugins are listed by the repo they're published from: the dprint org is
+// left off its own plugins and the `dprint-plugin-` prefix off everyone else's
+// (ex. `dprint-plugin-json` and `kachick/kdl`)
 function displayName(plugin: PluginData) {
-  return plugin.repo?.replace(/^dprint\//, "") ?? plugin.name;
+  if (plugin.repo == null) {
+    return plugin.name;
+  }
+  return plugin.repo.startsWith("dprint/")
+    ? plugin.repo.slice("dprint/".length)
+    : plugin.repo.replace("/dprint-plugin-", "/");
 }
 
 function renderPluginLinks(plugin: PluginData) {
