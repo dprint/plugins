@@ -13,3 +13,7 @@ jobs:
         run: npx tsc --noEmit
       - name: Run tests
         run: npx vitest run
+        env:
+          # the tests make requests to the GitHub API, which rate limits
+          # unauthenticated requests by the IP address of the shared runner
+          DPRINT_PLUGINS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
