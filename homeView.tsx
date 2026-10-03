@@ -167,7 +167,7 @@ function renderPlugin(plugin: PluginData) {
         <span class="swatch"></span>
         <div class="name-block">
           <div class="name-line">
-            <span class="name-text">{plugin.repo ?? plugin.name}</span>
+            <span class="name-text">{displayName(plugin)}</span>
             {plugin.version ? <span class="version-tag">{plugin.version}</span> : null}
           </div>
           {renderPluginLinks(plugin)}
@@ -213,6 +213,12 @@ function latestReference(plugin: PluginData) {
 // the repo and docs links shown beneath a plugin's name. both are optional: the
 // repo url is derived during the build and docs only exist for plugins with a
 // dprint.dev page.
+// plugins are listed by the repo they're published from, with the dprint org
+// left off its own plugins
+function displayName(plugin: PluginData) {
+  return plugin.repo?.replace(/^dprint\//, "") ?? plugin.name;
+}
+
 function renderPluginLinks(plugin: PluginData) {
   if (plugin.repoUrl == null && plugin.website == null) {
     return null;

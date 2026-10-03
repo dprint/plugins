@@ -12,8 +12,8 @@ export interface PluginsData {
 export interface PluginData {
   // the name the plugin reports about itself
   name: string;
-  // the `username/repo` the plugin is published from, when that's not a dprint
-  // org repo with the plugin's name
+  // the `username/repo` the plugin is published from. carried over from
+  // info.json, so it's absent from data cached before info.json declared it
   repo?: string;
   url: string;
   version: string;

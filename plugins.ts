@@ -82,22 +82,17 @@ export interface PluginNpmInfo {
 // resolved repo name (ex. `dprint/dprint-plugin-typescript` and `g-plane/malva`)
 const npmPackagesByRepo = buildNpmPackagesByRepo();
 
-// the repos of the info.json plugins that aren't named after their repo, keyed
-// by plugin name
+// the repos of the info.json plugins, keyed by plugin name
 const reposByPluginName = buildReposByPluginName();
 
 /**
- * The GitHub repo an info.json entry is published from. An entry's name is
+ * The GitHub repo an info.json entry is published from. An entry's `name` is
  * the name the plugin reports about itself, which the cli matches against the
- * plugins in a config file, so `repo` says where it's published from when
- * that's not a dprint org repo with the same name.
+ * plugins in a config file, so `repo` is what says where it's published from.
  */
-export function getPluginRepo(plugin: { name: string; repo?: string }) {
-  const repo = plugin.repo ?? plugin.name;
-  const slashIndex = repo.indexOf("/");
-  return slashIndex === -1
-    ? { username: "dprint", repoName: repo }
-    : { username: repo.slice(0, slashIndex), repoName: repo.slice(slashIndex + 1) };
+export function getPluginRepo(plugin: { repo: string }) {
+  const slashIndex = plugin.repo.indexOf("/");
+  return { username: plugin.repo.slice(0, slashIndex), repoName: plugin.repo.slice(slashIndex + 1) };
 }
 
 const APPROVED_ASSET_REPOS = new Set([
@@ -158,7 +153,7 @@ export async function tryResolveLatestJson(url: URL) {
     return undefined;
   }
   // `dprint add <plugin-name>` asks for `dprint/<plugin-name>`, and the name a
-  // plugin outside the dprint org has in info.json isn't the repo it's published from
+  // plugin has in info.json isn't necessarily the repo it's published from
   const namedRepo = result.pathname.groups[0] === "dprint"
     ? reposByPluginName.get(result.pathname.groups[1]!)
     : undefined;
@@ -258,7 +253,7 @@ async function userRepoTagPatternMapper(
 
 function buildNpmPackagesByRepo() {
   const result = new Map<string, PluginNpmInfo>();
-  for (const plugin of infoJson.latest as { name: string; repo?: string; npm?: PluginNpmInfo }[]) {
+  for (const plugin of infoJson.latest as { repo: string; npm?: PluginNpmInfo }[]) {
     if (plugin.npm == null) {
       continue;
     }
@@ -272,10 +267,8 @@ function buildNpmPackagesByRepo() {
 
 function buildReposByPluginName() {
   const result = new Map<string, { username: string; repoName: string }>();
-  for (const plugin of infoJson.latest as { name: string; repo?: string }[]) {
-    if (plugin.repo != null) {
-      result.set(plugin.name, getPluginRepo(plugin));
-    }
+  for (const plugin of infoJson.latest) {
+    result.set(plugin.name, getPluginRepo(plugin));
   }
   return result;
 }

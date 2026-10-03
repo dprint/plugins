@@ -1,4 +1,5 @@
 import { expect, it } from "vitest";
+import infoJson from "./info.json" with { type: "json" };
 import { getPluginRepo, tryResolveAssetUrl, tryResolveLatestJson } from "./plugins.js";
 import { getLatestReleaseInfo } from "./utils/github.js";
 
@@ -7,18 +8,17 @@ function resolveAsset(url: string) {
 }
 
 it("getPluginRepo", () => {
-  // dprint org plugin named after its repo
-  expect(getPluginRepo({ name: "dprint-plugin-typescript" })).toEqual({
+  expect(getPluginRepo({ repo: "dprint/dprint-plugin-typescript" })).toEqual({
     username: "dprint",
     repoName: "dprint-plugin-typescript",
   });
-  // plugin whose name isn't its repo
-  expect(getPluginRepo({ name: "dprint_plugin_malva", repo: "g-plane/malva" })).toEqual({
-    username: "g-plane",
-    repoName: "malva",
-  });
-  // entry still named by its repo
-  expect(getPluginRepo({ name: "kachick/typstyle" })).toEqual({ username: "kachick", repoName: "typstyle" });
+  expect(getPluginRepo({ repo: "g-plane/malva" })).toEqual({ username: "g-plane", repoName: "malva" });
+});
+
+it("info.json entries should say what repo they're published from", () => {
+  for (const plugin of infoJson.latest) {
+    expect(plugin.repo, plugin.name).toMatch(/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/);
+  }
 });
 
 it("tryResolveAssetUrl", () => {
