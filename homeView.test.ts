@@ -90,3 +90,14 @@ it("should keep the url searchable when a specifier replaced it", () => {
   expect(search).toContain("https://plugins.dprint.dev/json-1.0.0.wasm");
   expect(search).toContain("npm:@dprint/json@1.2.3");
 });
+
+it("should list plugins by repo without the dprint org", () => {
+  const { html } = renderReferences([
+    createPlugin({ name: "dprint-plugin-json", repo: "dprint/dprint-plugin-json" }),
+    createPlugin({ name: "dprint_plugin_malva", repo: "g-plane/malva" }),
+    // data cached before info.json declared the repo
+    createPlugin({ name: "dprint-plugin-cached" }),
+  ]);
+  const names = [...html.matchAll(/<span class="name-text">([^<]*)<\/span>/g)].map((m) => m[1]);
+  expect(names).toEqual(["dprint-plugin-json", "g-plane/malva", "dprint-plugin-cached"]);
+});
