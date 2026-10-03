@@ -151,7 +151,7 @@
     },
     {
       "name": "dprint-plugin-oxc",
-      "description": "Oxc (JS/TS) wrapper plugin.",
+      "description": "Oxc (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/TOML) wrapper plugin.",
       "website": "https://dprint.dev/plugins/oxc/",
       "npm": {
         "name": "@dprint/oxc"
@@ -160,9 +160,17 @@
       "configKey": "oxc",
       "keywords": [
         "oxc",
+        "oxfmt",
         "oxlint",
         "javascript",
-        "typescript"
+        "typescript",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "yaml",
+        "toml"
       ],
       "fileExtensions": [
         "ts",
@@ -172,10 +180,22 @@
         "js",
         "jsx",
         "cjs",
-        "mjs"
+        "mjs",
+        "json",
+        "jsonc",
+        "json5",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "gql",
+        "yaml",
+        "yml",
+        "toml"
       ],
       "configExcludes": [
-        "**/node_modules"
+        "**/node_modules",
+        "**/*-lock.json"
       ]
     },
     {
