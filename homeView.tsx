@@ -104,7 +104,6 @@ function pluginSearchText(plugin: PluginData) {
   const parts: (string | undefined)[] = [
     plugin.name,
     plugin.displayName,
-    plugin.repo,
     // the url stays searchable even when the npm specifier is what's shown
     plugin.url,
     latestReference(plugin),
