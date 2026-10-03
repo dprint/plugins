@@ -88,7 +88,8 @@ const reposByPluginName = buildReposByPluginName();
 /**
  * The GitHub repo an info.json entry is published from. An entry's `name` is
  * the name the plugin reports about itself, which the cli matches against the
- * plugins in a config file, so `repo` is what says where it's published from.
+ * plugins in a config file, so it only identifies the plugin: `repo` says where
+ * it's published from and `displayName` is what's shown for it.
  */
 export function getPluginRepo(plugin: { repo: string }) {
   const slashIndex = plugin.repo.indexOf("/");

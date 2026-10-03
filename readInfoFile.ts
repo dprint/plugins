@@ -10,8 +10,11 @@ export interface PluginsData {
 }
 
 export interface PluginData {
-  // the name the plugin reports about itself
+  // the name the plugin reports about itself, which is what identifies it
   name: string;
+  // the name to show for the plugin. carried over from info.json, so it's
+  // absent from data cached before info.json declared it
+  displayName?: string;
   // the `username/repo` the plugin is published from. carried over from
   // info.json, so it's absent from data cached before info.json declared it
   repo?: string;
