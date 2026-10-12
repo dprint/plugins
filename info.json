@@ -988,7 +988,7 @@
       "name": "dprint-plugin-bun",
       "displayName": "dprint-plugin-bun",
       "repoUrl": "https://github.com/dprint/dprint-plugin-bun",
-      "description": "Bun (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/Markdown/HTML/Vue/Handlebars) wrapper plugin.",
+      "description": "Bun (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/Markdown/HTML/Vue/Handlebars/TOML) wrapper plugin.",
       "website": "https://dprint.dev/plugins/bun/",
       "npm": {
         "name": "@dprint/bun"
@@ -1012,7 +1012,8 @@
         "html",
         "vue",
         "mjml",
-        "handlebars"
+        "handlebars",
+        "toml"
       ],
       "fileExtensions": [
         "js",
@@ -1042,14 +1043,16 @@
         "html",
         "htm",
         "vue",
-        "mjml"
+        "mjml",
+        "toml"
       ],
       "fileNames": [
         ".babelrc",
         ".jshintrc",
         ".swcrc",
         ".prettierrc",
-        ".lintstagedrc"
+        ".lintstagedrc",
+        "Pipfile"
       ],
       "configExcludes": [
         "**/node_modules",
