@@ -994,6 +994,7 @@
         "name": "@dprint/bun"
       },
       "selected": false,
+      "neverPreselect": true,
       "configKey": "bun",
       "keywords": [
         "bun",
