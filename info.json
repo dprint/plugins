@@ -983,6 +983,77 @@
         "bib"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-bun",
+      "displayName": "dprint-plugin-bun",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-bun",
+      "description": "Bun (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/Markdown/HTML/Vue/Handlebars) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/bun/",
+      "npm": {
+        "name": "@dprint/bun"
+      },
+      "selected": false,
+      "configKey": "bun",
+      "keywords": [
+        "bun",
+        "prettier",
+        "javascript",
+        "typescript",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "yaml",
+        "markdown",
+        "mdx",
+        "html",
+        "vue",
+        "mjml",
+        "handlebars"
+      ],
+      "fileExtensions": [
+        "js",
+        "mjs",
+        "cjs",
+        "jsx",
+        "ts",
+        "mts",
+        "cts",
+        "tsx",
+        "json",
+        "jsonc",
+        "json5",
+        "css",
+        "scss",
+        "less",
+        "yaml",
+        "yml",
+        "md",
+        "markdown",
+        "mdx",
+        "graphql",
+        "gql",
+        "graphqls",
+        "hbs",
+        "handlebars",
+        "html",
+        "htm",
+        "vue",
+        "mjml"
+      ],
+      "fileNames": [
+        ".babelrc",
+        ".jshintrc",
+        ".swcrc",
+        ".prettierrc",
+        ".lintstagedrc"
+      ],
+      "configExcludes": [
+        "**/node_modules",
+        "**/*-lock.json"
+      ]
     }
   ]
 }
