@@ -97,9 +97,6 @@ export interface PluginNpmInfo {
 // resolved repo name (ex. `dprint/dprint-plugin-typescript` and `g-plane/malva`)
 const npmPackagesByRepo = buildNpmPackagesByRepo();
 
-// the repos of the info.json plugins, keyed by plugin name
-const reposByPluginName = buildReposByPluginName();
-
 /**
  * The GitHub repo an info.json entry is published from. An entry's `name` is
  * the name the plugin reports about itself, which the cli matches against the
@@ -168,13 +165,12 @@ export async function tryResolveLatestJson(url: URL) {
   if (!result) {
     return undefined;
   }
-  // `dprint add <plugin-name>` asks for `dprint/<plugin-name>`, and the name a
-  // plugin has in info.json isn't necessarily the repo it's published from
-  const namedRepo = result.pathname.groups[0] === "dprint"
-    ? reposByPluginName.get(result.pathname.groups[1]!)
-    : undefined;
-  const username = namedRepo?.username ?? result.pathname.groups[0]!;
-  const shortRepoName = namedRepo?.repoName ?? result.pathname.groups[1]!;
+  // `dprint add <plugin-name>` asks for `dprint/<plugin-name>`, which only
+  // resolves to the dprint org. community plugins are added as `username/repo`
+  // even when their info.json name differs, so a community plugin can't claim
+  // a bare name (ex. `cmakefmt` is the name of more than one CMake formatter)
+  const username = result.pathname.groups[0]!;
+  const shortRepoName = result.pathname.groups[1]!;
   const latestInfo = await getLatestInfo(username, shortRepoName, url.origin);
   if (latestInfo == null) {
     return 404;
@@ -272,14 +268,6 @@ function buildNpmPackagesByRepo() {
     const shortName = repoName.replace(/^dprint-plugin-/, "");
     result.set(`${username}/${shortName}`, plugin.npm);
     result.set(`${username}/dprint-plugin-${shortName}`, plugin.npm);
-  }
-  return result;
-}
-
-function buildReposByPluginName() {
-  const result = new Map<string, { username: string; repoName: string }>();
-  for (const plugin of infoJson.latest) {
-    result.set(plugin.name, getPluginRepo(plugin));
   }
   return result;
 }

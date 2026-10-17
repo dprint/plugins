@@ -170,26 +170,16 @@ it("tryResolveUserLatestJson", async () => {
       npm: { name: "dprint-plugin-malva" },
     });
   }
-  // community plugin asked for by the name it has in info.json
-  {
-    const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/dprint_plugin_malva/latest.json");
-    const releaseInfo = await getLatestReleaseInfo("g-plane", "malva");
-    expect(result).toEqual({
-      schemaVersion: 1,
-      url: `https://plugins.dprint.dev/g-plane/malva-${releaseInfo!.tagName}.wasm`,
-      version: releaseInfo!.tagName.replace(/^v/, ""),
-      checksum: releaseInfo!.checksum,
-      npm: { name: "dprint-plugin-malva" },
-    });
+  // community plugins aren't resolved by the name they have in info.json, so
+  // they can't claim a name in the dprint org
+  for (const name of ["dprint_plugin_malva", "cmakefmt"]) {
+    expect(
+      await tryResolveLatestJson(new URL(`https://plugins.dprint.dev/dprint/${name}/latest.json`)),
+    ).toEqual(404);
   }
   // community repo that doesn't publish its plugin as plugin.wasm
-  for (
-    const url of [
-      "https://plugins.dprint.dev/cmakefmt/cmakefmt/latest.json",
-      "https://plugins.dprint.dev/dprint/cmakefmt/latest.json",
-    ]
-  ) {
-    const result = await getValidResultForUrl(url);
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/cmakefmt/cmakefmt/latest.json");
     const releaseInfo = await getLatestReleaseInfo("cmakefmt", "cmakefmt", "dprint-cmakefmt.wasm");
     expect(releaseInfo?.checksum?.length).toEqual(64);
     expect(result).toEqual({
