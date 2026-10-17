@@ -906,9 +906,9 @@
       "configExcludes": []
     },
     {
-      "name": "dprint-cmakefmt",
-      "displayName": "sargunv/dprint-cmakefmt",
-      "repoUrl": "https://github.com/sargunv/dprint-cmakefmt",
+      "name": "cmakefmt",
+      "displayName": "cmakefmt/cmakefmt",
+      "repoUrl": "https://github.com/cmakefmt/cmakefmt",
       "description": "CMake code formatter (cmakefmt).",
       "selected": false,
       "configKey": "cmakefmt",

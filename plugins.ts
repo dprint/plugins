@@ -68,6 +68,20 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "bartlomieju/lax-sql",
   "sargunv/dprint-clang-format",
   "sargunv/dprint-cmakefmt",
+  "cmakefmt/cmakefmt",
+]);
+
+// repos that publish their plugin under release asset names other than the
+// conventional ones, keyed by `username/repo`
+const RELEASE_ASSET_NAMES = new Map<string, Record<string, string>>([
+  ["lucacasonato/mf2-tools", {
+    "plugin.wasm": "dprint-plugin-mf2.wasm",
+    "schema.json": "dprint-plugin-mf2.schema.json",
+  }],
+  ["cmakefmt/cmakefmt", {
+    "plugin.wasm": "dprint-cmakefmt.wasm",
+    "schema.json": "dprint-cmakefmt.schema.json",
+  }],
 ]);
 
 /** The npm package a plugin is distributed as. */
@@ -180,7 +194,11 @@ export async function tryResolveLatestJson(url: URL) {
 
 export async function getLatestInfo(username: string, repoName: string, origin: string) {
   repoName = await getFullRepoName(username, repoName);
-  const releaseInfo = await getLatestReleaseInfo(username, repoName);
+  const releaseInfo = await getLatestReleaseInfo(
+    username,
+    repoName,
+    getReleaseAssetName(username, repoName, "plugin.wasm"),
+  );
   if (releaseInfo == null) {
     return undefined;
   }
@@ -234,16 +252,7 @@ async function userRepoTagPatternMapper(
   if (result) {
     const username = result.pathname.groups[0]!;
     const repo = await getFullRepoName(username, result.pathname.groups[1]!);
-    if (username === "lucacasonato" && repo === "mf2-tools") {
-      switch (fileName) {
-        case "plugin.wasm":
-          fileName = "dprint-plugin-mf2.wasm";
-          break;
-        case "schema.json":
-          fileName = "dprint-plugin-mf2.schema.json";
-          break;
-      }
-    }
+    fileName = getReleaseAssetName(username, repo, fileName);
     const tag = result.pathname.groups[2]!;
     const githubUrl = tag === "latest"
       ? `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`
@@ -273,6 +282,10 @@ function buildReposByPluginName() {
     result.set(plugin.name, getPluginRepo(plugin));
   }
   return result;
+}
+
+function getReleaseAssetName(username: string, repoName: string, fileName: string) {
+  return RELEASE_ASSET_NAMES.get(`${username}/${repoName}`)?.[fileName] ?? fileName;
 }
 
 async function getFullRepoName(username: string, repoName: string) {

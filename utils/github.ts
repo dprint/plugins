@@ -39,13 +39,14 @@ export interface ReleaseInfo {
   kind: "wasm" | "process";
 }
 
-export async function getLatestReleaseInfo(username: string, repoName: string) {
+// the wasm asset name may be overridden for repos that don't publish it as plugin.wasm
+export async function getLatestReleaseInfo(username: string, repoName: string, wasmAssetName = "plugin.wasm") {
   const releases = await getReleasesData(username, repoName);
   const latest = releases?.find((release) => !release.draft && !release.prerelease);
-  return latest ? getReleaseInfo(latest) : undefined;
+  return latest ? getReleaseInfo(latest, wasmAssetName) : undefined;
 }
 
-function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
+function getReleaseInfo(data: GitHubRelease, wasmAssetName: string): ReleaseInfo {
   if (typeof data.tag_name !== "string") {
     throw new Error("The tag name was not a string.");
   }
@@ -56,7 +57,7 @@ function getReleaseInfo(data: GitHubRelease): ReleaseInfo {
   };
 
   function getChecksum() {
-    const assetName = getPluginKind() === "wasm" ? "plugin.wasm" : "plugin.json";
+    const assetName = getPluginKind() === "wasm" ? wasmAssetName : "plugin.json";
     const asset = data.assets?.find((a) => a.name === assetName);
     if (asset?.digest) {
       const match = /^sha256:([a-f0-9]{64})$/i.exec(asset.digest);

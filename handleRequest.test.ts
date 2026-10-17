@@ -326,6 +326,12 @@ it("tryResolvePluginUrl", async () => {
   ).toEqual(
     "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.wasm",
   );
+
+  expect(
+    await resolveUrl("https://plugins.dprint.dev/cmakefmt/cmakefmt-v2.2.0.wasm"),
+  ).toEqual(
+    "https://github.com/cmakefmt/cmakefmt/releases/download/v2.2.0/dprint-cmakefmt.wasm",
+  );
 });
 
 it("should redirect non-wasm plugins to asset URL", async () => {
@@ -399,5 +405,11 @@ it("tryResolveSchemaUrl", async () => {
     await resolveUrl("https://plugins.dprint.dev/lucacasonato/mf2-tools/0.1.0/schema.json"),
   ).toEqual(
     "https://github.com/lucacasonato/mf2-tools/releases/download/0.1.0/dprint-plugin-mf2.schema.json",
+  );
+
+  expect(
+    await resolveUrl("https://plugins.dprint.dev/cmakefmt/cmakefmt/v2.2.0/schema.json"),
+  ).toEqual(
+    "https://github.com/cmakefmt/cmakefmt/releases/download/v2.2.0/dprint-cmakefmt.schema.json",
   );
 });
