@@ -910,9 +910,13 @@
     },
     {
       "name": "dprint-plugin-clang-format",
-      "displayName": "sargunv/dprint-clang-format",
-      "repoUrl": "https://github.com/sargunv/dprint-clang-format",
-      "description": "C, C++, and Objective-C code formatter (clang-format).",
+      "displayName": "dprint-plugin-clang-format",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-clang-format",
+      "description": "clang-format (C/C++/Objective-C) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/clang-format/",
+      "npm": {
+        "name": "@dprint/clang-format"
+      },
       "selected": false,
       "configKey": "clangFormat",
       "keywords": [
@@ -935,6 +939,28 @@
         "hxx",
         "m",
         "mm"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-cedar",
+      "displayName": "dprint-plugin-cedar",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-cedar",
+      "description": "cedar-policy-formatter (Cedar) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/cedar/",
+      "npm": {
+        "name": "@dprint/cedar"
+      },
+      "selected": false,
+      "configKey": "cedar",
+      "keywords": [
+        "cedar",
+        "cedar-policy",
+        "policy",
+        "authorization"
+      ],
+      "fileExtensions": [
+        "cedar"
       ],
       "configExcludes": []
     },
