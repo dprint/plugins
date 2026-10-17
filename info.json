@@ -757,6 +757,39 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-csharpier",
+      "displayName": "dprint-plugin-csharpier",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-csharpier",
+      "description": "C# and XML code formatter (CSharpier).",
+      "website": "https://dprint.dev/plugins/csharpier/",
+      "npm": {
+        "name": "@dprint/csharpier"
+      },
+      "selected": false,
+      "configKey": "csharpier",
+      "keywords": [
+        "c#",
+        "csharp",
+        "xml",
+        "dotnet",
+        ".net",
+        "csharpier"
+      ],
+      "fileExtensions": [
+        "cs",
+        "csx",
+        "csproj",
+        "props",
+        "targets",
+        "slnx",
+        "config",
+        "xml",
+        "xaml",
+        "axaml"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-exec",
       "displayName": "dprint-plugin-exec",
       "repoUrl": "https://github.com/dprint/dprint-plugin-exec",
