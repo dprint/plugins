@@ -189,6 +189,17 @@ it("tryResolveUserLatestJson", async () => {
       checksum: releaseInfo!.checksum,
     });
   }
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/azais-corentin/cmakefmt/latest.json");
+    const releaseInfo = await getLatestReleaseInfo("azais-corentin", "cmakefmt", "cmakefmt-dprint.wasm");
+    expect(releaseInfo?.checksum?.length).toEqual(64);
+    expect(result).toEqual({
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/azais-corentin/cmakefmt-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName.replace(/^v/, ""),
+      checksum: releaseInfo!.checksum,
+    });
+  }
 
   async function getValidResultForUrl(url: string) {
     const result = await tryResolveLatestJson(new URL(url))!;

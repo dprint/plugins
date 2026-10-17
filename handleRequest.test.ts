@@ -332,6 +332,12 @@ it("tryResolvePluginUrl", async () => {
   ).toEqual(
     "https://github.com/cmakefmt/cmakefmt/releases/download/v2.2.0/dprint-cmakefmt.wasm",
   );
+
+  expect(
+    await resolveUrl("https://plugins.dprint.dev/azais-corentin/cmakefmt-v0.3.0.wasm"),
+  ).toEqual(
+    "https://github.com/azais-corentin/cmakefmt/releases/download/v0.3.0/cmakefmt-dprint.wasm",
+  );
 });
 
 it("should redirect non-wasm plugins to asset URL", async () => {

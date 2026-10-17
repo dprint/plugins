@@ -927,6 +927,26 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-cmake",
+      "displayName": "azais-corentin/cmakefmt",
+      "repoUrl": "https://github.com/azais-corentin/cmakefmt",
+      "description": "CMake code formatter (azais-corentin/cmakefmt).",
+      "selected": false,
+      "configKey": "cmake",
+      "keywords": [
+        "cmake",
+        "cmakefmt",
+        "build"
+      ],
+      "fileExtensions": [
+        "cmake"
+      ],
+      "fileNames": [
+        "CMakeLists.txt"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-arity",
       "displayName": "jolars/arity",
       "repoUrl": "https://github.com/jolars/dprint-plugin-arity",

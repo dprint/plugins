@@ -69,6 +69,7 @@ const KNOWN_NON_PREFIXED_REPOS = new Set([
   "sargunv/dprint-clang-format",
   "sargunv/dprint-cmakefmt",
   "cmakefmt/cmakefmt",
+  "azais-corentin/cmakefmt",
 ]);
 
 // repos that publish their plugin under release asset names other than the
@@ -81,6 +82,9 @@ const RELEASE_ASSET_NAMES = new Map<string, Record<string, string>>([
   ["cmakefmt/cmakefmt", {
     "plugin.wasm": "dprint-cmakefmt.wasm",
     "schema.json": "dprint-cmakefmt.schema.json",
+  }],
+  ["azais-corentin/cmakefmt", {
+    "plugin.wasm": "cmakefmt-dprint.wasm",
   }],
 ]);
 
