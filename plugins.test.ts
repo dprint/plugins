@@ -182,6 +182,23 @@ it("tryResolveUserLatestJson", async () => {
       npm: { name: "dprint-plugin-malva" },
     });
   }
+  // community repo that doesn't publish its plugin as plugin.wasm
+  for (
+    const url of [
+      "https://plugins.dprint.dev/cmakefmt/cmakefmt/latest.json",
+      "https://plugins.dprint.dev/dprint/cmakefmt/latest.json",
+    ]
+  ) {
+    const result = await getValidResultForUrl(url);
+    const releaseInfo = await getLatestReleaseInfo("cmakefmt", "cmakefmt", "dprint-cmakefmt.wasm");
+    expect(releaseInfo?.checksum?.length).toEqual(64);
+    expect(result).toEqual({
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/cmakefmt/cmakefmt-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName.replace(/^v/, ""),
+      checksum: releaseInfo!.checksum,
+    });
+  }
 
   async function getValidResultForUrl(url: string) {
     const result = await tryResolveLatestJson(new URL(url))!;
