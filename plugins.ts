@@ -44,6 +44,8 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "dprint/dprint-plugin-exec",
   "dprint/dprint-plugin-sql",
   "dprint/dprint-plugin-bun",
+  "dprint/dprint-plugin-clang-format",
+  "dprint/dprint-plugin-cedar",
   // community
   "jakebailey/dprint-plugin-gofumpt",
   "malobre/dprint-plugin-vue",
