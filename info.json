@@ -1,16 +1,30 @@
 {
   "schemaVersion": 4,
-  "pluginSystemSchemaVersion": 3,
+  "pluginSystemSchemaVersion": 4,
   "latest": [
     {
       "name": "dprint-plugin-typescript",
-      "version": "0.60.0",
+      "displayName": "dprint-plugin-typescript",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-typescript",
+      "description": "TypeScript/JavaScript code formatter.",
+      "website": "https://dprint.dev/plugins/typescript/",
+      "npm": {
+        "name": "@dprint/typescript"
+      },
       "selected": true,
-      "url": "https://plugins.dprint.dev/typescript-0.60.0.wasm",
       "configKey": "typescript",
+      "keywords": [
+        "javascript",
+        "typescript",
+        "node",
+        "deno",
+        "ecmascript"
+      ],
       "fileExtensions": [
         "ts",
         "tsx",
+        "mts",
+        "cts",
         "js",
         "jsx",
         "cjs",
@@ -22,12 +36,22 @@
     },
     {
       "name": "dprint-plugin-json",
-      "version": "0.14.0",
+      "displayName": "dprint-plugin-json",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-json",
+      "description": "JSON/JSONC code formatter.",
+      "website": "https://dprint.dev/plugins/json/",
+      "npm": {
+        "name": "@dprint/json"
+      },
       "selected": true,
-      "url": "https://plugins.dprint.dev/json-0.14.0.wasm",
       "configKey": "json",
+      "keywords": [
+        "json",
+        "jsonc"
+      ],
       "fileExtensions": [
-        "json"
+        "json",
+        "jsonc"
       ],
       "configExcludes": [
         "**/*-lock.json"
@@ -35,21 +59,45 @@
     },
     {
       "name": "dprint-plugin-markdown",
-      "version": "0.12.0",
+      "displayName": "dprint-plugin-markdown",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-markdown",
+      "description": "Markdown code formatter.",
+      "website": "https://dprint.dev/plugins/markdown/",
+      "npm": {
+        "name": "@dprint/markdown"
+      },
       "selected": true,
-      "url": "https://plugins.dprint.dev/markdown-0.12.0.wasm",
       "configKey": "markdown",
+      "keywords": [
+        "markdown",
+        "commonmark",
+        "gfm"
+      ],
       "fileExtensions": [
-        "md"
+        "md",
+        "mkd",
+        "mdwn",
+        "mkdn",
+        "mdown",
+        "markdown"
       ],
       "configExcludes": []
     },
     {
       "name": "dprint-plugin-toml",
-      "version": "0.5.3",
+      "displayName": "dprint-plugin-toml",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-toml",
+      "description": "TOML code formatter.",
+      "website": "https://dprint.dev/plugins/toml/",
+      "npm": {
+        "name": "@dprint/toml"
+      },
       "selected": true,
-      "url": "https://plugins.dprint.dev/toml-0.5.3.wasm",
       "configKey": "toml",
+      "keywords": [
+        "toml",
+        "cargo"
+      ],
       "fileExtensions": [
         "toml"
       ],
@@ -57,25 +105,1038 @@
     },
     {
       "name": "dprint-plugin-dockerfile",
-      "version": "0.2.1",
+      "displayName": "dprint-plugin-dockerfile",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-dockerfile",
+      "description": "Dockerfile code formatter.",
+      "website": "https://dprint.dev/plugins/dockerfile/",
+      "npm": {
+        "name": "@dprint/dockerfile"
+      },
       "selected": false,
-      "url": "https://plugins.dprint.dev/dockerfile-0.2.1.wasm",
       "configKey": "dockerfile",
+      "keywords": [
+        "docker",
+        "dockerfile",
+        "container"
+      ],
       "fileExtensions": [
         "dockerfile"
+      ],
+      "fileNames": [
+        "Dockerfile"
       ],
       "configExcludes": []
     },
     {
-      "name": "dprint-plugin-sql",
-      "version": "0.1.1",
+      "name": "dprint-plugin-biome",
+      "displayName": "dprint-plugin-biome",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-biome",
+      "description": "Biome (JS/TS/JSON) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/biome/",
+      "npm": {
+        "name": "@dprint/biome"
+      },
       "selected": false,
-      "url": "https://plugins.dprint.dev/sql-0.1.1.wasm",
+      "configKey": "biome",
+      "keywords": [
+        "biome",
+        "rome",
+        "javascript",
+        "typescript",
+        "json"
+      ],
+      "fileExtensions": [
+        "ts",
+        "tsx",
+        "mts",
+        "cts",
+        "js",
+        "jsx",
+        "cjs",
+        "mjs",
+        "json",
+        "jsonc"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "dprint-plugin-mago",
+      "displayName": "dprint-plugin-mago",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-mago",
+      "description": "Mago (PHP) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/mago/",
+      "npm": {
+        "name": "@dprint/mago"
+      },
+      "selected": false,
+      "configKey": "mago",
+      "keywords": [
+        "php",
+        "mago",
+        "laravel"
+      ],
+      "fileExtensions": [
+        "php"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-ruff",
+      "displayName": "dprint-plugin-ruff",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-ruff",
+      "description": "Ruff (Python) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/ruff/",
+      "npm": {
+        "name": "@dprint/ruff"
+      },
+      "selected": false,
+      "configKey": "ruff",
+      "keywords": [
+        "python",
+        "ruff",
+        "black",
+        "flake8"
+      ],
+      "fileExtensions": [
+        "py",
+        "pyi"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-jupyter",
+      "displayName": "dprint-plugin-jupyter",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-jupyter",
+      "description": "Jupyter notebook code block formatter.",
+      "website": "https://dprint.dev/plugins/jupyter/",
+      "npm": {
+        "name": "@dprint/jupyter"
+      },
+      "selected": false,
+      "configKey": "jupyter",
+      "keywords": [
+        "jupyter",
+        "notebook",
+        "ipython",
+        "python"
+      ],
+      "fileExtensions": [
+        "ipynb"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-gofumpt",
+      "displayName": "jakebailey/gofumpt",
+      "repoUrl": "https://github.com/jakebailey/dprint-plugin-gofumpt",
+      "description": "Gofumpt (Go) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/gofumpt/",
+      "npm": {
+        "name": "@jakebailey/dprint-plugin-gofumpt"
+      },
+      "selected": false,
+      "configKey": "gofumpt",
+      "keywords": [
+        "go",
+        "golang",
+        "gofumpt",
+        "gofmt"
+      ],
+      "fileExtensions": [
+        "go"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint_plugin_malva",
+      "displayName": "g-plane/malva",
+      "repoUrl": "https://github.com/g-plane/malva",
+      "description": "CSS, SCSS, Sass and Less formatter.",
+      "website": "https://dprint.dev/plugins/malva/",
+      "npm": {
+        "name": "dprint-plugin-malva"
+      },
+      "selected": true,
+      "configKey": "malva",
+      "keywords": [
+        "css",
+        "scss",
+        "sass",
+        "less",
+        "stylesheet"
+      ],
+      "fileExtensions": [
+        "css",
+        "scss",
+        "sass",
+        "less"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "dprint_plugin_markup",
+      "displayName": "g-plane/markup_fmt",
+      "repoUrl": "https://github.com/g-plane/markup_fmt",
+      "description": "HTML, Vue, Svelte, Astro, Angular, Jinja, Twig, Nunjucks, and Vento formatter.",
+      "website": "https://dprint.dev/plugins/markup_fmt/",
+      "npm": {
+        "name": "dprint-plugin-markup"
+      },
+      "selected": true,
+      "configKey": "markup",
+      "keywords": [
+        "html",
+        "vue",
+        "svelte",
+        "astro",
+        "angular",
+        "jinja",
+        "twig",
+        "nunjucks",
+        "vento",
+        "handlebars",
+        "mustache",
+        "xml",
+        "markup",
+        "template"
+      ],
+      "fileExtensions": [
+        "html",
+        "vue",
+        "svelte",
+        "astro",
+        "jinja",
+        "jinja2",
+        "j2",
+        "twig",
+        "njk",
+        "vto",
+        "component.html",
+        "mustache",
+        "hbs",
+        "handlebars",
+        "xml",
+        "svg",
+        "wsdl",
+        "xsd",
+        "xslt",
+        "xsl"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint_plugin_yaml",
+      "displayName": "g-plane/pretty_yaml",
+      "repoUrl": "https://github.com/g-plane/pretty_yaml",
+      "description": "YAML formatter.",
+      "website": "https://dprint.dev/plugins/pretty_yaml/",
+      "npm": {
+        "name": "dprint-plugin-yaml"
+      },
+      "selected": true,
+      "configKey": "yaml",
+      "keywords": [
+        "yaml",
+        "kubernetes",
+        "k8s",
+        "config"
+      ],
+      "fileExtensions": [
+        "yaml",
+        "yml"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint_plugin_graphql",
+      "displayName": "g-plane/pretty_graphql",
+      "repoUrl": "https://github.com/g-plane/pretty_graphql",
+      "description": "GraphQL formatter.",
+      "website": "https://dprint.dev/plugins/pretty_graphql/",
+      "npm": {
+        "name": "dprint-plugin-graphql"
+      },
+      "selected": false,
+      "configKey": "graphql",
+      "keywords": [
+        "graphql",
+        "apollo",
+        "schema"
+      ],
+      "fileExtensions": [
+        "graphql",
+        "gql"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-oxc",
+      "displayName": "dprint-plugin-oxc",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-oxc",
+      "description": "Oxc (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/TOML) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/oxc/",
+      "npm": {
+        "name": "@dprint/oxc"
+      },
+      "selected": false,
+      "configKey": "oxc",
+      "keywords": [
+        "oxc",
+        "oxfmt",
+        "oxlint",
+        "javascript",
+        "typescript",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "yaml",
+        "toml"
+      ],
+      "fileExtensions": [
+        "ts",
+        "tsx",
+        "mts",
+        "cts",
+        "js",
+        "jsx",
+        "cjs",
+        "mjs",
+        "json",
+        "jsonc",
+        "json5",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "gql",
+        "yaml",
+        "yml",
+        "toml"
+      ],
+      "configExcludes": [
+        "**/node_modules",
+        "**/*-lock.json"
+      ]
+    },
+    {
+      "name": "dprint-plugin-kdl",
+      "displayName": "kachick/kdl",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-kdl",
+      "description": "KDL crate wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-kdl"
+      },
+      "selected": false,
+      "configKey": "kdl",
+      "keywords": [
+        "kdl"
+      ],
+      "fileExtensions": [
+        "kdl"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-nix",
+      "displayName": "kachick/nix",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-nix",
+      "description": "Nixfmt-rs (Nix) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-nix"
+      },
+      "selected": false,
+      "configKey": "nix",
+      "keywords": [
+        "nix",
+        "nixfmt-rs"
+      ],
+      "fileExtensions": [
+        "nix"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-sh",
+      "displayName": "kachick/sh",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-sh",
+      "description": "Shuck-formatter (shell script) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-sh"
+      },
+      "selected": false,
+      "configKey": "sh",
+      "keywords": [
+        "sh",
+        "shell-script",
+        "shuck-formatter",
+        "bash",
+        "zsh",
+        "envrc"
+      ],
+      "fileExtensions": [
+        "sh",
+        "bash",
+        "zsh",
+        "ksh",
+        "mksh",
+        "dash",
+        "bats"
+      ],
+      "fileNames": [
+        ".envrc",
+        ".bashrc",
+        ".bash_profile",
+        ".bash_aliases",
+        ".bash_login",
+        ".bash_logout",
+        ".profile",
+        ".zshrc",
+        ".zshenv",
+        ".zprofile",
+        ".zlogin",
+        ".zlogout"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "kachick/typstyle",
+      "displayName": "kachick/typstyle",
+      "repoUrl": "https://github.com/kachick/dprint-plugin-typstyle",
+      "description": "Typstyle (Typst) wrapper plugin.",
+      "npm": {
+        "name": "@kachick/dprint-plugin-typstyle"
+      },
+      "selected": false,
+      "configKey": "typst",
+      "keywords": [
+        "typst",
+        "typstyle"
+      ],
+      "fileExtensions": [
+        "typ"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-bibtex-tidy",
+      "displayName": "apcamargo/bibtex-tidy",
+      "repoUrl": "https://github.com/apcamargo/dprint-plugin-bibtex-tidy",
+      "description": "Tidy bibtex files.",
+      "selected": false,
+      "configKey": "bibtex-tidy",
+      "keywords": [
+        "bibtex",
+        "bibtex-tidy"
+      ],
+      "fileExtensions": [
+        "bib"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "apcamargo/typstyle",
+      "displayName": "apcamargo/typstyle",
+      "repoUrl": "https://github.com/apcamargo/dprint-plugin-typstyle",
+      "description": "A beautiful and reliable code formatter for Typst.",
+      "selected": false,
+      "configKey": "typstyle",
+      "keywords": [
+        "typst",
+        "typstyle",
+        "markup"
+      ],
+      "fileExtensions": [
+        "typ"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "lax-css",
+      "displayName": "bartlomieju/lax-css",
+      "repoUrl": "https://github.com/bartlomieju/lax-css",
+      "description": "CSS, SCSS, and Less formatter that never reinterprets your styles.",
+      "npm": {
+        "name": "lax-css"
+      },
+      "selected": false,
+      "configKey": "css",
+      "keywords": [
+        "css",
+        "scss",
+        "less",
+        "stylesheet"
+      ],
+      "fileExtensions": [
+        "css",
+        "scss",
+        "less"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "lax-markup",
+      "displayName": "bartlomieju/lax-markup",
+      "repoUrl": "https://github.com/bartlomieju/lax-markup",
+      "description": "HTML, XML, SVG, Vue, Svelte, and Astro formatter that preserves rendering-critical whitespace.",
+      "npm": {
+        "name": "lax-markup"
+      },
+      "selected": false,
+      "configKey": "markup",
+      "keywords": [
+        "html",
+        "xml",
+        "svg",
+        "vue",
+        "svelte",
+        "astro",
+        "markup"
+      ],
+      "fileExtensions": [
+        "html",
+        "htm",
+        "vue",
+        "svelte",
+        "astro",
+        "xml",
+        "svg"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "lax-sql",
+      "displayName": "bartlomieju/lax-sql",
+      "repoUrl": "https://github.com/bartlomieju/lax-sql",
+      "description": "Dialect-agnostic SQL formatter.",
+      "npm": {
+        "name": "lax-sql"
+      },
+      "selected": false,
       "configKey": "sql",
+      "keywords": [
+        "sql",
+        "mysql",
+        "postgres",
+        "postgresql",
+        "sqlite",
+        "database"
+      ],
       "fileExtensions": [
         "sql"
       ],
       "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-panache",
+      "displayName": "jolars/panache",
+      "repoUrl": "https://github.com/jolars/dprint-plugin-panache",
+      "description": "Quarto, Pandoc, R Markdown, and Markdown formatter.",
+      "selected": false,
+      "configKey": "panache",
+      "keywords": [
+        "quarto",
+        "pandoc",
+        "rmarkdown",
+        "markdown"
+      ],
+      "fileExtensions": [
+        "md",
+        "qmd",
+        "Rmd",
+        "rmd",
+        "Rmarkdown",
+        "rmarkdown",
+        "markdown",
+        "mdown",
+        "mkd"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-swift",
+      "displayName": "drluckyspin/swift",
+      "repoUrl": "https://github.com/drluckyspin/dprint-plugin-swift",
+      "description": "Swift code formatter (SwiftFormat wrapper).",
+      "selected": false,
+      "configKey": "swiftformat",
+      "keywords": [
+        "swift",
+        "swiftformat",
+        "ios",
+        "macos",
+        "apple",
+        "xcode"
+      ],
+      "fileExtensions": [
+        "swift"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-prettier",
+      "displayName": "dprint-plugin-prettier",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-prettier",
+      "description": "Prettier wrapper plugin (consider faster dedicated plugins for JS/TS, CSS, etc.).",
+      "website": "https://dprint.dev/plugins/prettier/",
+      "npm": {
+        "name": "@dprint/prettier"
+      },
+      "selected": false,
+      "configKey": "prettier",
+      "keywords": [
+        "prettier",
+        "javascript",
+        "typescript",
+        "css",
+        "html",
+        "vue",
+        "yaml",
+        "graphql",
+        "markdown",
+        "mdx"
+      ],
+      "fileExtensions": [
+        "js",
+        "jsx",
+        "mjs",
+        "cjs",
+        "ts",
+        "tsx",
+        "mts",
+        "cts",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "html",
+        "vue",
+        "svelte",
+        "graphql",
+        "gql",
+        "md",
+        "mdx",
+        "yaml",
+        "yml"
+      ],
+      "configExcludes": [
+        "**/node_modules"
+      ]
+    },
+    {
+      "name": "dprint-plugin-roslyn",
+      "displayName": "dprint-plugin-roslyn",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-roslyn",
+      "description": "C# and Visual Basic code formatter (Roslyn).",
+      "website": "https://dprint.dev/plugins/roslyn/",
+      "npm": {
+        "name": "@dprint/roslyn"
+      },
+      "selected": false,
+      "configKey": "roslyn",
+      "keywords": [
+        "c#",
+        "csharp",
+        "visual basic",
+        "vb",
+        "dotnet",
+        ".net",
+        "roslyn"
+      ],
+      "fileExtensions": [
+        "cs",
+        "vb"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-csharpier",
+      "displayName": "dprint-plugin-csharpier",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-csharpier",
+      "description": "C# and XML code formatter (CSharpier).",
+      "website": "https://dprint.dev/plugins/csharpier/",
+      "npm": {
+        "name": "@dprint/csharpier"
+      },
+      "selected": false,
+      "configKey": "csharpier",
+      "keywords": [
+        "c#",
+        "csharp",
+        "xml",
+        "dotnet",
+        ".net",
+        "csharpier"
+      ],
+      "fileExtensions": [
+        "cs",
+        "csx",
+        "csproj",
+        "props",
+        "targets",
+        "slnx",
+        "config",
+        "xml",
+        "xaml",
+        "axaml"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-exec",
+      "displayName": "dprint-plugin-exec",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-exec",
+      "description": "Formats code using formatting CLIs installed on the host machine (rustfmt, clang-format, shfmt, etc.).",
+      "website": "https://dprint.dev/plugins/exec/",
+      "npm": {
+        "name": "@dprint/exec"
+      },
+      "selected": false,
+      "configKey": "exec",
+      "keywords": [
+        "rust",
+        "rustfmt",
+        "c",
+        "c++",
+        "cpp",
+        "clang",
+        "clang-format",
+        "shell",
+        "bash",
+        "shfmt",
+        "zig",
+        "cli"
+      ],
+      "fileExtensions": [],
+      "configExcludes": [],
+      "defaultConfig": {
+        "cwd": "${configDir}"
+      },
+      "configItems": [
+        {
+          "match": {
+            "fileExtensions": [
+              "rs"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "rustfmt",
+                "exts": [
+                  "rs"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "fileExtensions": [
+              "c",
+              "cc",
+              "cpp",
+              "cxx",
+              "h",
+              "hpp",
+              "hxx",
+              "m",
+              "mm"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "clang-format",
+                "exts": [
+                  "c",
+                  "cc",
+                  "cpp",
+                  "cxx",
+                  "h",
+                  "hpp",
+                  "hxx",
+                  "m",
+                  "mm"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "fileExtensions": [
+              "sh",
+              "bash"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "shfmt",
+                "exts": [
+                  "sh",
+                  "bash"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "match": {
+            "fileExtensions": [
+              "zig"
+            ]
+          },
+          "config": {
+            "commands": [
+              {
+                "command": "zig fmt --stdin",
+                "exts": [
+                  "zig"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "dprint-plugin-clang-format",
+      "displayName": "dprint-plugin-clang-format",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-clang-format",
+      "description": "clang-format (C/C++/Objective-C) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/clang-format/",
+      "npm": {
+        "name": "@dprint/clang-format"
+      },
+      "selected": false,
+      "configKey": "clangFormat",
+      "keywords": [
+        "c",
+        "c++",
+        "cpp",
+        "objective-c",
+        "objc",
+        "clang",
+        "clang-format"
+      ],
+      "fileExtensions": [
+        "c",
+        "cc",
+        "cpp",
+        "cxx",
+        "h",
+        "hh",
+        "hpp",
+        "hxx",
+        "m",
+        "mm"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-cedar",
+      "displayName": "dprint-plugin-cedar",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-cedar",
+      "description": "cedar-policy-formatter (Cedar) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/cedar/",
+      "npm": {
+        "name": "@dprint/cedar"
+      },
+      "selected": false,
+      "configKey": "cedar",
+      "keywords": [
+        "cedar",
+        "cedar-policy",
+        "policy",
+        "authorization"
+      ],
+      "fileExtensions": [
+        "cedar"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "cmakefmt",
+      "displayName": "cmakefmt/cmakefmt",
+      "repoUrl": "https://github.com/cmakefmt/cmakefmt",
+      "description": "CMake code formatter (cmakefmt).",
+      "selected": false,
+      "configKey": "cmakefmt",
+      "keywords": [
+        "cmake",
+        "cmakefmt",
+        "build"
+      ],
+      "fileExtensions": [
+        "cmake"
+      ],
+      "fileNames": [
+        "CMakeLists.txt",
+        "CMakeLists.txt.in"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-cmake",
+      "displayName": "azais-corentin/cmakefmt",
+      "repoUrl": "https://github.com/azais-corentin/cmakefmt",
+      "description": "CMake code formatter (azais-corentin/cmakefmt).",
+      "selected": false,
+      "configKey": "cmake",
+      "keywords": [
+        "cmake",
+        "cmakefmt",
+        "build"
+      ],
+      "fileExtensions": [
+        "cmake"
+      ],
+      "fileNames": [
+        "CMakeLists.txt"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-arity",
+      "displayName": "jolars/arity",
+      "repoUrl": "https://github.com/jolars/dprint-plugin-arity",
+      "description": "R code formatter (arity).",
+      "selected": false,
+      "configKey": "arity",
+      "keywords": [
+        "r",
+        "rstats",
+        "arity",
+        "tidyverse"
+      ],
+      "fileExtensions": [
+        "R",
+        "r"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-fatou",
+      "displayName": "jolars/fatou",
+      "repoUrl": "https://github.com/jolars/dprint-plugin-fatou",
+      "description": "Julia code formatter (fatou).",
+      "selected": false,
+      "configKey": "fatou",
+      "keywords": [
+        "julia",
+        "fatou"
+      ],
+      "fileExtensions": [
+        "jl"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-badness",
+      "displayName": "jolars/badness",
+      "repoUrl": "https://github.com/jolars/dprint-plugin-badness",
+      "description": "LaTeX and BibTeX code formatter (badness).",
+      "selected": false,
+      "configKey": "badness",
+      "keywords": [
+        "latex",
+        "tex",
+        "bibtex",
+        "badness"
+      ],
+      "fileExtensions": [
+        "tex",
+        "sty",
+        "cls",
+        "dtx",
+        "ins",
+        "bib"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-bun",
+      "displayName": "dprint-plugin-bun",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-bun",
+      "description": "Bun (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/Markdown/HTML/Vue/Handlebars/TOML) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/bun/",
+      "npm": {
+        "name": "@dprint/bun"
+      },
+      "selected": false,
+      "neverPreselect": true,
+      "configKey": "bun",
+      "keywords": [
+        "bun",
+        "prettier",
+        "javascript",
+        "typescript",
+        "json",
+        "css",
+        "scss",
+        "less",
+        "graphql",
+        "yaml",
+        "markdown",
+        "mdx",
+        "html",
+        "vue",
+        "mjml",
+        "handlebars",
+        "toml"
+      ],
+      "fileExtensions": [
+        "js",
+        "mjs",
+        "cjs",
+        "jsx",
+        "ts",
+        "mts",
+        "cts",
+        "tsx",
+        "json",
+        "jsonc",
+        "json5",
+        "css",
+        "scss",
+        "less",
+        "yaml",
+        "yml",
+        "md",
+        "markdown",
+        "mdx",
+        "graphql",
+        "gql",
+        "graphqls",
+        "hbs",
+        "handlebars",
+        "html",
+        "htm",
+        "vue",
+        "mjml",
+        "toml"
+      ],
+      "fileNames": [
+        ".babelrc",
+        ".jshintrc",
+        ".swcrc",
+        ".prettierrc",
+        ".lintstagedrc",
+        "Pipfile"
+      ],
+      "configExcludes": [
+        "**/node_modules",
+        "**/*-lock.json"
+      ]
     }
   ]
 }

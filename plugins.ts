@@ -1,146 +1,301 @@
-import { parseVersion } from "./version.ts";
+import infoJson from "./info.json" with { type: "json" };
+import { checkGithubRepoExists, getLatestReleaseInfo } from "./utils/mod.js";
 
-export interface PluginResolver {
-  versionPattern: URLPattern;
-  getRedirectUrl(version: string): string;
-  schemaVersionUrlPattern?: URLPattern;
-  getSchemaUrl?(version: string): string;
-}
+const tagPattern = "([A-Za-z0-9\._]+)";
+// repos may only contain alphanumeric, underscores, hyphens, and period
+const repoNamePattern = "([A-Za-z0-9\-\._]+)";
+const dprintWasmPluginPattern = new URLPattern({
+  pathname: `/${repoNamePattern}-${tagPattern}.wasm`,
+});
+const dprintProcessPluginPattern = new URLPattern({
+  pathname: `/${repoNamePattern}-${tagPattern}.json`,
+});
+// usernames may only contain alphanumeric and hypens
+const usernamePattern = `([A-Za-z0-9\-]+)`;
+const userRepoPattern = `${usernamePattern}/${repoNamePattern}`;
+const userWasmPluginPattern = new URLPattern({
+  pathname: `/${userRepoPattern}-${tagPattern}.wasm`,
+});
+const userProcessPluginPattern = new URLPattern({
+  pathname: `/${userRepoPattern}-${tagPattern}.json`,
+});
+const userSchemaPattern = new URLPattern({
+  pathname: `/${userRepoPattern}/${tagPattern}/schema.json`,
+});
 
-export const pluginResolvers: PluginResolver[] = [{
-  versionPattern: new URLPattern({ pathname: "/typescript-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.44.0"))) {
-      return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript-${version}.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/typescript.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/typescript-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-typescript/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/json-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.10.1"))) {
-      return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json-${version}.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/json.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/json-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-json/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/markdown-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.7.0"))) {
-      return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown-${version}.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/markdown.wasm`;
-    }
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/markdown-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-markdown/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/toml-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/toml.wasm`;
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/toml-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-toml/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/dockerfile.wasm`;
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/dockerfile-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-dockerfile/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/sql-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/sql.wasm`;
-  },
-  schemaVersionUrlPattern: new URLPattern({ pathname: "/schemas/sql-([0-9]+\.[0-9]+\.[0-9]+).json" }),
-  getSchemaUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-sql/releases/download/${version}/schema.json`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).wasm" }),
-  getRedirectUrl(version) {
-    if (parseVersion(version).lessThanEqual(parseVersion("0.3.0"))) {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt-${version}.wasm`;
-    } else {
-      return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.wasm`;
-    }
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/rustfmt-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-rustfmt/releases/download/${version}/rustfmt.exe-plugin`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/prettier-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-prettier/releases/download/${version}/prettier.exe-plugin`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/roslyn-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-roslyn/releases/download/${version}/roslyn.exe-plugin`;
-  },
-}, {
-  versionPattern: new URLPattern({ pathname: "/yapf-([0-9]+\.[0-9]+\.[0-9]+).exe-plugin" }),
-  getRedirectUrl(version) {
-    return `https://github.com/dprint/dprint-plugin-yapf/releases/download/${version}/yapf.exe-plugin`;
-  },
-}];
+// known repos where shortname resolves to dprint-plugin-<name>,
+// avoiding a GitHub API call to check existence
+const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
+  // dprint org
+  "dprint/dprint-plugin-typescript",
+  "dprint/dprint-plugin-json",
+  "dprint/dprint-plugin-markdown",
+  "dprint/dprint-plugin-toml",
+  "dprint/dprint-plugin-dockerfile",
+  "dprint/dprint-plugin-biome",
+  "dprint/dprint-plugin-oxc",
+  "dprint/dprint-plugin-mago",
+  "dprint/dprint-plugin-ruff",
+  "dprint/dprint-plugin-jupyter",
+  "dprint/dprint-plugin-prettier",
+  "dprint/dprint-plugin-roslyn",
+  "dprint/dprint-plugin-rustfmt",
+  "dprint/dprint-plugin-yapf",
+  "dprint/dprint-plugin-exec",
+  "dprint/dprint-plugin-sql",
+  "dprint/dprint-plugin-bun",
+  "dprint/dprint-plugin-clang-format",
+  "dprint/dprint-plugin-cedar",
+  // community
+  "jakebailey/dprint-plugin-gofumpt",
+  "malobre/dprint-plugin-vue",
+  "drluckyspin/dprint-plugin-swift",
+  "apcamargo/dprint-plugin-typstyle",
+  "jolars/dprint-plugin-panache",
+  "kachick/dprint-plugin-kdl",
+  "kachick/dprint-plugin-nix",
+  "kachick/dprint-plugin-sh",
+  "kachick/dprint-plugin-typstyle",
+]);
 
-export function tryResolvePluginUrl(url: URL) {
-  for (const plugin of pluginResolvers) {
-    const version = plugin.versionPattern.exec(url)?.pathname.groups[0];
-    if (version != null) {
-      return plugin.getRedirectUrl(version);
-    }
-  }
-  return undefined;
-}
+// repos where the short name IS the repo name (no dprint-plugin- prefix)
+const KNOWN_NON_PREFIXED_REPOS = new Set([
+  "g-plane/malva",
+  "g-plane/markup_fmt",
+  "g-plane/pretty_yaml",
+  "g-plane/pretty_graphql",
+  "lucacasonato/mf2-tools",
+  "bartlomieju/lax-css",
+  "bartlomieju/lax-markup",
+  "bartlomieju/lax-sql",
+  "sargunv/dprint-clang-format",
+  "sargunv/dprint-cmakefmt",
+  "cmakefmt/cmakefmt",
+  "azais-corentin/cmakefmt",
+]);
 
-export function tryResolveSchemaUrl(url: URL) {
-  for (const plugin of pluginResolvers) {
-    const version = plugin.schemaVersionUrlPattern?.exec(url)?.pathname.groups[0];
-    if (version != null) {
-      return plugin.getSchemaUrl?.(version);
-    }
-  }
-  return undefined;
-}
+// repos that publish their plugin under release asset names other than the
+// conventional ones, keyed by `username/repo`
+const RELEASE_ASSET_NAMES = new Map<string, Record<string, string>>([
+  ["lucacasonato/mf2-tools", {
+    "plugin.wasm": "dprint-plugin-mf2.wasm",
+    "schema.json": "dprint-plugin-mf2.schema.json",
+  }],
+  ["cmakefmt/cmakefmt", {
+    "plugin.wasm": "dprint-cmakefmt.wasm",
+    "schema.json": "dprint-cmakefmt.schema.json",
+  }],
+  ["azais-corentin/cmakefmt", {
+    "plugin.wasm": "cmakefmt-dprint.wasm",
+  }],
+]);
 
-export async function getPluginsInfoData() {
-  return JSON.parse(await loadInfoFile()) as PluginsData;
-}
-
-async function loadInfoFile() {
-  try {
-    return await Deno.readTextFile("./info.json");
-  } catch (err) {
-    throw new Error("Could not load info.json", { cause: err });
-  }
-}
-
-export interface PluginsData {
-  latest: PluginData[];
-}
-
-export interface PluginData {
+/** The npm package a plugin is distributed as. */
+export interface PluginNpmInfo {
   name: string;
-  url: string;
+  // where the plugin sits within the package, for one that doesn't ship it at
+  // the root. defaults to plugin.wasm / plugin.json by plugin kind.
+  path?: string;
+}
+
+// the npm packages declared in info.json, keyed by `username/repo`. both the
+// prefixed and unprefixed repo names are registered because either may be the
+// resolved repo name (ex. `dprint/dprint-plugin-typescript` and `g-plane/malva`)
+const npmPackagesByRepo = buildNpmPackagesByRepo();
+
+/**
+ * The GitHub repo an info.json entry is published from. An entry's `name` is
+ * the name the plugin reports about itself, which the cli matches against the
+ * plugins in a config file, so it only identifies the plugin: `repoUrl` says
+ * where it's published from and `displayName` is what's shown for it.
+ */
+export function getPluginRepo(plugin: { repoUrl: string }) {
+  const [username, repoName] = new URL(plugin.repoUrl).pathname.slice(1).split("/");
+  return { username: username!, repoName: repoName! };
+}
+
+const APPROVED_ASSET_REPOS = new Set([
+  "drluckyspin/dprint-plugin-swift",
+]);
+
+export function isAssetAllowedRepo(username: string, repo: string) {
+  if (username === "dprint") {
+    return true;
+  }
+  return APPROVED_ASSET_REPOS.has(`${username}/${repo}`);
+}
+
+const assetNamePattern = "([A-Za-z0-9\\-\\._]+)";
+const assetPattern = new URLPattern({
+  pathname: `/${userRepoPattern}/${tagPattern}/asset/${assetNamePattern}`,
+});
+
+export function tryResolveAssetUrl(url: URL): { githubUrl: string; shouldCache: boolean } | undefined {
+  const result = assetPattern.exec(url);
+  if (!result) {
+    return undefined;
+  }
+  const username = result.pathname.groups[0]!;
+  const repo = result.pathname.groups[1]!;
+  const tag = result.pathname.groups[2]!;
+  const assetName = result.pathname.groups[3]!;
+  const githubUrl = `https://github.com/${username}/${repo}/releases/download/${tag}/${assetName}`;
+  const shouldCache = isAssetAllowedRepo(username, repo);
+  return { githubUrl, shouldCache };
+}
+
+export interface PluginUrlResult {
+  githubUrl: string;
+  username: string;
+  repo: string;
+  tag: string;
+}
+
+export async function tryResolvePluginUrl(url: URL): Promise<PluginUrlResult | undefined> {
+  return dprintPluginTagPatternMapper(dprintWasmPluginPattern, url, "plugin.wasm")
+    ?? dprintPluginTagPatternMapper(dprintProcessPluginPattern, url, "plugin.json")
+    ?? (await userRepoTagPatternMapper(userWasmPluginPattern, url, "plugin.wasm"))
+    ?? (await userRepoTagPatternMapper(userProcessPluginPattern, url, "plugin.json"));
+}
+
+export async function tryResolveSchemaUrl(url: URL) {
+  const result = await userRepoTagPatternMapper(userSchemaPattern, url, "schema.json");
+  return result?.githubUrl;
+}
+
+const userLatestPattern = new URLPattern({
+  pathname: `/${userRepoPattern}/latest.json`,
+});
+export async function tryResolveLatestJson(url: URL) {
+  const result = userLatestPattern.exec(url);
+  if (!result) {
+    return undefined;
+  }
+  // `dprint add <plugin-name>` asks for `dprint/<plugin-name>`, which only
+  // resolves to the dprint org. community plugins are added as `username/repo`
+  // even when their info.json name differs, so a community plugin can't claim
+  // a bare name (ex. `cmakefmt` is the name of more than one CMake formatter)
+  const username = result.pathname.groups[0]!;
+  const shortRepoName = result.pathname.groups[1]!;
+  const latestInfo = await getLatestInfo(username, shortRepoName, url.origin);
+  if (latestInfo == null) {
+    return 404;
+  }
+
+  // include the bare minimum in case someone else wants to implement
+  // this behaviour on their server
+  return {
+    schemaVersion: 1,
+    url: latestInfo.url,
+    version: latestInfo.version,
+    checksum: latestInfo.checksum,
+    // when set, the cli writes an npm specifier into config files instead of the url
+    npm: latestInfo.npm,
+  };
+}
+
+export async function getLatestInfo(username: string, repoName: string, origin: string) {
+  repoName = await getFullRepoName(username, repoName);
+  const releaseInfo = await getLatestReleaseInfo(
+    username,
+    repoName,
+    getReleaseAssetName(username, repoName, "plugin.wasm"),
+  );
+  if (releaseInfo == null) {
+    return undefined;
+  }
+  const displayRepoName = repoName.replace(/^dprint-plugin-/, "");
+  const extension = releaseInfo.kind === "wasm" ? "wasm" : "json";
+
+  // include the bare minimum in case someone else wants to implement
+  // this behaviour on their server
+  return {
+    schemaVersion: 1,
+    url: username === "dprint"
+      ? `${origin}/${displayRepoName}-${releaseInfo.tagName}.${extension}`
+      : `${origin}/${username}/${displayRepoName}-${releaseInfo.tagName}.${extension}`,
+    version: releaseInfo.tagName.replace(/^v/, ""),
+    checksum: releaseInfo.checksum,
+    // the GitHub repo this plugin is published from (full name already resolved above)
+    repoUrl: `https://github.com/${username}/${repoName}`,
+    // identifies this plugin's download analytics: the `username/repo` key that
+    // downloads are recorded under and the tag of the latest release
+    downloadKey: `${username}/${repoName}`,
+    tag: releaseInfo.tagName,
+    // the npm package this plugin is published to, when it has one
+    npm: npmPackagesByRepo.get(`${username}/${repoName}`),
+  };
+}
+
+function dprintPluginTagPatternMapper(
+  pattern: URLPattern,
+  url: URL,
+  fileName: string,
+): PluginUrlResult | undefined {
+  const result = pattern.exec(url);
+  if (result) {
+    const pluginShortName = result.pathname.groups[0]!;
+    const tag = result.pathname.groups[1]!;
+    const repo = `dprint-plugin-${pluginShortName}`;
+    const githubUrl = tag === "latest"
+      ? `https://github.com/dprint/${repo}/releases/latest/download/${fileName}`
+      : `https://github.com/dprint/${repo}/releases/download/${tag}/${fileName}`;
+    return { githubUrl, username: "dprint", repo, tag };
+  }
+  return undefined;
+}
+
+async function userRepoTagPatternMapper(
+  pattern: URLPattern,
+  url: URL,
+  fileName: string,
+): Promise<PluginUrlResult | undefined> {
+  const result = pattern.exec(url);
+  if (result) {
+    const username = result.pathname.groups[0]!;
+    const repo = await getFullRepoName(username, result.pathname.groups[1]!);
+    fileName = getReleaseAssetName(username, repo, fileName);
+    const tag = result.pathname.groups[2]!;
+    const githubUrl = tag === "latest"
+      ? `https://github.com/${username}/${repo}/releases/latest/download/${fileName}`
+      : `https://github.com/${username}/${repo}/releases/download/${tag}/${fileName}`;
+    return { githubUrl, username, repo, tag };
+  }
+  return undefined;
+}
+
+function buildNpmPackagesByRepo() {
+  const result = new Map<string, PluginNpmInfo>();
+  for (const plugin of infoJson.latest as { repoUrl: string; npm?: PluginNpmInfo }[]) {
+    if (plugin.npm == null) {
+      continue;
+    }
+    const { username, repoName } = getPluginRepo(plugin);
+    const shortName = repoName.replace(/^dprint-plugin-/, "");
+    result.set(`${username}/${shortName}`, plugin.npm);
+    result.set(`${username}/dprint-plugin-${shortName}`, plugin.npm);
+  }
+  return result;
+}
+
+function getReleaseAssetName(username: string, repoName: string, fileName: string) {
+  return RELEASE_ASSET_NAMES.get(`${username}/${repoName}`)?.[fileName] ?? fileName;
+}
+
+async function getFullRepoName(username: string, repoName: string) {
+  if (repoName.startsWith("dprint-plugin-")) {
+    return repoName;
+  }
+  const fullName = `dprint-plugin-${repoName}`;
+  if (KNOWN_NON_PREFIXED_REPOS.has(`${username}/${repoName}`)) {
+    return repoName;
+  }
+  if (KNOWN_DPRINT_PLUGIN_REPOS.has(`${username}/${fullName}`)) {
+    return fullName;
+  }
+  if (await checkGithubRepoExists(username, fullName)) {
+    return fullName;
+  } else {
+    return repoName;
+  }
 }

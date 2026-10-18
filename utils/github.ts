@@ -1,0 +1,182 @@
+import { env } from "cloudflare:workers";
+import { fetchWithRetries } from "./fetchWithRetries.js";
+import { LazyExpirableValue } from "./LazyExpirableValue.js";
+import { LruCache, LruCacheWithExpiry } from "./LruCache.js";
+import { createSynchronizedActioner } from "./synchronizedActioner.js";
+
+const repoExistsCache = new LruCache<string, boolean>({ size: 1000 });
+
+export async function checkGithubRepoExists(username: string, repoName: string) {
+  if (!validateName(username) || !validateName(repoName)) {
+    return false;
+  }
+
+  const url = `https://api.github.com/repos/${username}/${repoName}`;
+  let result = repoExistsCache.get(url);
+  if (result == null) {
+    try {
+      const response = await makeGitHubGetRequest(url, "HEAD");
+      if (response.status === 200) {
+        result = true;
+      } else if (response.status === 404) {
+        result = false;
+      } else {
+        // don't cache this response
+        throw new Error(`Invalid response status: ${response.status}`);
+      }
+    } catch (err) {
+      console.error("Error fetching cache.", err);
+      return false;
+    }
+    repoExistsCache.set(url, result);
+  }
+  return result;
+}
+
+export interface ReleaseInfo {
+  tagName: string;
+  checksum: string | undefined;
+  kind: "wasm" | "process";
+}
+
+// the wasm asset name may be overridden for repos that don't publish it as plugin.wasm
+export async function getLatestReleaseInfo(username: string, repoName: string, wasmAssetName = "plugin.wasm") {
+  const releases = await getReleasesData(username, repoName);
+  const latest = releases?.find((release) => !release.draft && !release.prerelease);
+  return latest ? getReleaseInfo(latest, wasmAssetName) : undefined;
+}
+
+function getReleaseInfo(data: GitHubRelease, wasmAssetName: string): ReleaseInfo {
+  if (typeof data.tag_name !== "string") {
+    throw new Error("The tag name was not a string.");
+  }
+  return {
+    tagName: data.tag_name,
+    checksum: getChecksum(),
+    kind: getPluginKind(),
+  };
+
+  function getChecksum() {
+    const assetName = getPluginKind() === "wasm" ? wasmAssetName : "plugin.json";
+    const asset = data.assets?.find((a) => a.name === assetName);
+    if (asset?.digest) {
+      const match = /^sha256:([a-f0-9]{64})$/i.exec(asset.digest);
+      if (match?.[1]) {
+        return match[1];
+      }
+    }
+    return undefined;
+  }
+
+  function getPluginKind(): ReleaseInfo["kind"] {
+    if (!(data.assets instanceof Array)) {
+      return "wasm";
+    }
+
+    for (const asset of data.assets) {
+      if (typeof asset === "object" && typeof asset.name === "string") {
+        if (asset.name === "plugin.json") {
+          return "process";
+        }
+      }
+    }
+
+    return "wasm";
+  }
+}
+
+interface ReleaseAsset {
+  name: string;
+  digest: string | null;
+}
+
+interface GitHubRelease {
+  tag_name: string;
+  draft: boolean;
+  prerelease: boolean;
+  assets: ReleaseAsset[];
+}
+
+const releasesCache = new LruCacheWithExpiry<string, GitHubRelease[] | undefined>({
+  size: 1000,
+  expiryMs: 5 * 60 * 1_000, // keep entries for 5 minutes
+});
+
+async function getReleasesData(username: string, repoName: string) {
+  if (!validateName(username) || !validateName(repoName)) {
+    return;
+  }
+
+  const url = `https://api.github.com/repos/${username}/${repoName}/releases`;
+  return await releasesCache.getOrSet(url, async () => {
+    const response = await makeGitHubGetRequest(url, "GET");
+    if (response.status === 404) {
+      await response.text();
+      return;
+    } else if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
+    }
+    return response.json();
+  });
+}
+
+const latestCliReleaseInfo = new LazyExpirableValue<{ tag_name: string }>({
+  expiryMs: 10 * 60 * 1_000, // keep for 10 minutes
+  createValue: async () => {
+    const url = `https://api.github.com/repos/dprint/dprint/releases/latest`;
+    const response = await makeGitHubGetRequest(url, "GET");
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Invalid response status: ${response.status}\n\n${text}`);
+    }
+    return await response.json();
+  },
+});
+
+export async function getCliInfo() {
+  const data = await latestCliReleaseInfo.getValue();
+  return {
+    version: data.tag_name as string,
+  };
+}
+
+function validateName(name: string) {
+  // usernames may only contain alphanumeric and hypens
+  // repos may only contain alphanumeric, underscores, hyphens, and period
+  return /^[a-z0-9_\-\.]+$/i.test(name);
+}
+
+// This needs to be done to ensure that only one request is made to GitHub at a time
+// in order to not violate their API guidelines.
+const synchronizedActioner = createSynchronizedActioner();
+function makeGitHubGetRequest(url: string, method: "GET" | "HEAD") {
+  console.log(`Making request to ${url}`);
+  return synchronizedActioner.doActionWithTimeout((signal) => {
+    return fetchWithRetries(url, {
+      method,
+      headers: getGitHubHeaders(),
+      signal,
+    }, /* retries */ 1);
+  }, 10_000);
+}
+
+// headers for GitHub API requests (not raw asset downloads,
+// which don't need auth for public repos)
+function getGitHubDownloadHeaders() {
+  const headers: Record<string, string> = {
+    "user-agent": "dprint-plugins",
+  };
+  const token = env.DPRINT_PLUGINS_GH_TOKEN;
+  if (token != null) {
+    headers["authorization"] = "token " + token;
+  }
+  return headers;
+}
+
+function getGitHubHeaders() {
+  return {
+    ...getGitHubDownloadHeaders(),
+    "accept": "application/vnd.github.v3+json",
+  };
+}

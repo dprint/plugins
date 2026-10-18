@@ -1,0 +1,243 @@
+import { env } from "cloudflare:workers";
+import infoJson from "./info.json" with { type: "json" };
+import { getLatestInfo, getPluginRepo, type PluginNpmInfo } from "./plugins.js";
+import { getDownloadCounts, type PluginDownloadCounts } from "./utils/analytics.js";
+import { getNpmDownloadCounts, getNpmLatestVersions } from "./utils/npm.js";
+
+// only typing what's used on the server
+export interface PluginsData {
+  latest: PluginData[];
+}
+
+export interface PluginData {
+  // the name the plugin reports about itself, which is what identifies it
+  name: string;
+  // the name to show for the plugin. carried over from info.json, so it's
+  // absent from data cached before info.json declared it
+  displayName?: string;
+  url: string;
+  version: string;
+  downloadCount: {
+    // downloads of this plugin's url from the registry
+    currentVersion: number;
+    // downloads of this plugin from anywhere it's distributed — the registry
+    // plus, for a plugin published to npm, its package's npm downloads
+    allVersions: number;
+  };
+  // the npm package this plugin is published to, when it has one. it's carried
+  // over from info.json with the version resolved from the registry during the
+  // build, so the version is absent when that lookup failed.
+  npm?: PluginNpmInfo & { version?: string };
+  // links shown on the site: the GitHub repo (derived during the build) and the
+  // optional dprint.dev docs page (carried over from info.json)
+  repoUrl?: string;
+  website?: string;
+  // descriptive fields carried over from info.json, used to index the search
+  description?: string;
+  configKey?: string;
+  keywords?: string[];
+  fileExtensions?: string[];
+  fileNames?: string[];
+  // present on plugins like exec where the real extensions/commands live in
+  // per-match config rather than top-level fileExtensions
+  configItems?: PluginConfigItem[];
+}
+
+interface PluginConfigItem {
+  match?: { fileExtensions?: string[] };
+  config?: { commands?: { command?: string; exts?: string[] }[] };
+}
+
+interface CacheEntry {
+  data: Readonly<PluginsData>;
+  builtAt: number;
+}
+
+// Assembling the info file makes a sequential GitHub API request per plugin, so
+// it's cached in memory and persisted to R2 (shared across isolates). Entries are
+// keyed by origin because the resolved plugin urls embed the request's origin.
+const REFRESH_AFTER_MS = 5 * 60 * 1_000; // past this, serve the cached copy but refresh in the background
+const MAX_STALE_MS = 6 * 60 * 60 * 1_000; // past this, block and rebuild rather than serve stale data
+
+const memoryCache = new Map<string, CacheEntry>();
+const inFlightBuilds = new Map<string, Promise<CacheEntry>>();
+
+export async function readInfoFile(origin: string, ctx?: ExecutionContext): Promise<Readonly<PluginsData>> {
+  const now = Date.now();
+
+  const memEntry = memoryCache.get(origin);
+  if (memEntry != null && now - memEntry.builtAt < REFRESH_AFTER_MS) {
+    return memEntry.data; // fresh in memory
+  }
+
+  // memory is missing or stale — fall back to the freshest of memory and R2
+  const entry = freshest(memEntry, await getFromR2(origin));
+  if (entry != null) {
+    memoryCache.set(origin, entry);
+    const age = now - entry.builtAt;
+    if (age < REFRESH_AFTER_MS) {
+      return entry.data; // R2 had a fresh copy
+    }
+    if (age < MAX_STALE_MS) {
+      refreshInBackground(origin, ctx);
+      return entry.data; // serve stale while it refreshes
+    }
+    // older than the max — fall through and rebuild synchronously
+  }
+
+  return (await build(origin)).data;
+}
+
+function freshest(a: CacheEntry | undefined, b: CacheEntry | undefined) {
+  if (a == null) return b;
+  if (b == null) return a;
+  return a.builtAt >= b.builtAt ? a : b;
+}
+
+function refreshInBackground(origin: string, ctx?: ExecutionContext) {
+  if (inFlightBuilds.has(origin)) {
+    return; // a rebuild is already running
+  }
+  const promise = build(origin).catch((err) => {
+    console.error("Failed to refresh info.json cache.", err);
+  });
+  ctx?.waitUntil(promise);
+}
+
+// dedupes concurrent rebuilds for the same origin so the work happens once
+function build(origin: string): Promise<CacheEntry> {
+  let promise = inFlightBuilds.get(origin);
+  if (promise == null) {
+    promise = buildAndStore(origin).finally(() => inFlightBuilds.delete(origin));
+    inFlightBuilds.set(origin, promise);
+  }
+  return promise;
+}
+
+async function buildAndStore(origin: string): Promise<CacheEntry> {
+  const entry: CacheEntry = { data: await buildInfoFile(origin), builtAt: Date.now() };
+  memoryCache.set(origin, entry);
+  await putToR2(origin, entry.data);
+  return entry;
+}
+
+function r2Key(origin: string) {
+  return `info-cache/${encodeURIComponent(origin)}.json`;
+}
+
+async function getFromR2(origin: string): Promise<CacheEntry | undefined> {
+  try {
+    const object = await env.PLUGIN_CACHE.get(r2Key(origin));
+    if (object == null) {
+      return undefined;
+    }
+    return { data: await object.json(), builtAt: object.uploaded.getTime() };
+  } catch (err) {
+    console.error("Failed to read info.json cache from R2.", err);
+    return undefined;
+  }
+}
+
+async function putToR2(origin: string, data: Readonly<PluginsData>) {
+  try {
+    await env.PLUGIN_CACHE.put(r2Key(origin), JSON.stringify(data), {
+      httpMetadata: { contentType: "application/json; charset=utf-8" },
+    });
+  } catch (err) {
+    console.error("Failed to write info.json cache to R2.", err);
+  }
+}
+
+async function buildInfoFile(origin: string): Promise<Readonly<PluginsData>> {
+  return {
+    ...infoJson,
+    latest: await getLatest(infoJson.latest),
+  };
+
+  async function getLatest(latest: typeof infoJson.latest) {
+    // the release lookups below run one at a time to stay within GitHub's api
+    // guidelines and are what this build spends its time on, so these are
+    // started here and awaited after them rather than before. each falls back
+    // to an empty result, since the loop throwing abandons them unawaited.
+    const npmPackageNames = latest.map((plugin) => npmInfo(plugin)?.name).filter((name) => name != null);
+    const downloadCountsPromise = getDownloadCounts().catch(() => new Map<string, PluginDownloadCounts>());
+    const npmDownloadCountsPromise = getNpmDownloadCounts(npmPackageNames).catch(() => new Map<string, number>());
+    const npmVersionsPromise = getNpmLatestVersions(npmPackageNames).catch(() => new Map<string, string>());
+
+    const released = [];
+    for (const plugin of latest) {
+      const { username, repoName } = getPluginRepo(plugin);
+      const info = await getLatestInfo(username, repoName, origin);
+      if (info != null) {
+        released.push({ plugin, info });
+      }
+    }
+
+    const sources: ResolvedSources = {
+      downloadCounts: await downloadCountsPromise,
+      npmDownloadCounts: await npmDownloadCountsPromise,
+      npmVersions: await npmVersionsPromise,
+    };
+    return released.map(({ plugin, info }) => toPluginData(plugin, info, sources));
+  }
+}
+
+/** What the build resolved for a plugin's latest release. */
+export interface PluginReleaseInfo {
+  version: string;
+  url: string;
+  repoUrl: string;
+  downloadKey: string;
+  tag: string;
+}
+
+/** What the build looked up for the plugins as a whole. */
+export interface ResolvedSources {
+  downloadCounts: Map<string, PluginDownloadCounts>;
+  npmDownloadCounts: Map<string, number>;
+  npmVersions: Map<string, string>;
+}
+
+/**
+ * Merges an info.json entry with what the build resolved for it. Exported
+ * because this is what decides the shape of the served info.json.
+ */
+export function toPluginData(
+  plugin: { name: string; npm?: PluginNpmInfo },
+  info: PluginReleaseInfo,
+  sources: ResolvedSources,
+): PluginData {
+  const counts = sources.downloadCounts.get(info.downloadKey);
+  const npm = plugin.npm;
+  return {
+    ...plugin,
+    version: info.version,
+    url: info.url,
+    repoUrl: info.repoUrl,
+    // spreads what info.json declared rather than rebuilding it, so the rest of
+    // the npm properties the cli reads (ex. `path`) survive. the package stays
+    // listed even when the version lookup failed — the cli reads the name to
+    // know the plugin is on npm at all.
+    npm: npm == null ? undefined : { ...npm, version: sources.npmVersions.get(npm.name) },
+    downloadCount: {
+      currentVersion: currentVersionDownloads(counts, info.tag),
+      // downloads of the plugin's url from the registry, plus its npm package's
+      allVersions: (counts?.allVersions ?? 0) + (npm == null ? 0 : sources.npmDownloadCounts.get(npm.name) ?? 0),
+    },
+  };
+}
+
+// reads the optional `npm` off an info.json entry, whose inferred type is a
+// union that only some members declare the property on
+function npmInfo(plugin: { npm?: PluginNpmInfo }) {
+  return plugin.npm;
+}
+
+// downloads of the latest release over the last 30 days, counting both the exact
+// version tag and the "latest" alias (which always resolves to the current release)
+function currentVersionDownloads(counts: PluginDownloadCounts | undefined, tag: string) {
+  if (counts == null) {
+    return 0;
+  }
+  return (counts.byTag.get(tag) ?? 0) + (counts.byTag.get("latest") ?? 0);
+}
