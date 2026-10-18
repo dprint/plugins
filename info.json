@@ -128,6 +128,36 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-sql",
+      "displayName": "dprint-plugin-sql",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-sql",
+      "description": "SQL code formatter for PostgreSQL, MySQL, SQL Server, SQLite, Oracle, BigQuery and Snowflake, including stored procedures.",
+      "npm": {
+        "name": "@dprint/sql"
+      },
+      "selected": false,
+      "configKey": "sql",
+      "keywords": [
+        "sql",
+        "postgresql",
+        "postgres",
+        "plpgsql",
+        "mysql",
+        "sqlserver",
+        "tsql",
+        "sqlite",
+        "oracle",
+        "plsql",
+        "bigquery",
+        "snowflake",
+        "database"
+      ],
+      "fileExtensions": [
+        "sql"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-biome",
       "displayName": "dprint-plugin-biome",
       "repoUrl": "https://github.com/dprint/dprint-plugin-biome",
