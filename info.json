@@ -500,7 +500,7 @@
         "name": "@dprint/shuck"
       },
       "selected": false,
-      "configKey": "sh",
+      "configKey": "shuck",
       "keywords": [
         "sh",
         "shell-script",
