@@ -49,6 +49,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "dprint/dprint-plugin-kdl",
   "dprint/dprint-plugin-nix",
   "dprint/dprint-plugin-shuck",
+  "dprint/dprint-plugin-shfmt",
   "dprint/dprint-plugin-typstyle",
   // moved to the dprint org, kept so urls from existing configs resolve without an api call
   "kachick/dprint-plugin-kdl",

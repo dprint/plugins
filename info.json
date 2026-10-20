@@ -535,6 +535,44 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-shfmt",
+      "displayName": "dprint-plugin-shfmt",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-shfmt",
+      "description": "shfmt (shell script) wrapper plugin.",
+      "npm": {
+        "name": "@dprint/shfmt"
+      },
+      "selected": false,
+      "configKey": "shfmt",
+      "keywords": [
+        "sh",
+        "shell-script",
+        "shfmt",
+        "bash",
+        "zsh",
+        "mksh",
+        "bats"
+      ],
+      "fileExtensions": [
+        "sh",
+        "bash",
+        "mksh",
+        "bats",
+        "zsh"
+      ],
+      "fileNames": [
+        ".bashrc",
+        ".bash_profile",
+        ".bash_logout",
+        ".zshenv",
+        ".zprofile",
+        ".zshrc",
+        ".zlogin",
+        ".zlogout"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-typstyle",
       "displayName": "dprint-plugin-typstyle",
       "repoUrl": "https://github.com/dprint/dprint-plugin-typstyle",
