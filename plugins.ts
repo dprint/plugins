@@ -46,16 +46,20 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "dprint/dprint-plugin-bun",
   "dprint/dprint-plugin-clang-format",
   "dprint/dprint-plugin-cedar",
-  // community
-  "jakebailey/dprint-plugin-gofumpt",
-  "malobre/dprint-plugin-vue",
-  "drluckyspin/dprint-plugin-swift",
-  "apcamargo/dprint-plugin-typstyle",
-  "jolars/dprint-plugin-panache",
+  "dprint/dprint-plugin-kdl",
+  "dprint/dprint-plugin-nix",
+  "dprint/dprint-plugin-sh",
+  "dprint/dprint-plugin-typstyle",
+  // moved to the dprint org, kept so urls from existing configs resolve without an api call
   "kachick/dprint-plugin-kdl",
   "kachick/dprint-plugin-nix",
   "kachick/dprint-plugin-sh",
   "kachick/dprint-plugin-typstyle",
+  // community
+  "jakebailey/dprint-plugin-gofumpt",
+  "malobre/dprint-plugin-vue",
+  "drluckyspin/dprint-plugin-swift",
+  "jolars/dprint-plugin-panache",
 ]);
 
 // repos where the short name IS the repo name (no dprint-plugin- prefix)
