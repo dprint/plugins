@@ -48,13 +48,14 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "dprint/dprint-plugin-cedar",
   "dprint/dprint-plugin-kdl",
   "dprint/dprint-plugin-nix",
-  "dprint/dprint-plugin-sh",
+  "dprint/dprint-plugin-shuck",
   "dprint/dprint-plugin-typstyle",
-  // moved to the dprint org, kept so urls from existing configs resolve without an api call
+  // moved or renamed repos, kept so urls from existing configs resolve without an api call
   "kachick/dprint-plugin-kdl",
   "kachick/dprint-plugin-nix",
   "kachick/dprint-plugin-sh",
   "kachick/dprint-plugin-typstyle",
+  "dprint/dprint-plugin-sh",
   // community
   "jakebailey/dprint-plugin-gofumpt",
   "malobre/dprint-plugin-vue",
