@@ -50,7 +50,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "dprint/dprint-plugin-nix",
   "dprint/dprint-plugin-shuck",
   "dprint/dprint-plugin-typstyle",
-  // moved or renamed repos, kept so urls from existing configs resolve without an api call
+  // moved to the dprint org, kept so urls from existing configs resolve without an api call
   "kachick/dprint-plugin-kdl",
   "kachick/dprint-plugin-nix",
   "kachick/dprint-plugin-sh",
