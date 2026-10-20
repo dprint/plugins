@@ -55,7 +55,6 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "kachick/dprint-plugin-nix",
   "kachick/dprint-plugin-sh",
   "kachick/dprint-plugin-typstyle",
-  "dprint/dprint-plugin-sh",
   // community
   "jakebailey/dprint-plugin-gofumpt",
   "malobre/dprint-plugin-vue",
