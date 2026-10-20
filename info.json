@@ -492,15 +492,15 @@
       "configExcludes": []
     },
     {
-      "name": "dprint-plugin-sh",
-      "displayName": "dprint-plugin-sh",
-      "repoUrl": "https://github.com/dprint/dprint-plugin-sh",
+      "name": "dprint-plugin-shuck",
+      "displayName": "dprint-plugin-shuck",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-shuck",
       "description": "shuck-formatter (shell script) wrapper plugin.",
       "npm": {
-        "name": "@dprint/sh"
+        "name": "@dprint/shuck"
       },
       "selected": false,
-      "configKey": "sh",
+      "configKey": "shuck",
       "keywords": [
         "sh",
         "shell-script",
