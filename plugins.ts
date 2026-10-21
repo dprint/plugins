@@ -48,6 +48,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   "dprint/dprint-plugin-cedar",
   "dprint/dprint-plugin-kdl",
   "dprint/dprint-plugin-nix",
+  "dprint/dprint-plugin-alejandra",
   "dprint/dprint-plugin-shuck",
   "dprint/dprint-plugin-shfmt",
   "dprint/dprint-plugin-stylua",
