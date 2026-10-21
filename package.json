@@ -8,14 +8,15 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "preact": "^10.29.0",
-    "preact-render-to-string": "^6.6.6"
+    "preact": "^11.0.1",
+    "preact-render-to-string": "^6.8.1"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.16.18",
-    "@cloudflare/workers-types": "^4.20260317.1",
-    "typescript": "^6.0.2",
-    "vitest": "~4.1.11",
-    "wrangler": "^4.103.0"
+    "@cloudflare/vitest-plugin": "^1.4.4",
+    "@cloudflare/workers-types": "^5.20261018.1",
+    "gagen": "^0.8.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.1"
   }
 }
