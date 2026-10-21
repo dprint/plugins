@@ -492,6 +492,26 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-alejandra",
+      "displayName": "dprint-plugin-alejandra",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-alejandra",
+      "description": "Alejandra (Nix) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/alejandra/",
+      "npm": {
+        "name": "@dprint/alejandra"
+      },
+      "selected": false,
+      "configKey": "alejandra",
+      "keywords": [
+        "nix",
+        "alejandra"
+      ],
+      "fileExtensions": [
+        "nix"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "dprint-plugin-shuck",
       "displayName": "dprint-plugin-shuck",
       "repoUrl": "https://github.com/dprint/dprint-plugin-shuck",
