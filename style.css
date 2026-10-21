@@ -16,7 +16,14 @@ body {
 }
 
 body {
-  font-family: "IBM Plex Mono", ui-monospace, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family:
+    "IBM Plex Mono",
+    ui-monospace,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Courier New",
+    monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #1e1e1e;
@@ -93,7 +100,8 @@ a {
 
 .plugin-table {
   display: grid;
-  grid-template-columns: minmax(260px, max-content) minmax(0, 2fr) minmax(120px, max-content) auto;
+  grid-template-columns:
+    minmax(260px, max-content) minmax(0, 2fr) minmax(120px, max-content) auto;
   background: #181a1e;
   border: 1px solid #33373f;
   border-radius: 14px;

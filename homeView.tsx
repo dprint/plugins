@@ -129,8 +129,11 @@ function renderCommands() {
   const commands: { cmd: string; desc: string }[] = [
     { cmd: "dprint config update", desc: "Automatically updates the plugins in a config file." },
     { cmd: "dprint add", desc: "Adds one of these plugins via a multi-select prompt." },
-    { cmd: "dprint add <plugin-name>", desc: "Adds a plugin by name." },
-    { cmd: "dprint add <gh-org>/<gh-repo>", desc: "Adds a plugin by GitHub repo." },
+    {
+      cmd: "dprint add <plugin>",
+      desc: "Adds a plugin by the name shown above (ex. dprint add typescript or dprint add g-plane/malva).",
+    },
+    { cmd: "dprint add <gh-org>/<gh-repo>", desc: "Adds any other plugin by GitHub repo." },
   ];
   return (
     <section class="commands">

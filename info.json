@@ -4,7 +4,7 @@
   "latest": [
     {
       "name": "dprint-plugin-typescript",
-      "displayName": "dprint-plugin-typescript",
+      "displayName": "typescript",
       "repoUrl": "https://github.com/dprint/dprint-plugin-typescript",
       "description": "TypeScript/JavaScript code formatter.",
       "website": "https://dprint.dev/plugins/typescript/",
@@ -36,7 +36,7 @@
     },
     {
       "name": "dprint-plugin-json",
-      "displayName": "dprint-plugin-json",
+      "displayName": "json",
       "repoUrl": "https://github.com/dprint/dprint-plugin-json",
       "description": "JSON/JSONC code formatter.",
       "website": "https://dprint.dev/plugins/json/",
@@ -59,7 +59,7 @@
     },
     {
       "name": "dprint-plugin-markdown",
-      "displayName": "dprint-plugin-markdown",
+      "displayName": "markdown",
       "repoUrl": "https://github.com/dprint/dprint-plugin-markdown",
       "description": "Markdown code formatter.",
       "website": "https://dprint.dev/plugins/markdown/",
@@ -85,7 +85,7 @@
     },
     {
       "name": "dprint-plugin-toml",
-      "displayName": "dprint-plugin-toml",
+      "displayName": "toml",
       "repoUrl": "https://github.com/dprint/dprint-plugin-toml",
       "description": "TOML code formatter.",
       "website": "https://dprint.dev/plugins/toml/",
@@ -105,7 +105,7 @@
     },
     {
       "name": "dprint-plugin-dockerfile",
-      "displayName": "dprint-plugin-dockerfile",
+      "displayName": "dockerfile",
       "repoUrl": "https://github.com/dprint/dprint-plugin-dockerfile",
       "description": "Dockerfile code formatter.",
       "website": "https://dprint.dev/plugins/dockerfile/",
@@ -129,7 +129,7 @@
     },
     {
       "name": "dprint-plugin-sql",
-      "displayName": "dprint-plugin-sql",
+      "displayName": "sql",
       "repoUrl": "https://github.com/dprint/dprint-plugin-sql",
       "description": "SQL code formatter for PostgreSQL, MySQL, SQL Server, SQLite, Oracle, BigQuery and Snowflake, including stored procedures.",
       "npm": {
@@ -159,7 +159,7 @@
     },
     {
       "name": "dprint-plugin-biome",
-      "displayName": "dprint-plugin-biome",
+      "displayName": "biome",
       "repoUrl": "https://github.com/dprint/dprint-plugin-biome",
       "description": "Biome (JS/TS/JSON) wrapper plugin.",
       "website": "https://dprint.dev/plugins/biome/",
@@ -193,7 +193,7 @@
     },
     {
       "name": "dprint-plugin-mago",
-      "displayName": "dprint-plugin-mago",
+      "displayName": "mago",
       "repoUrl": "https://github.com/dprint/dprint-plugin-mago",
       "description": "Mago (PHP) wrapper plugin.",
       "website": "https://dprint.dev/plugins/mago/",
@@ -214,7 +214,7 @@
     },
     {
       "name": "dprint-plugin-ruff",
-      "displayName": "dprint-plugin-ruff",
+      "displayName": "ruff",
       "repoUrl": "https://github.com/dprint/dprint-plugin-ruff",
       "description": "Ruff (Python) wrapper plugin.",
       "website": "https://dprint.dev/plugins/ruff/",
@@ -237,7 +237,7 @@
     },
     {
       "name": "dprint-plugin-jupyter",
-      "displayName": "dprint-plugin-jupyter",
+      "displayName": "jupyter",
       "repoUrl": "https://github.com/dprint/dprint-plugin-jupyter",
       "description": "Jupyter notebook code block formatter.",
       "website": "https://dprint.dev/plugins/jupyter/",
@@ -405,7 +405,7 @@
     },
     {
       "name": "dprint-plugin-oxc",
-      "displayName": "dprint-plugin-oxc",
+      "displayName": "oxc",
       "repoUrl": "https://github.com/dprint/dprint-plugin-oxc",
       "description": "Oxc (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/TOML) wrapper plugin.",
       "website": "https://dprint.dev/plugins/oxc/",
@@ -456,7 +456,7 @@
     },
     {
       "name": "dprint-plugin-kdl",
-      "displayName": "dprint-plugin-kdl",
+      "displayName": "kdl",
       "repoUrl": "https://github.com/dprint/dprint-plugin-kdl",
       "description": "kdl-rs (KDL) wrapper plugin.",
       "npm": {
@@ -474,7 +474,7 @@
     },
     {
       "name": "dprint-plugin-nix",
-      "displayName": "dprint-plugin-nix",
+      "displayName": "nix",
       "repoUrl": "https://github.com/dprint/dprint-plugin-nix",
       "description": "nixfmt-rs (Nix) wrapper plugin.",
       "npm": {
@@ -493,7 +493,7 @@
     },
     {
       "name": "dprint-plugin-alejandra",
-      "displayName": "dprint-plugin-alejandra",
+      "displayName": "alejandra",
       "repoUrl": "https://github.com/dprint/dprint-plugin-alejandra",
       "description": "Alejandra (Nix) wrapper plugin.",
       "website": "https://dprint.dev/plugins/alejandra/",
@@ -513,7 +513,7 @@
     },
     {
       "name": "dprint-plugin-shuck",
-      "displayName": "dprint-plugin-shuck",
+      "displayName": "shuck",
       "repoUrl": "https://github.com/dprint/dprint-plugin-shuck",
       "description": "shuck-formatter (shell script) wrapper plugin.",
       "npm": {
@@ -556,7 +556,7 @@
     },
     {
       "name": "dprint-plugin-shfmt",
-      "displayName": "dprint-plugin-shfmt",
+      "displayName": "shfmt",
       "repoUrl": "https://github.com/dprint/dprint-plugin-shfmt",
       "description": "shfmt (shell script) wrapper plugin.",
       "npm": {
@@ -594,7 +594,7 @@
     },
     {
       "name": "dprint-plugin-typstyle",
-      "displayName": "dprint-plugin-typstyle",
+      "displayName": "typstyle",
       "repoUrl": "https://github.com/dprint/dprint-plugin-typstyle",
       "description": "typstyle (Typst) wrapper plugin.",
       "npm": {
@@ -753,7 +753,7 @@
     },
     {
       "name": "dprint-plugin-prettier",
-      "displayName": "dprint-plugin-prettier",
+      "displayName": "prettier",
       "repoUrl": "https://github.com/dprint/dprint-plugin-prettier",
       "description": "Prettier wrapper plugin (consider faster dedicated plugins for JS/TS, CSS, etc.).",
       "website": "https://dprint.dev/plugins/prettier/",
@@ -803,7 +803,7 @@
     },
     {
       "name": "dprint-plugin-roslyn",
-      "displayName": "dprint-plugin-roslyn",
+      "displayName": "roslyn",
       "repoUrl": "https://github.com/dprint/dprint-plugin-roslyn",
       "description": "C# and Visual Basic code formatter (Roslyn).",
       "website": "https://dprint.dev/plugins/roslyn/",
@@ -829,7 +829,7 @@
     },
     {
       "name": "dprint-plugin-csharpier",
-      "displayName": "dprint-plugin-csharpier",
+      "displayName": "csharpier",
       "repoUrl": "https://github.com/dprint/dprint-plugin-csharpier",
       "description": "C# and XML code formatter (CSharpier).",
       "website": "https://dprint.dev/plugins/csharpier/",
@@ -862,7 +862,7 @@
     },
     {
       "name": "dprint-plugin-exec",
-      "displayName": "dprint-plugin-exec",
+      "displayName": "exec",
       "repoUrl": "https://github.com/dprint/dprint-plugin-exec",
       "description": "Formats code using formatting CLIs installed on the host machine (rustfmt, clang-format, shfmt, etc.).",
       "website": "https://dprint.dev/plugins/exec/",
@@ -981,7 +981,7 @@
     },
     {
       "name": "dprint-plugin-clang-format",
-      "displayName": "dprint-plugin-clang-format",
+      "displayName": "clang-format",
       "repoUrl": "https://github.com/dprint/dprint-plugin-clang-format",
       "description": "clang-format (C/C++/Objective-C) wrapper plugin.",
       "website": "https://dprint.dev/plugins/clang-format/",
@@ -1015,7 +1015,7 @@
     },
     {
       "name": "dprint-plugin-cedar",
-      "displayName": "dprint-plugin-cedar",
+      "displayName": "cedar",
       "repoUrl": "https://github.com/dprint/dprint-plugin-cedar",
       "description": "cedar-policy-formatter (Cedar) wrapper plugin.",
       "website": "https://dprint.dev/plugins/cedar/",
@@ -1037,7 +1037,7 @@
     },
     {
       "name": "dprint-plugin-stylua",
-      "displayName": "dprint-plugin-stylua",
+      "displayName": "stylua",
       "repoUrl": "https://github.com/dprint/dprint-plugin-stylua",
       "description": "StyLua (Lua/Luau) wrapper plugin.",
       "website": "https://dprint.dev/plugins/stylua/",
@@ -1060,7 +1060,7 @@
     },
     {
       "name": "dprint-plugin-zig",
-      "displayName": "dprint-plugin-zig",
+      "displayName": "zig",
       "repoUrl": "https://github.com/dprint/dprint-plugin-zig",
       "description": "zig fmt (Zig) wrapper plugin.",
       "website": "https://dprint.dev/plugins/zig/",
@@ -1082,7 +1082,7 @@
     },
     {
       "name": "dprint-plugin-terraform",
-      "displayName": "dprint-plugin-terraform",
+      "displayName": "terraform",
       "repoUrl": "https://github.com/dprint/dprint-plugin-terraform",
       "description": "Terraform, OpenTofu and HCL formatter (tofu fmt and hclfmt).",
       "website": "https://dprint.dev/plugins/terraform/",
@@ -1210,7 +1210,7 @@
     },
     {
       "name": "dprint-plugin-bun",
-      "displayName": "dprint-plugin-bun",
+      "displayName": "bun",
       "repoUrl": "https://github.com/dprint/dprint-plugin-bun",
       "description": "Bun (JS/TS/JSON/CSS/SCSS/Less/GraphQL/YAML/Markdown/HTML/Vue/Handlebars/TOML) wrapper plugin.",
       "website": "https://dprint.dev/plugins/bun/",
