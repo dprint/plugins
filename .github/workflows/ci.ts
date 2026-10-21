@@ -1,8 +1,7 @@
-#!/usr/bin/env -S deno run -A
-import { expr, job, step, workflow } from "jsr:@david/gagen@0.8.0";
+#!/usr/bin/env node
+import { expr, job, step, workflow } from "gagen";
 
 const checkout = step({ name: "Checkout", uses: "actions/checkout@v7", with: { "persist-credentials": false } });
-const setupDeno = step({ uses: "denoland/setup-deno@v2" });
 const installDeps = step.dependsOn(checkout)({ name: "Install dependencies", run: "npm install" });
 
 const ciJob = job("ci", {
@@ -14,9 +13,9 @@ const ciJob = job("ci", {
       uses: "dprint/check@v2",
       with: { cache: true },
     }),
-    step.dependsOn(checkout, setupDeno)({
+    step.dependsOn(installDeps)({
       name: "Lint CI generation",
-      run: "./.github/workflows/ci.ts --lint",
+      run: "npx gagen --lint",
     }),
     step.dependsOn(installDeps)({ name: "Type check", run: "npx tsc --noEmit" }),
     step.dependsOn(installDeps)({
