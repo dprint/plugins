@@ -58,6 +58,7 @@ const KNOWN_DPRINT_PLUGIN_REPOS = new Set([
   // moved to the dprint org, kept so urls from existing configs resolve without an api call
   "kachick/dprint-plugin-kdl",
   "kachick/dprint-plugin-nix",
+  "kachick/dprint-plugin-nixfmt",
   "kachick/dprint-plugin-sh",
   "kachick/dprint-plugin-typstyle",
   // community
@@ -97,6 +98,19 @@ const RELEASE_ASSET_NAMES = new Map<string, Record<string, string>>([
   ["azais-corentin/cmakefmt", {
     "plugin.wasm": "cmakefmt-dprint.wasm",
   }],
+]);
+
+// plugins replaced by one in the dprint org, keyed by the full `username/repo`
+// their latest.json resolves to. the message is served in latest.json, which
+// the cli warns with on `dprint add` and `dprint config update`. the old entry
+// has to be removed because `dprint add` sees a different plugin and adds the
+// new one alongside it rather than replacing it
+const DEPRECATED_REPOS = new Map<string, string>([
+  ["kachick/dprint-plugin-kdl", replacedMessage("kachick/kdl", "kdl")],
+  ["kachick/dprint-plugin-nix", replacedMessage("kachick/nix", "nix")],
+  ["kachick/dprint-plugin-nixfmt", replacedMessage("kachick/nixfmt", "nix")],
+  ["kachick/dprint-plugin-sh", replacedMessage("kachick/sh", "shuck")],
+  ["kachick/dprint-plugin-typstyle", replacedMessage("kachick/typstyle", "typstyle")],
 ]);
 
 /** The npm package a plugin is distributed as. */
@@ -200,6 +214,8 @@ export async function tryResolveLatestJson(url: URL) {
     checksum: latestInfo.checksum,
     // when set, the cli writes an npm specifier into config files instead of the url
     npm: latestInfo.npm,
+    // when set, the cli warns that the plugin is deprecated with this message
+    deprecated: latestInfo.deprecated,
   };
 }
 
@@ -233,6 +249,8 @@ export async function getLatestInfo(username: string, repoName: string, origin: 
     tag: releaseInfo.tagName,
     // the npm package this plugin is published to, when it has one
     npm: npmPackagesByRepo.get(`${username}/${repoName}`),
+    // why this plugin shouldn't be used anymore, when it's been replaced
+    deprecated: DEPRECATED_REPOS.get(`${username}/${repoName}`),
   };
 }
 
@@ -307,4 +325,10 @@ async function getFullRepoName(username: string, repoName: string) {
   } else {
     return repoName;
   }
+}
+
+// `oldName` is how the old plugin appears in a config file's plugin urls (ex.
+// `kachick/kdl` in `https://plugins.dprint.dev/kachick/kdl-0.4.3.wasm`)
+function replacedMessage(oldName: string, newName: string) {
+  return `Replaced by dprint/dprint-plugin-${newName}. Remove the ${oldName} plugin from your config, then run \`dprint add ${newName}\`.`;
 }

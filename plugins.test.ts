@@ -170,6 +170,19 @@ it("tryResolveUserLatestJson", async () => {
       npm: { name: "dprint-plugin-malva" },
     });
   }
+  // plugin replaced by one in the dprint org
+  {
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/kachick/kdl/latest.json");
+    const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-kdl");
+    expect(result).toEqual({
+      schemaVersion: 1,
+      url: `https://plugins.dprint.dev/kachick/kdl-${releaseInfo!.tagName}.wasm`,
+      version: releaseInfo!.tagName,
+      checksum: releaseInfo!.checksum,
+      deprecated:
+        "Replaced by dprint/dprint-plugin-kdl. Remove the kachick/kdl plugin from your config, then run `dprint add kdl`.",
+    });
+  }
   // community plugins aren't resolved by the name they have in info.json, so
   // they can't claim a name in the dprint org
   for (const name of ["dprint_plugin_malva", "cmakefmt"]) {
