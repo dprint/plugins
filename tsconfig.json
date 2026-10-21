@@ -10,8 +10,8 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact",
     "types": [
-      "@cloudflare/workers-types/2023-07-01",
-      "@cloudflare/vitest-pool-workers"
+      "@cloudflare/workers-types",
+      "@cloudflare/vitest-plugin/types"
     ]
   },
   "include": ["**/*.ts", "**/*.tsx"]
