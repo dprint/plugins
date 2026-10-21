@@ -1016,6 +1016,80 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-stylua",
+      "displayName": "dprint-plugin-stylua",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-stylua",
+      "description": "StyLua (Lua/Luau) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/stylua/",
+      "npm": {
+        "name": "@dprint/stylua"
+      },
+      "selected": false,
+      "configKey": "stylua",
+      "keywords": [
+        "lua",
+        "luau",
+        "luajit",
+        "stylua"
+      ],
+      "fileExtensions": [
+        "lua",
+        "luau"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-zig",
+      "displayName": "dprint-plugin-zig",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-zig",
+      "description": "zig fmt (Zig) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/zig/",
+      "npm": {
+        "name": "@dprint/zig"
+      },
+      "selected": false,
+      "configKey": "zig",
+      "keywords": [
+        "zig",
+        "zon",
+        "zig-fmt"
+      ],
+      "fileExtensions": [
+        "zig",
+        "zon"
+      ],
+      "configExcludes": []
+    },
+    {
+      "name": "dprint-plugin-terraform",
+      "displayName": "dprint-plugin-terraform",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-terraform",
+      "description": "Terraform, OpenTofu and HCL formatter (tofu fmt and hclfmt).",
+      "website": "https://dprint.dev/plugins/terraform/",
+      "npm": {
+        "name": "@dprint/terraform"
+      },
+      "selected": false,
+      "configKey": "terraform",
+      "keywords": [
+        "terraform",
+        "opentofu",
+        "tofu",
+        "hcl",
+        "packer",
+        "terragrunt"
+      ],
+      "fileExtensions": [
+        "tf",
+        "tofu",
+        "tfvars",
+        "hcl"
+      ],
+      "configExcludes": [
+        "**/.terraform"
+      ]
+    },
+    {
       "name": "cmakefmt",
       "displayName": "cmakefmt/cmakefmt",
       "repoUrl": "https://github.com/cmakefmt/cmakefmt",
