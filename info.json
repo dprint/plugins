@@ -1110,6 +1110,36 @@
       ]
     },
     {
+      "name": "dprint-plugin-buildifier",
+      "displayName": "dprint-plugin-buildifier",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-buildifier",
+      "description": "buildifier (Bazel/Starlark) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/buildifier/",
+      "npm": {
+        "name": "@dprint/buildifier"
+      },
+      "selected": false,
+      "configKey": "buildifier",
+      "keywords": [
+        "bazel",
+        "starlark",
+        "buildifier",
+        "bzl"
+      ],
+      "fileExtensions": [
+        "bzl",
+        "bazel",
+        "star",
+        "sky"
+      ],
+      "fileNames": [
+        "BUILD",
+        "WORKSPACE",
+        "WORKSPACE.bzlmod"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "cmakefmt",
       "displayName": "cmakefmt/cmakefmt",
       "repoUrl": "https://github.com/cmakefmt/cmakefmt",
