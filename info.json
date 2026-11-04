@@ -1140,6 +1140,28 @@
       "configExcludes": []
     },
     {
+      "name": "dprint-plugin-wat",
+      "displayName": "dprint-plugin-wat",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-wat",
+      "description": "wat_formatter (WebAssembly Text Format) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/wat/",
+      "npm": {
+        "name": "@dprint/wat"
+      },
+      "selected": false,
+      "configKey": "wat",
+      "keywords": [
+        "wat",
+        "wasm",
+        "webassembly",
+        "wat_formatter"
+      ],
+      "fileExtensions": [
+        "wat"
+      ],
+      "configExcludes": []
+    },
+    {
       "name": "cmakefmt",
       "displayName": "cmakefmt/cmakefmt",
       "repoUrl": "https://github.com/cmakefmt/cmakefmt",
