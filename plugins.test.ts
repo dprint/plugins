@@ -81,7 +81,10 @@ it("tryResolveAssetUrl", () => {
   ).toEqual(undefined);
 });
 
-it("tryResolveUserLatestJson", async () => {
+// this test makes over a dozen requests to the GitHub API, one at a time
+// (see makeGitHubGetRequest), which can take longer than vitest's default
+// timeout of 5 seconds
+it("tryResolveUserLatestJson", { timeout: 30_000 }, async () => {
   // non-matching
   expect(
     await tryResolveLatestJson(
