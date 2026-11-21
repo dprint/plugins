@@ -12,11 +12,11 @@
     "preact-render-to-string": "^6.8.1"
   },
   "devDependencies": {
-    "@cloudflare/vitest-plugin": "^1.4.4",
+    "@cloudflare/vitest-plugin": "^1.4.11",
     "@cloudflare/workers-types": "^5.20261018.1",
     "gagen": "^0.8.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5",
-    "wrangler": "^4.151.1"
+    "wrangler": "^4.156.0"
   }
 }
