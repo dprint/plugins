@@ -148,7 +148,7 @@ it("tryResolveUserLatestJson", { timeout: 30_000 }, async () => {
       checksum: releaseInfo!.checksum,
     });
   }
-  // process plugin repo (prettier was one until it became a Wasm plugin in 0.73)
+  // process plugin repo
   {
     const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/exec/latest.json");
     const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-exec");
