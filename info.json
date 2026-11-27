@@ -1334,6 +1334,87 @@
         "**/node_modules",
         "**/*-lock.json"
       ]
+    },
+    {
+      "name": "dprint-plugin-tidy",
+      "displayName": "tidy",
+      "repoUrl": "https://github.com/dprint/dprint-plugin-tidy",
+      "description": "tidy (HTML/Vue/Handlebars/CSS/SCSS/Less/JSON/YAML/TOML/XML/GraphQL/INI/Dockerfile/Markdown/JS/TS) wrapper plugin.",
+      "website": "https://dprint.dev/plugins/tidy/",
+      "npm": {
+        "name": "@dprint/tidy"
+      },
+      "selected": false,
+      "neverPreselect": true,
+      "configKey": "tidy",
+      "keywords": [
+        "tidy",
+        "prettier",
+        "html",
+        "vue",
+        "handlebars",
+        "mjml",
+        "css",
+        "scss",
+        "less",
+        "json",
+        "yaml",
+        "toml",
+        "xml",
+        "svg",
+        "graphql",
+        "ini",
+        "dockerfile",
+        "markdown",
+        "javascript",
+        "typescript"
+      ],
+      "fileExtensions": [
+        "html",
+        "htm",
+        "vue",
+        "mjml",
+        "hbs",
+        "handlebars",
+        "css",
+        "scss",
+        "less",
+        "json",
+        "jsonc",
+        "json5",
+        "yaml",
+        "yml",
+        "toml",
+        "xml",
+        "svg",
+        "graphql",
+        "gql",
+        "graphqls",
+        "ini",
+        "md",
+        "markdown",
+        "js",
+        "mjs",
+        "cjs",
+        "jsx",
+        "ts",
+        "mts",
+        "cts",
+        "tsx"
+      ],
+      "fileNames": [
+        "Dockerfile",
+        "Containerfile",
+        ".editorconfig",
+        ".gitconfig",
+        ".npmrc",
+        ".babelrc",
+        ".prettierrc"
+      ],
+      "configExcludes": [
+        "**/node_modules",
+        "**/*-lock.json"
+      ]
     }
   ]
 }
