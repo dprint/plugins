@@ -150,15 +150,15 @@ it("tryResolveUserLatestJson", { timeout: 30_000 }, async () => {
   }
   // process plugin repo
   {
-    const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/prettier/latest.json");
-    const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-prettier");
+    const result = await getValidResultForUrl("https://plugins.dprint.dev/dprint/exec/latest.json");
+    const releaseInfo = await getLatestReleaseInfo("dprint", "dprint-plugin-exec");
     expect(releaseInfo?.checksum?.length).toEqual(64);
     expect(result).toEqual({
       schemaVersion: 1,
-      url: `https://plugins.dprint.dev/prettier-${releaseInfo!.tagName}.json`,
+      url: `https://plugins.dprint.dev/exec-${releaseInfo!.tagName}.json`,
       version: releaseInfo!.tagName,
       checksum: releaseInfo!.checksum,
-      npm: { name: "@dprint/prettier" },
+      npm: { name: "@dprint/exec" },
     });
   }
   // community repo published to npm
